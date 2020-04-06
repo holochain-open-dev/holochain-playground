@@ -107,7 +107,6 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   }
 
   updated(changedValues) {
-    console.log("eing");
     super.updated(changedValues);
     this.updatedGraph();
   }
@@ -124,7 +123,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
 
   updatedGraph() {
     if (this.entryGraph.getBoundingClientRect().width === 0) return null;
-    console.log(this.entryGraph.getBoundingClientRect());
+
     const entries = allEntries(
       selectActiveCells(this.state),
       this.showAgentsIds
@@ -136,7 +135,6 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
         entries.map((e) => e.data.id)
       )
     ) {
-      console.log("ei");
       this.cy.remove("nodes");
       this.cy.add(entries);
       const layout = this.cy.layout({ name: "cola", fit: true }).run();
