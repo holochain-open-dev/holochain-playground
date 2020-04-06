@@ -52,6 +52,7 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
               committed. Here you can see in grey the
               <a
                 href="https://developer.holochain.org/docs/concepts/3_private_data/"
+                target="_blank"
                 >headers</a
               >
               of the entries, and in colors the entries themselves. When you

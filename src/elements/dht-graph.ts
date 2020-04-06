@@ -110,6 +110,7 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
           This is a visual interactive representation of a holochain
           <a
             href="https://developer.holochain.org/docs/concepts/4_public_data_on_the_dht/"
+            target="_blank"
             >DHT</a
           >, with ${this.state.conductors.length} nodes.
           <br />
