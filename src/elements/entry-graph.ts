@@ -23,6 +23,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       autoungrabify: true,
       userZoomingEnabled: false,
       userPanningEnabled: false,
+      fit: true,
       layout: { name: "cola" },
       style: `
               node {
@@ -100,16 +101,22 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     });
 
     this.cy.add(allEntries(selectActiveCells(this.state), this.showAgentsIds));
-    console.log('adsf')
-    this.requestUpdate();
 
+    let entryId = this.state.activeEntryId;
+
+    if (!this.state.activeEntryId) {
+      const cell = selectActiveCells(this.state)[0];
+      const headerId = cell.sourceChain[1];
+      entryId = cell.CAS[headerId].entryAddress;
+    }
+    setTimeout(() => {
+      this.blackboard.update("activeEntryId", entryId);
+    });
+    this.requestUpdate();
   }
 
   updated(changedValues) {
     super.updated(changedValues);
-
-    this.cy.remove("nodes");
-    this.cy.remove("edges");
 
     this.cy.add(allEntries(selectActiveCells(this.state), this.showAgentsIds));
     this.cy.layout({ name: "cola" }).run();

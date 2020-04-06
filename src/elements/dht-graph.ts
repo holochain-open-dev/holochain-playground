@@ -91,7 +91,6 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   updated(changedValues) {
     super.updated(changedValues);
 
-    this.cy.remove("nodes");
     this.cy.add(dnaNodes(selectActiveCells(this.state)));
     this.cy.layout({ name: "circle" }).run();
 
