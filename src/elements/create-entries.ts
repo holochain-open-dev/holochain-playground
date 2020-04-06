@@ -110,7 +110,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
       this.addToAddress,
       this.removeFromAddress,
       this.removeToAddress,
-    ].forEach((ele) => ele.setCustomValidity(""));
+    ].forEach((ele) => ele["formElement"] && ele.setCustomValidity(""));
   }
 
   static get styles() {

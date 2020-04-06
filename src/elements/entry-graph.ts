@@ -1,6 +1,6 @@
 import { pinToBoard } from "../blackboard/blackboard-mixin";
 import { Playground } from "../state/playground";
-import { LitElement, html, property, css } from "lit-element";
+import { LitElement, query, html, property, css } from "lit-element";
 import cytoscape from "cytoscape";
 import cola from "cytoscape-cola";
 import "@material/mwc-checkbox";
@@ -14,16 +14,19 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
   showAgentsIds: boolean = true;
 
+  @query("#entry-graph")
+  entryGraph: HTMLElement;
+
+  lastEntriesIds: string[] = [];
   cy;
 
   firstUpdated() {
     this.cy = cytoscape({
-      container: this.shadowRoot.getElementById("entry-graph"),
+      container: this.entryGraph,
       boxSelectionEnabled: false,
       autoungrabify: true,
       userZoomingEnabled: false,
       userPanningEnabled: false,
-      fit: true,
       layout: { name: "cola" },
       style: `
               node {
@@ -100,26 +103,46 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       this.blackboard.update("activeEntryId", selectedEntryId);
     });
 
-    this.cy.add(allEntries(selectActiveCells(this.state), this.showAgentsIds));
-
-    let entryId = this.state.activeEntryId;
-
-    if (!this.state.activeEntryId) {
-      const cell = selectActiveCells(this.state)[0];
-      const headerId = cell.sourceChain[1];
-      entryId = cell.CAS[headerId].entryAddress;
-    }
-    setTimeout(() => {
-      this.blackboard.update("activeEntryId", entryId);
-    });
-    this.requestUpdate();
+    this.cy.ready((e) => setTimeout(() => this.updatedGraph(), 150));
   }
 
   updated(changedValues) {
+    console.log("eing");
     super.updated(changedValues);
+    this.updatedGraph();
+  }
 
-    this.cy.add(allEntries(selectActiveCells(this.state), this.showAgentsIds));
-    this.cy.layout({ name: "cola" }).run();
+  vectorsEqual(v1: string[], v2: string[]) {
+    if (v1.length !== v2.length) return false;
+    v1 = v1.sort();
+    v2 = v2.sort();
+    for (let i = 0; i < v1.length; i++) {
+      if (v1[i] !== v2[i]) return false;
+    }
+    return true;
+  }
+
+  updatedGraph() {
+    if (this.entryGraph.getBoundingClientRect().width === 0) return null;
+    console.log(this.entryGraph.getBoundingClientRect());
+    const entries = allEntries(
+      selectActiveCells(this.state),
+      this.showAgentsIds
+    );
+
+    if (
+      !this.vectorsEqual(
+        this.lastEntriesIds,
+        entries.map((e) => e.data.id)
+      )
+    ) {
+      console.log("ei");
+      this.cy.remove("nodes");
+      this.cy.add(entries);
+      const layout = this.cy.layout({ name: "cola", fit: true }).run();
+    }
+
+    this.lastEntriesIds = entries.map((e) => e.data.id);
 
     this.cy.filter("node").removeClass("selected");
     this.cy.getElementById(this.state.activeEntryId).addClass("selected");

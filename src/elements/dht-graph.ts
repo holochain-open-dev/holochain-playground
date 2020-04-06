@@ -79,10 +79,10 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
 
   highlightNodesWithEntry(entryId: string) {
     selectActiveCells(this.state).forEach((cell) =>
-    this.cy.getElementById(cell.agentId).removeClass("highlighted")
+      this.cy.getElementById(cell.agentId).removeClass("highlighted")
     );
     const cells = selectHoldingCells(this.state)(entryId);
-    
+
     for (const cell of cells) {
       this.cy.getElementById(cell.agentId).addClass("highlighted");
     }
@@ -91,15 +91,17 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   updated(changedValues) {
     super.updated(changedValues);
 
-    this.cy.add(dnaNodes(selectActiveCells(this.state)));
-    this.cy.layout({ name: "circle" }).run();
+    if (this.shadowRoot.getElementById("graph")) {
+      this.cy.add(dnaNodes(selectActiveCells(this.state)));
+      this.cy.layout({ name: "circle" }).run();
 
-    selectActiveCells(this.state).forEach((cell) =>
-      this.cy.getElementById(cell.agentId).removeClass("selected")
-    );
-    this.cy.getElementById(this.state.activeAgentId).addClass("selected");
+      selectActiveCells(this.state).forEach((cell) =>
+        this.cy.getElementById(cell.agentId).removeClass("selected")
+      );
+      this.cy.getElementById(this.state.activeAgentId).addClass("selected");
 
-    this.highlightNodesWithEntry(this.state.activeEntryId)
+      this.highlightNodesWithEntry(this.state.activeEntryId);
+    }
   }
 
   renderDHTHelp() {
