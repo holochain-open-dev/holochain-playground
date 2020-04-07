@@ -7,12 +7,16 @@ import "@material/mwc-checkbox";
 import { allEntries } from "../processors/graph";
 import { selectActiveCells } from "../state/selectors";
 import { sharedStyles } from "./sharedStyles";
+import { Dialog } from '@material/mwc-dialog';
 
 cytoscape.use(cola);
 
 export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
   showAgentsIds: boolean = true;
+
+  @query("#entry-graph-help")
+  entryGraphHelp: Dialog;
 
   @query("#entry-graph")
   entryGraph: HTMLElement;
@@ -111,6 +115,34 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     this.updatedGraph();
   }
 
+  renderEntryGraphHelp() {
+    return html`
+      <mwc-dialog id="entry-graph-help" heading="Entry Graph Help">
+        <span>
+          This graph contains a
+          <strong>high-level view of all the entries</strong> that are present
+          in the DHT. Every circle you see represents an entry, and you can
+          click on it if you want to see its details.
+          <br />
+          <br />
+          You can create new entries in the right panel with sample content, and
+          link between them. All relationships between entries will show up in
+          the graph.
+          <br />
+          <br />
+          Green entries are "AgentId" entries. These entries are automatically
+          created when a node boots up and joins the network, and are the
+          entries from/to which we link when we specify "%agent_id". If you want
+          to hide the AgentId entries that have no links, uncheck the button
+          below.
+        </span>
+        <mwc-button slot="primaryAction" dialogAction="cancel">
+          Got it!
+        </mwc-button>
+      </mwc-dialog>
+    `;
+  }
+
   vectorsEqual(v1: string[], v2: string[]) {
     if (v1.length !== v2.length) return false;
     v1 = v1.sort();
@@ -159,8 +191,15 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
 
   render() {
     return html`
-      <mwc-card style="width: auto;" class="fill">
+      ${this.renderEntryGraphHelp()}
+      <mwc-card style="width: auto; position: relative;" class="fill">
         <div id="entry-graph" class="fill"></div>
+
+        <mwc-icon-button
+          style="position: absolute; right: 8px; top: 8px;"
+          icon="help_outline"
+          @click=${() => (this.entryGraphHelp.open = true)}
+        ></mwc-icon-button>
 
         <div class="row" style="align-items: end">
           <mwc-formfield label="Show all AgentId entries">
