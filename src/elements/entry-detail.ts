@@ -26,7 +26,7 @@ export class EntryDetail extends pinToBoard<Playground>(LitElement) {
         ? html`
             <div class="column">
               <strong style="margin-bottom: 8px;">
-                ${selectActiveEntry(this.state).entryAddress
+                ${selectActiveEntry(this.state).entry_address
                   ? "Header"
                   : "Entry"}
                 Id

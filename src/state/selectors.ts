@@ -23,7 +23,7 @@ export const selectHoldingCells = (state: Playground) => (entryId: string) =>
       !!Object.values(c.DHTOpTransforms).find(
         (dhtOp: DHTOp) =>
           dhtOp.type === DHTOpType.StoreEntry &&
-          dhtOp.header.entryAddress === entryId
+          dhtOp.header.entry_address === entryId
       )
   );
 

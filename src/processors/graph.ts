@@ -38,17 +38,18 @@ export function sourceChainNodes(cell: Cell) {
 
   for (const headerHash of headersHashes) {
     const header: Header = cell.CAS[headerHash];
-    const entry: Entry = cell.CAS[header.entryAddress];
+    const entry: Entry = cell.CAS[header.entry_address];
 
     const entryType =
       entry.type === EntryType.CreateEntry ? entry.payload.type : entry.type;
 
     nodes.push({
       data: { id: headerHash, data: header, label: `header-${headerCount}` },
+      classes: ["header"],
     });
     nodes.push({
       data: {
-        id: header.entryAddress,
+        id: header.entry_address,
         data: entry,
         label: `${entryType}`,
       },
@@ -56,18 +57,18 @@ export function sourceChainNodes(cell: Cell) {
     });
     nodes.push({
       data: {
-        id: `${headerHash}->${header.entryAddress}`,
+        id: `${headerHash}->${header.entry_address}`,
         source: headerHash,
-        target: header.entryAddress,
+        target: header.entry_address,
       },
     });
 
-    if (header.lastHeaderAddress) {
+    if (header.last_header_address) {
       nodes.push({
         data: {
-          id: `${headerHash}->${header.lastHeaderAddress}`,
+          id: `${headerHash}->${header.last_header_address}`,
           source: headerHash,
-          target: header.lastHeaderAddress,
+          target: header.last_header_address,
         },
       });
     }

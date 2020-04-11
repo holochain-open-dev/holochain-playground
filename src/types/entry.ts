@@ -15,7 +15,9 @@ export type Entry =
   | EntryContent<
       EntryType.LinkRemove,
       { base: string; target: string; type: string; timestamp: number }
-    >;
+    >
+  | EntryContent<EntryType.CapTokenGrant, any>
+  | EntryContent<EntryType.CapTokenClaim, any>;
 
 export enum EntryType {
   DNA = "DNA",

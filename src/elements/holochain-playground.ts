@@ -19,6 +19,9 @@ import {
   selectGlobalDHTOps,
   selectUniqueDHTOps,
 } from "../state/selectors";
+import { Playground } from "../state/playground";
+import { connectToConductors } from "../processors/connect-to-conductors";
+import { Header } from '../types/header';
 
 export class HolochainPlayground extends LitElement {
   @query("#file-upload")
@@ -28,12 +31,16 @@ export class HolochainPlayground extends LitElement {
   stats: any;
 
   @property({ type: Object })
-  playground = buildPlayground(hash("dna1"), 10);
+  playground: Playground;
+
+  @property({ type: Array })
+  conductorUrls: string[] | undefined = undefined;
 
   @property({ type: Boolean })
   technicalMode: boolean = false;
-
-  blackboard = new Blackboard(this.playground);
+  
+  @property({ type: Object })
+  blackboard: Blackboard<Playground>;
 
   static get styles() {
     return [
@@ -49,7 +56,15 @@ export class HolochainPlayground extends LitElement {
   }
 
   firstUpdated() {
+    if (!this.conductorUrls) {
+      this.playground = buildPlayground(hash("dna1"), 10);
+    }
+    this.blackboard = new Blackboard(this.playground);
     this.blackboard.subscribe(() => this.requestUpdate());
+
+    if (this.conductorUrls) {
+      connectToConductors(this.blackboard, this.conductorUrls);
+    }
   }
 
   import() {
@@ -92,7 +107,7 @@ export class HolochainPlayground extends LitElement {
           const entryHeaders =
             cell.CAS[entryId] &&
             Object.entries(cell.CAS)
-              .filter(([key, header]) => header.entryAddress === entryId)
+              .filter(([key, header]) => (header as Header).entry_address === entryId)
               .map(([key, _]) => key);
 
           const headerIds = cell.sourceChain;
@@ -114,6 +129,8 @@ export class HolochainPlayground extends LitElement {
   }
 
   render() {
+    if (!this.blackboard || !this.blackboard.state) return html`<span>Loading...</span>`;
+
     return html`
       <blackboard-container .blackboard=${this.blackboard} class="fill column">
         <mwc-top-app-bar-fixed>

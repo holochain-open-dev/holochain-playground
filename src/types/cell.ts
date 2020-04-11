@@ -197,11 +197,11 @@ export class Cell {
         : undefined;
 
     return {
-      agentId: this.agentId,
-      entryAddress: entryId,
-      replacedEntryAddress,
+      agent_id: this.agentId,
+      entry_address: entryId,
+      replaced_entry_address: replacedEntryAddress,
       timestamp: Math.floor(Date.now() / 1000),
-      lastHeaderAddress,
+      last_header_address: lastHeaderAddress,
     };
   }
 
@@ -243,13 +243,13 @@ export class Cell {
 
       switch (dhtOp.type) {
         case DHTOpType.RegisterAgentActivity:
-          if (!this.CASMeta[dhtOp.header.agentId]) {
-            this.CASMeta[dhtOp.header.agentId] = {
+          if (!this.CASMeta[dhtOp.header.agent_id]) {
+            this.CASMeta[dhtOp.header.agent_id] = {
               AGENT_HEADERS: [],
             };
           }
 
-          this.CASMeta[dhtOp.header.agentId][AGENT_HEADERS].push(headerHash);
+          this.CASMeta[dhtOp.header.agent_id][AGENT_HEADERS].push(headerHash);
           break;
         case DHTOpType.StoreEntry:
           this.CAS[entryHash] = dhtOp.entry;
@@ -258,9 +258,9 @@ export class Cell {
 
           this.CASMeta[entryHash][CRUDStatus] = "Live";
 
-          if (dhtOp.header.replacedEntryAddress) {
+          if (dhtOp.header.replaced_entry_address) {
             this.CASMeta[entryHash][REPLACES] =
-              dhtOp.header.replacedEntryAddress;
+              dhtOp.header.replaced_entry_address;
           }
 
           if (!this.CASMeta[entryHash][HEADERS]) {
@@ -269,24 +269,27 @@ export class Cell {
           this.CASMeta[entryHash][HEADERS].push(headerHash);
           break;
         case DHTOpType.RegisterUpdatedTo:
-          this.initDHTShardForEntry(header.replacedEntryAddress);
+          this.initDHTShardForEntry(header.replaced_entry_address);
 
           if (
-            !this.CASMeta[header.replacedEntryAddress][CRUDStatus] ||
-            this.CASMeta[header.replacedEntryAddress][CRUDStatus] !== "Dead"
+            !this.CASMeta[header.replaced_entry_address][CRUDStatus] ||
+            this.CASMeta[header.replaced_entry_address][CRUDStatus] !== "Dead"
           ) {
-            this.CASMeta[header.replacedEntryAddress][CRUDStatus] = "Dead";
-            this.CASMeta[header.replacedEntryAddress][REPLACED_BY] = [
+            this.CASMeta[header.replaced_entry_address][CRUDStatus] = "Dead";
+            this.CASMeta[header.replaced_entry_address][REPLACED_BY] = [
               hash(dhtOp.entry.newEntry),
             ];
           } else {
             const newEntryHash = hash(dhtOp.entry.newEntry);
-            let replacedBy = this.CASMeta[header.replacedEntryAddress][
+            let replacedBy = this.CASMeta[header.replaced_entry_address][
               REPLACED_BY
             ];
-            this.CASMeta[header.replacedEntryAddress][CRUDStatus] = "CONFLICT";
+            this.CASMeta[header.replaced_entry_address][CRUDStatus] =
+              "CONFLICT";
             replacedBy.push(newEntryHash);
-            this.CASMeta[header.replacedEntryAddress][REPLACED_BY] = replacedBy;
+            this.CASMeta[header.replaced_entry_address][
+              REPLACED_BY
+            ] = replacedBy;
           }
 
           break;
@@ -297,7 +300,7 @@ export class Cell {
 
           this.CASMeta[deletedEntryHash][CRUDStatus] = "Dead";
           this.CASMeta[deletedEntryHash][REPLACED_BY] = undefined;
-          this.CASMeta[deletedEntryHash][DELETED_BY] = header.entryAddress;
+          this.CASMeta[deletedEntryHash][DELETED_BY] = header.entry_address;
 
           break;
         case DHTOpType.RegisterAddLink:

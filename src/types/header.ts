@@ -1,7 +1,7 @@
 export interface Header {
-  entryAddress: string;
-  lastHeaderAddress: string | undefined;
-  replacedEntryAddress: string | undefined;
-  agentId: string;
+  entry_address: string;
+  last_header_address: string | undefined;
+  replaced_entry_address: string | undefined;
+  agent_id: string;
   timestamp: number;
 }

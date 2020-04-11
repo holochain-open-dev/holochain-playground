@@ -57,7 +57,7 @@ export function entryToDHTOps(entry: Entry, header: Header): DHTOp[] {
   
   switch (entry.type) {
     case EntryType.CreateEntry:
-      if (header.replacedEntryAddress) {
+      if (header.replaced_entry_address) {
         additionalDHTOps = [
           {
             header,
@@ -115,11 +115,11 @@ export function neighborhood(dhtOp: DHTOp): string {
     case DHTOpType.StoreHeader:
       return hash(dhtOp.header);
     case DHTOpType.StoreEntry:
-      return dhtOp.header.entryAddress;
+      return dhtOp.header.replaced_entry_address;
     case DHTOpType.RegisterUpdatedTo:
-      return dhtOp.header.replacedEntryAddress;
+      return dhtOp.header.replaced_entry_address;
     case DHTOpType.RegisterAgentActivity:
-      return dhtOp.header.agentId;
+      return dhtOp.header.agent_id;
     case DHTOpType.RegisterAddLink:
       return dhtOp.entry.payload.base;
     case DHTOpType.RegisterRemoveLink:
@@ -134,7 +134,7 @@ export function hashDHTOp(dhtOp: DHTOp): string {
     case DHTOpType.RegisterUpdatedTo:
       return hash({
         entry: dhtOp.entry,
-        replaces: dhtOp.header.replacedEntryAddress
+        replaces: dhtOp.header.replaced_entry_address
       });
     case DHTOpType.RegisterDeletedBy:
       return hash(dhtOp.entry);
