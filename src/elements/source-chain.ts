@@ -34,7 +34,7 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
         node {
           width: 30px;
           height: 30px;
-          font-size: 8px;
+          font-size: 10px;
           label: data(label);
           background-color: grey;
           text-halign: left;
