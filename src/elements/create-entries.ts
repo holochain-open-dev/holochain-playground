@@ -452,9 +452,10 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   render() {
     return html`
-      <div class="row fill center-content">
+      <div class="row fill">
         ${this.entryToCreate ? this.renderCommitDialog() : html``}
         <div class="column" style="margin-right: 16px;">
+          <h3 style="margin-block-end: 0.7em;">Commit type</h3>
           <mwc-formfield label="Create Entry">
             <mwc-radio
               name="entryType"

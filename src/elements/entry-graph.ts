@@ -7,7 +7,7 @@ import "@material/mwc-checkbox";
 import { allEntries } from "../processors/graph";
 import { selectActiveCells } from "../state/selectors";
 import { sharedStyles } from "./sharedStyles";
-import { Dialog } from '@material/mwc-dialog';
+import { Dialog } from "@material/mwc-dialog";
 
 cytoscape.use(cola);
 
@@ -193,21 +193,25 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     return html`
       ${this.renderEntryGraphHelp()}
       <mwc-card style="width: auto; position: relative;" class="fill">
-        <div id="entry-graph" class="fill"></div>
+        <div class="column fill">
+          <h3 style="margin-left: 16px; margin-top: 16px;">Entry Graph</h3>
 
-        <mwc-icon-button
-          style="position: absolute; right: 8px; top: 8px;"
-          icon="help_outline"
-          @click=${() => (this.entryGraphHelp.open = true)}
-        ></mwc-icon-button>
+          <div id="entry-graph" class="fill"></div>
 
-        <div class="row" style="align-items: end">
-          <mwc-formfield label="Show all AgentId entries">
-            <mwc-checkbox
-              checked
-              @change=${() => (this.showAgentsIds = !this.showAgentsIds)}
-            ></mwc-checkbox
-          ></mwc-formfield>
+          <mwc-icon-button
+            style="position: absolute; right: 8px; top: 8px;"
+            icon="help_outline"
+            @click=${() => (this.entryGraphHelp.open = true)}
+          ></mwc-icon-button>
+
+          <div class="row" style="align-items: end">
+            <mwc-formfield label="Show all AgentId entries">
+              <mwc-checkbox
+                checked
+                @change=${() => (this.showAgentsIds = !this.showAgentsIds)}
+              ></mwc-checkbox
+            ></mwc-formfield>
+          </div>
         </div>
       </mwc-card>
     `;

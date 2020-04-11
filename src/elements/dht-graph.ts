@@ -138,11 +138,12 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
 
   render() {
     return html`${this.renderDHTHelp()}
-      <div class="fill" style="position: relative">
+      <div class="column fill" style="position: relative">
+        <h3 style="position: absolute; left: 28px; top: 28px;">DHT Graph</h3>
         <div id="graph" style="height: 100%"></div>
 
         <mwc-icon-button
-          style="position: absolute; right: 36px; top: 36px;"
+          style="position: absolute; right: 20px; top: 20px;"
           icon="help_outline"
           @click=${() => (this.dhtHelp.open = true)}
         ></mwc-icon-button>

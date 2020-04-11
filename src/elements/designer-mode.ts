@@ -25,7 +25,7 @@ export class DesignerMode extends pinToBoard<Playground>(LitElement) {
         <entry-graph class="fill padding" style="flex: 20; padding: 16px;"></entry-graph>
         <div class="column" style="flex: 16;">
           <mwc-card style="width: auto;" class="padding fill center-content">
-            <create-entries class="padding fill center-content"></create-entries>
+            <create-entries class="padding fill"></create-entries>
           </mwc-card>
           <mwc-card style="width: auto;" class="padding fill">
             <entry-detail class="padding fill" withMetadata></entry-detail>
