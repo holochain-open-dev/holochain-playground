@@ -13,31 +13,7 @@ export class DHTShard extends pinToBoard<Playground>(LitElement) {
   buildDHTShardJson() {
     const cell = selectActiveCell(this.state);
 
-    const dhtShard = {};
-
-    const processHeaders = (headerAddresses: string[]) =>
-      headerAddresses.reduce(
-        (acc, next) => ({ ...acc, [next]: cell.CAS[next] }),
-        {}
-      );
-
-    for (const [hash, metadata] of Object.entries(cell.CASMeta)) {
-      if (metadata[AGENT_HEADERS]) {
-        dhtShard[hash] = {
-          [AGENT_HEADERS]: processHeaders(metadata[AGENT_HEADERS]),
-        };
-      } else {
-        dhtShard[hash] = {
-          entry: cell.CAS[hash],
-          metadata: {
-            ...metadata,
-            HEADERS: processHeaders(metadata[HEADERS]),
-          },
-        };
-      }
-    }
-
-    return dhtShard;
+    return cell.getDHTShard();
   }
 
   updated(changedValues: PropertyValues) {

@@ -6,7 +6,7 @@ export interface EntryContent<E extends EntryType, P> {
 export type Entry =
   | EntryContent<EntryType.DNA, string>
   | EntryContent<EntryType.AgentId, string>
-  | EntryContent<EntryType.CreateEntry, any>
+  | EntryContent<EntryType.CreateEntry, { content: any; type: string }>
   | EntryContent<EntryType.RemoveEntry, { deletedEntry: string }>
   | EntryContent<
       EntryType.LinkAdd,
@@ -25,5 +25,5 @@ export enum EntryType {
   LinkAdd = "LinkAdd",
   LinkRemove = "LinkRemove",
   CapTokenGrant = "CapTokenGrant",
-  CapTokenClaim = "CapTokenClaim"
+  CapTokenClaim = "CapTokenClaim",
 }

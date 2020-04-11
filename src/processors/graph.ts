@@ -34,13 +34,24 @@ export function sourceChainNodes(cell: Cell) {
   const nodes = [];
 
   const headersHashes = cell.sourceChain;
+  let headerCount = 0;
 
   for (const headerHash of headersHashes) {
     const header: Header = cell.CAS[headerHash];
     const entry: Entry = cell.CAS[header.entryAddress];
-    nodes.push({ data: { id: headerHash, data: header } });
+
+    const entryType =
+      entry.type === EntryType.CreateEntry ? entry.payload.type : entry.type;
+
     nodes.push({
-      data: { id: header.entryAddress, data: entry },
+      data: { id: headerHash, data: header, label: `header-${headerCount}` },
+    });
+    nodes.push({
+      data: {
+        id: header.entryAddress,
+        data: entry,
+        label: `${entryType}`,
+      },
       classes: [entry.type],
     });
     nodes.push({
@@ -60,6 +71,8 @@ export function sourceChainNodes(cell: Cell) {
         },
       });
     }
+
+    headerCount += 1;
   }
 
   return nodes;
@@ -77,26 +90,41 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
           cell.CAS[key].type === EntryType.AgentId)
       ) {
         entries[key] = cell.CAS[key] as Entry;
-        metadata[key] = cell.CASMeta[key] as EntryMetadata;
+        metadata[key] = cell.getEntryMetadata(key) as EntryMetadata;
       }
     }
   }
 
-  const typeToInt = (type: EntryType) =>
-    type === EntryType.CreateEntry ? 0 : 1;
-  const sortedEntries = Object.entries(entries).sort(
-    ([keyA, entryA], [keyB, entryB]) =>
-      typeToInt(entryA.type) - typeToInt(entryB.type)
-  );
+  const compareHeader = (headerA: Header, headerB: Header) =>
+    headerA.timestamp - headerB.timestamp;
+  const compareEntries = (hashA: string, hashB: string) => {
+    const headersA = Object.values(metadata[hashA].HEADERS).sort(compareHeader);
+    const headersB = Object.values(metadata[hashB].HEADERS).sort(compareHeader);
+    return headersA[0].timestamp - headersB[0].timestamp;
+  };
+  const sortedEntries = Object.entries(
+    entries
+  ).sort(([keyA, entryA], [keyB, entryB]) => compareEntries(keyA, keyB));
 
   const linksEdges = [];
   const entryNodes = [];
+  const entryTypeCount = {};
 
   for (const [key, entry] of sortedEntries) {
+    const entryType =
+      entry.type === EntryType.CreateEntry ? entry.payload.type : entry.type;
+    if (!entryTypeCount[entryType]) entryTypeCount[entryType] = 0;
+
     entryNodes.push({
-      data: { id: key, data: entry, label: `${key.substr(0, 6)}...` },
+      data: {
+        id: key,
+        data: entry,
+        label: `${entryType}-${entryTypeCount[entryType]}`,
+      },
       classes: [entry.type] as string[],
     });
+
+    entryTypeCount[entryType] += 1;
 
     if (entry.type === EntryType.CreateEntry) {
       const implicitLinks = getImplicitLinks(

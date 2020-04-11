@@ -56,7 +56,7 @@ export const selectUniqueDHTOps = (state: Playground) => {
 export const selectEntryMetadata = (state: Playground) => (entryId: string) => {
   if (!state.activeDNA) return undefined;
   for (const conductor of state.conductors) {
-    const entry = conductor.cells[state.activeDNA].CASMeta[entryId];
+    const entry = conductor.cells[state.activeDNA].getEntryMetadata(entryId);
     if (entry) {
       return entry;
     }

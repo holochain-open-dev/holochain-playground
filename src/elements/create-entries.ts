@@ -28,10 +28,11 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   @query("#create-entry-textarea")
   createTextarea: TextArea;
+  @query("#create-entry-type")
+  createType: TextFieldBase;
 
   @query("#update-entry-textarea")
   updateTextarea: TextArea;
-
   @query("#update-entry-address")
   updateAddress: TextFieldBase;
 
@@ -73,6 +74,19 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     };
   }
 
+  setNonEmptyValidity(element) {
+    element.validityTransform = (newValue, nativeValidity) => {
+      this.requestUpdate();
+      if (newValue.length === 0) {
+        element.setCustomValidity("Type must not be empty");
+        return { valid: false };
+      }
+      return {
+        valid: true,
+      };
+    };
+  }
+
   setJsonValidity(element) {
     element.validityTransform = (newValue, nativeValidity) => {
       if (newValue === "") return { valid: false };
@@ -101,6 +115,8 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     this.setEntryValidity(this.addToAddress);
     this.setEntryValidity(this.removeFromAddress);
     this.setEntryValidity(this.removeToAddress);
+    this.setNonEmptyValidity(this.createType);
+    this.setNonEmptyValidity(this.addType);
     [
       this.createTextarea,
       this.updateTextarea,
@@ -145,6 +161,13 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
       >
         <h3>Create Entry</h3>
         <div class="column center-content">
+          <mwc-textfield
+            outlined
+            id="create-entry-type"
+            label="Entry Type"
+            style="width: 15em"
+            @input=${() => this.createType.reportValidity()}
+          ></mwc-textfield>
           <mwc-textarea
             outlined
             id="create-entry-textarea"
@@ -158,13 +181,19 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
             raised
             label="CREATE"
             .disabled=${!(
-              this.createTextarea && this.createTextarea.validity.valid
+              this.createTextarea &&
+              this.createTextarea.validity.valid &&
+              this.createType &&
+              this.createType.validity.valid
             )}
             @click=${() =>
               (this.entryToCreate = {
                 entry: {
                   type: EntryType.CreateEntry,
-                  payload: JSON.parse(this.createTextarea.value),
+                  payload: {
+                    content: JSON.parse(this.createTextarea.value),
+                    type: this.createType.value,
+                  },
                 },
               })}
           ></mwc-button>
@@ -281,6 +310,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
             id="add-type"
             label="Link type"
             style="width: 35em"
+            @input=${() => this.addType.reportValidity()}
           ></mwc-textfield>
           <mwc-textfield
             outlined
@@ -295,7 +325,9 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
               this.addFromAddress &&
               this.addFromAddress.validity.valid &&
               this.addToAddress &&
-              this.addToAddress.validity.valid
+              this.addToAddress.validity.valid &&
+              this.addType &&
+              this.addType.validity.valid
             )}
             @click=${() =>
               (this.entryToCreate = {

@@ -11,6 +11,21 @@ import { Dialog } from "@material/mwc-dialog";
 
 cytoscape.use(cola);
 
+const layoutConfig = {
+  name: "cola",
+  handleDisconnected: true,
+  animate: true,
+  avoidOverlap: true,
+  infinite: false,
+  unconstrIter: 1,
+  userConstIter: 0,
+  allConstIter: 1,
+  ready: e => {
+      e.cy.fit()
+      e.cy.center()
+  }
+}
+
 export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
   showAgentsIds: boolean = true;
@@ -23,6 +38,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
 
   lastEntriesIds: string[] = [];
   cy;
+  layout;
 
   firstUpdated() {
     this.cy = cytoscape({
@@ -31,13 +47,14 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       autoungrabify: true,
       userZoomingEnabled: false,
       userPanningEnabled: false,
-      layout: { name: "cola" },
+      layout: layoutConfig,
       style: `
               node {
                 background-color: grey;
-                font-size: 6px;
-                width: 15px;
-                height: 15px;
+                font-size: 3px;
+                width: 8px;
+                label: data(label);
+                height: 8px;
               }
       
               edge {
@@ -57,7 +74,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
               }
       
               .selected {
-                border-width: 2px;
+                border-width: 1px;
                 border-color: black;
                 border-style: solid;
               }
@@ -167,9 +184,12 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
         entries.map((e) => e.data.id)
       )
     ) {
+      if (this.layout) this.layout.stop();
       this.cy.remove("nodes");
       this.cy.add(entries);
-      const layout = this.cy.layout({ name: "cola", fit: true }).run();
+
+      this.layout = this.cy.elements().makeLayout(layoutConfig);
+      this.layout.run();
     }
 
     this.lastEntriesIds = entries.map((e) => e.data.id);

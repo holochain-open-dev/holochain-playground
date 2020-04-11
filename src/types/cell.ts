@@ -26,13 +26,16 @@ export interface EntryMetadata {
   REPLACES: string | undefined;
   REPLACED_BY: string | undefined;
   DELETED_BY: string | undefined;
-  HEADERS: Array<Header>;
+  HEADERS: Dictionary<Header>;
   LINKS_TO: Array<{
     target: string;
     tag: string;
     type: string;
-    timestmap: string;
+    timestamp: string;
   }>;
+}
+export interface AgentActivity {
+  AGENT_HEADERS: Dictionary<Header>;
 }
 
 export interface CellContents {
@@ -119,6 +122,46 @@ export class Cell {
     };
 
     return this.conductor.sendMessage(this.dna, this.agentId, peer[0], message);
+  }
+
+  getDHTShard(): Dictionary<EntryMetadata | AgentActivity> {
+    const dhtShard = {};
+
+    for (const hash of Object.keys(this.CASMeta)) {
+      const entryMetadata = this.getEntryMetadata(hash);
+      if ((entryMetadata as AgentActivity).AGENT_HEADERS) {
+        dhtShard[hash] = entryMetadata;
+      } else {
+        dhtShard[hash] = {
+          entry: this.CAS[hash],
+          metadata: entryMetadata,
+        };
+      }
+    }
+
+    return dhtShard;
+  }
+
+  getEntryMetadata(hash: string): EntryMetadata | AgentActivity | undefined {
+    const processHeaders = (headerAddresses: string[]) =>
+      headerAddresses.reduce(
+        (acc, next) => ({ ...acc, [next]: this.CAS[next] as Header }),
+        {} as Dictionary<Header>
+      );
+
+    const metadata = this.CASMeta[hash];
+    if (!metadata) return undefined;
+
+    if (metadata[AGENT_HEADERS]) {
+      return {
+        AGENT_HEADERS: processHeaders(metadata[AGENT_HEADERS]),
+      };
+    } else {
+      return {
+        ...(metadata as EntryMetadata),
+        HEADERS: processHeaders(metadata[HEADERS]),
+      };
+    }
   }
 
   getNeighbors(): string[] {
@@ -230,9 +273,9 @@ export class Cell {
 
           if (
             !this.CASMeta[header.replacedEntryAddress][CRUDStatus] ||
-            this.CASMeta[header.replacedEntryAddress][CRUDStatus] !== "Replaced"
+            this.CASMeta[header.replacedEntryAddress][CRUDStatus] !== "Dead"
           ) {
-            this.CASMeta[header.replacedEntryAddress][CRUDStatus] = "Replaced";
+            this.CASMeta[header.replacedEntryAddress][CRUDStatus] = "Dead";
             this.CASMeta[header.replacedEntryAddress][REPLACED_BY] = [
               hash(dhtOp.entry.newEntry),
             ];
@@ -252,7 +295,7 @@ export class Cell {
 
           this.initDHTShardForEntry(deletedEntryHash);
 
-          this.CASMeta[deletedEntryHash][CRUDStatus] = "Deleted";
+          this.CASMeta[deletedEntryHash][CRUDStatus] = "Dead";
           this.CASMeta[deletedEntryHash][REPLACED_BY] = undefined;
           this.CASMeta[deletedEntryHash][DELETED_BY] = header.entryAddress;
 
