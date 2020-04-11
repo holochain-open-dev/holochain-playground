@@ -1,5 +1,5 @@
-import { Cell, CRUDStatus, EntryMetadata } from "../types/cell";
-import { arrayToInt, compareBigInts, distance } from "./hash";
+import { Cell } from "../types/cell";
+import { arrayToInt, compareBigInts } from "./hash";
 import { Header } from "../types/header";
 import { Entry, EntryType } from "../types/entry";
 import multihashes from "multihashes";
@@ -81,7 +81,7 @@ export function sourceChainNodes(cell: Cell) {
 
 export function allEntries(cells: Cell[], showAgentIds: boolean) {
   const entries: Dictionary<Entry> = {};
-  const metadata: Dictionary<EntryMetadata> = {};
+  const metadata: Dictionary<any> = {};
 
   for (const cell of cells) {
     for (const [key, entry] of Object.entries(cell.CASMeta)) {
@@ -91,7 +91,7 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
           cell.CAS[key].type === EntryType.AgentId)
       ) {
         entries[key] = cell.CAS[key] as Entry;
-        metadata[key] = cell.getEntryMetadata(key) as EntryMetadata;
+        metadata[key] = cell.getEntryMetadata(key);
       }
     }
   }
@@ -99,8 +99,12 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
   const compareHeader = (headerA: Header, headerB: Header) =>
     headerA.timestamp - headerB.timestamp;
   const compareEntries = (hashA: string, hashB: string) => {
-    const headersA = Object.values(metadata[hashA].HEADERS).sort(compareHeader);
-    const headersB = Object.values(metadata[hashB].HEADERS).sort(compareHeader);
+    const headersA: Header[] = Object.values(
+      metadata[hashA].HEADERS || metadata[hashA].AGENT_HEADERS
+    ).sort(compareHeader) as Header[];
+    const headersB: Header[] = Object.values(
+      metadata[hashB].HEADERS || metadata[hashB].AGENT_HEADERS
+    ).sort(compareHeader) as Header[];
     return headersA[0].timestamp - headersB[0].timestamp;
   };
   const sortedEntries = Object.entries(
@@ -148,30 +152,32 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
   }
 
   for (const [key, entry] of Object.entries(metadata)) {
-    for (const link of entry.LINKS_TO) {
-      linksEdges.push({
-        data: {
-          id: `${key}->${link.target}`,
-          source: key,
-          target: link.target,
-          label: `Type: ${link.type}, Tag: ${link.tag}`,
-        },
-        classes: ["explicit"],
-      });
-    }
-
-    if (entry.REPLACED_BY && entry.REPLACED_BY.length > 0) {
-      entryNodes.find((node) => node.data.id === key).classes.push("updated");
-      for (const replacedBy of entry.REPLACED_BY) {
+    if (entry.LINKS_TO) {
+      for (const link of entry.LINKS_TO) {
         linksEdges.push({
           data: {
-            id: `${key}-replaced-by-${replacedBy}`,
+            id: `${key}->${link.target}`,
             source: key,
-            target: replacedBy,
-            label: "replaced by",
+            target: link.target,
+            label: `Type: ${link.type}, Tag: ${link.tag}`,
           },
-          classes: ["update-link"],
+          classes: ["explicit"],
         });
+      }
+
+      if (entry.REPLACED_BY && entry.REPLACED_BY.length > 0) {
+        entryNodes.find((node) => node.data.id === key).classes.push("updated");
+        for (const replacedBy of entry.REPLACED_BY) {
+          linksEdges.push({
+            data: {
+              id: `${key}-replaced-by-${replacedBy}`,
+              source: key,
+              target: replacedBy,
+              label: "replaced by",
+            },
+            classes: ["update-link"],
+          });
+        }
       }
     }
 
@@ -201,6 +207,7 @@ export function getImplicitLinks(
   allEntryIds: string[],
   value: any
 ): Array<{ label: string; target: string }> {
+  if (!value) return [];
   if (typeof value === "string") {
     return allEntryIds.includes(value)
       ? [{ label: undefined, target: value }]

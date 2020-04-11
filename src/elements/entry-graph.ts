@@ -51,10 +51,10 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       style: `
               node {
                 background-color: grey;
-                font-size: 3px;
-                width: 8px;
+                font-size: 10px;
+                width: 16px;
                 label: data(label);
-                height: 8px;
+                height: 16px;
               }
       
               edge {

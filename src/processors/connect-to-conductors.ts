@@ -7,7 +7,6 @@ import { Header } from "../types/header";
 import { hash } from "./hash";
 import { Entry, EntryType } from "../types/entry";
 import { CellContents, Cell } from "../types/cell";
-import { Dictionary } from "../types/common";
 import { entryToDHTOps, hashDHTOp } from "../types/dht-op";
 
 export async function connectToConductors(
@@ -21,7 +20,7 @@ export async function connectToConductors(
     activeDNA: null,
     activeEntryId: null,
     conductors: [],
-    redundancyFactor: undefined,
+    redundancyFactor: 1,
   };
 
   const promises = conductorsUrls.map(async (url) => {
@@ -52,6 +51,7 @@ export async function connectToConductors(
     });
     const cell = Cell.from(conductor, cellContent);
     conductor.cells[cell.dna] = cell;
+    cell.updateDHTShard();
 
     return conductor;
   });
@@ -63,8 +63,6 @@ export async function connectToConductors(
   )[0];
 
   hookUpConductors(initialPlayground.conductors);
-
-  console.log("hi", initialPlayground);
 
   blackboard.updateState(initialPlayground);
 }
@@ -84,7 +82,6 @@ export async function processStateDump(
 
     CAS[header.entry_address] = processEntry(dna, agentId, casResult);
   });
-  console.log(stateDump);
 
   const aspects = Object.keys(stateDump.held_aspects);
 
@@ -96,7 +93,7 @@ export async function processStateDump(
     const header = processHeader(headerAspect);
     const entry = await fetchCas(header.entry_address);
 
-    const ops = entryToDHTOps(entry, header);
+    const ops = entryToDHTOps(processEntry(dna, agentId, entry), header);
     return ops;
   });
 
@@ -129,8 +126,8 @@ export function processHeader(header: any): Header {
     agent_id: header.provenances[0][0],
     entry_address: header.entry_address,
     last_header_address: header.link,
-    timestamp: new Date(header.timestamp).getTime(),
-    replaced_entry_address: undefined,
+    timestamp: Math.floor(new Date(header.timestamp).getTime() / 1000),
+    replaced_entry_address: header.link_update_delete,
   };
 }
 

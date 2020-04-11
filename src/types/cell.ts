@@ -239,7 +239,7 @@ export class Cell {
       const header = dhtOp.header;
       const headerHash = hash(header);
       this.CAS[headerHash] = header;
-      const entryHash = dhtOp.entry ? hash(dhtOp.entry) : undefined;
+      const entryHash = dhtOp.header.entry_address;
 
       switch (dhtOp.type) {
         case DHTOpType.RegisterAgentActivity:
@@ -277,16 +277,15 @@ export class Cell {
           ) {
             this.CASMeta[header.replaced_entry_address][CRUDStatus] = "Dead";
             this.CASMeta[header.replaced_entry_address][REPLACED_BY] = [
-              hash(dhtOp.entry.newEntry),
+              entryHash
             ];
           } else {
-            const newEntryHash = hash(dhtOp.entry.newEntry);
             let replacedBy = this.CASMeta[header.replaced_entry_address][
               REPLACED_BY
             ];
             this.CASMeta[header.replaced_entry_address][CRUDStatus] =
               "CONFLICT";
-            replacedBy.push(newEntryHash);
+            replacedBy.push(entryHash);
             this.CASMeta[header.replaced_entry_address][
               REPLACED_BY
             ] = replacedBy;
