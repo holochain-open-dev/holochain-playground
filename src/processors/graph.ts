@@ -159,7 +159,7 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
             id: `${key}->${link.target}`,
             source: key,
             target: link.target,
-            label: `Type: ${link.type}, Tag: ${link.tag}`,
+            label: `Type: ${link.type}${link.tag ? `, Tag: ${link.tag}` : ""}`,
           },
           classes: ["explicit"],
         });

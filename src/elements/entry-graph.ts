@@ -44,9 +44,9 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     this.cy = cytoscape({
       container: this.entryGraph,
       boxSelectionEnabled: false,
-      autoungrabify: true,
-      userZoomingEnabled: false,
-      userPanningEnabled: false,
+      autoungrabify: false,
+      userZoomingEnabled: true,
+      userPanningEnabled: true,
       layout: layoutConfig,
       style: `
               node {
@@ -65,7 +65,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
               }
               
               edge[label] {
-                font-size: 4px;
+                font-size: 7px;
                 text-rotation: autorotate;
                 text-margin-x: 0px;
                 text-margin-y: -5px;
