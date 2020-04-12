@@ -19,4 +19,8 @@ export const sharedStyles = css`
   h3 {
     margin-block-start: 0;
   }
+
+  .title {
+    font-size: 20px;
+  }
 `;

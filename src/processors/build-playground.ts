@@ -34,6 +34,7 @@ export function buildPlayground(
   return {
     activeDNA: dna,
     activeAgentId: undefined,
+    connected: false,
     activeEntryId: undefined,
     conductors,
     redundancyFactor,

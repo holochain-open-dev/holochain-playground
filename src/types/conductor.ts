@@ -25,11 +25,13 @@ export class Conductor {
     protected redundancyFactor: number,
     protected options?: ConductorOptions
   ) {
-    if ((options as { agentIds: string[] }).agentIds) {
+    if (options && (options as { agentIds: string[] }).agentIds) {
       this.agentIds = (options as { agentIds: string[] }).agentIds;
     } else {
-      let seed = (options as any).seed;
-      if (!seed) {
+      let seed;
+      if (options && (options as any).seed) {
+        seed = (options as any).seed;
+      } else {
         seed = Math.random().toString().substring(2);
       }
       this.agentIds = [hash(`${seed}${0}`)];

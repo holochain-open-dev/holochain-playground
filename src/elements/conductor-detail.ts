@@ -88,8 +88,8 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
         <div class="column fill">
           <div class="row center-content" style="padding: 16px">
             <div class="column" style="flex: 1;">
-              <h3>Agent Id</h3>
-              <span>${this.state.activeAgentId}</span>
+              <h3 class="title">Conductor Detail</h3>
+              <span>Agent Id: ${this.state.activeAgentId}</span>
             </div>
             <mwc-icon-button
               icon="help_outline"

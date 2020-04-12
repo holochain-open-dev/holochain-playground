@@ -39,6 +39,7 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
           background-color: grey;
           text-halign: right;
           text-valign: center;
+          text-margin-x: 4px;
         }
 
         .header {
@@ -103,7 +104,7 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
   render() {
     return html`
       <div class="row fill">
-        <div style="width: 400px;" id="source-chain-graph"></div>
+        <div style="width: 400px; height: 95%;" id="source-chain-graph"></div>
 
         <entry-detail style="flex: 1"></entry-detail>
       </div>

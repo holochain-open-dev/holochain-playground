@@ -6,4 +6,5 @@ export interface Playground {
   activeEntryId: string | undefined;
   conductors: Conductor[];
   redundancyFactor: number;
+  connected: boolean;
 }

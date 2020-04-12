@@ -214,7 +214,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       ${this.renderEntryGraphHelp()}
       <mwc-card style="width: auto; position: relative;" class="fill">
         <div class="column fill">
-          <h3 style="margin-left: 16px; margin-top: 16px;">Entry Graph</h3>
+          <h3 class="title" style="margin-left: 16px; margin-top: 16px;">Entry Graph</h3>
 
           <div id="entry-graph" class="fill"></div>
 

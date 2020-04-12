@@ -139,7 +139,7 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   render() {
     return html`${this.renderDHTHelp()}
       <div class="column fill" style="position: relative">
-        <h3 style="position: absolute; left: 28px; top: 28px;">DHT Graph</h3>
+        <h3 style="position: absolute; left: 28px; top: 28px;" class="title">DHT Nodes</h3>
         <div id="graph" style="height: 100%"></div>
 
         <mwc-icon-button

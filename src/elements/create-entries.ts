@@ -482,49 +482,70 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     this.entryToCreate = undefined;
   }
 
+  renderSelectCommitType() {
+    return html`
+      <div class="column" style="margin-right: 16px;">
+        <h3 style="margin-block-end: 0.7em;">Commit type</h3>
+        <mwc-formfield label="Create Entry">
+          <mwc-radio
+            name="entryType"
+            checked
+            @change=${() => (this.selectedEntryType = 0)}
+          ></mwc-radio>
+        </mwc-formfield>
+        <mwc-formfield label="Update Entry">
+          <mwc-radio
+            name="entryType"
+            @change=${() => (this.selectedEntryType = 1)}
+          ></mwc-radio>
+        </mwc-formfield>
+        <mwc-formfield label="Remove Entry">
+          <mwc-radio
+            name="entryType"
+            @change=${() => (this.selectedEntryType = 2)}
+          ></mwc-radio>
+        </mwc-formfield>
+        <mwc-formfield label="Link Entries">
+          <mwc-radio
+            name="entryType"
+            @change=${() => (this.selectedEntryType = 3)}
+          ></mwc-radio>
+        </mwc-formfield>
+        <mwc-formfield label="Remove Links">
+          <mwc-radio
+            name="entryType"
+            @change=${() => (this.selectedEntryType = 4)}
+          ></mwc-radio>
+        </mwc-formfield>
+      </div>
+    `;
+  }
+
+  renderConnectedPlaceholder() {
+    return html`<div class="row fill center-content">
+      <span>Cannot create when connected to real conductors</span>
+    </div>`;
+  }
+
   render() {
     return html`
-      <div class="row fill">
-        ${this.entryToCreate ? this.renderCommitDialog() : html``}
-        <div class="column" style="margin-right: 16px;">
-          <h3 style="margin-block-end: 0.7em;">Commit type</h3>
-          <mwc-formfield label="Create Entry">
-            <mwc-radio
-              name="entryType"
-              checked
-              @change=${() => (this.selectedEntryType = 0)}
-            ></mwc-radio>
-          </mwc-formfield>
-          <mwc-formfield label="Update Entry">
-            <mwc-radio
-              name="entryType"
-              @change=${() => (this.selectedEntryType = 1)}
-            ></mwc-radio>
-          </mwc-formfield>
-          <mwc-formfield label="Remove Entry">
-            <mwc-radio
-              name="entryType"
-              @change=${() => (this.selectedEntryType = 2)}
-            ></mwc-radio>
-          </mwc-formfield>
-          <mwc-formfield label="Link Entries">
-            <mwc-radio
-              name="entryType"
-              @change=${() => (this.selectedEntryType = 3)}
-            ></mwc-radio>
-          </mwc-formfield>
-          <mwc-formfield label="Remove Links">
-            <mwc-radio
-              name="entryType"
-              @change=${() => (this.selectedEntryType = 4)}
-            ></mwc-radio>
-          </mwc-formfield>
-        </div>
-        <div class="fill" style="padding: 0 24px;">
-          ${this.renderCreateEntry()} ${this.renderUpdateEntry()}
-          ${this.renderRemoveEntry()} ${this.renderLinkEntries()}
-          ${this.renderRemoveLink()}
-        </div>
+      <div class="column fill">
+        <h3 class="title">Commit Entries</h3>
+
+        ${this.state.connected
+          ? this.renderConnectedPlaceholder()
+          : html`
+              <div class="row fill">
+                ${this.entryToCreate ? this.renderCommitDialog() : html``}
+                ${this.renderSelectCommitType()}
+
+                <div class="fill" style="padding: 0 24px;">
+                  ${this.renderCreateEntry()} ${this.renderUpdateEntry()}
+                  ${this.renderRemoveEntry()} ${this.renderLinkEntries()}
+                  ${this.renderRemoveLink()}
+                </div>
+              </div>
+            `}
       </div>
     `;
   }

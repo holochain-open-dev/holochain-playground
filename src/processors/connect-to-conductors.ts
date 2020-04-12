@@ -21,6 +21,7 @@ export async function connectToConductors(
     activeEntryId: null,
     conductors: [],
     redundancyFactor: 1,
+    connected: true,
   };
 
   const promises = conductorsUrls.map(async (url) => {
