@@ -174,8 +174,11 @@ export class Cell {
     const neighbors = sortedPeers.slice(0, this.redundancyFactor + 1);
 
     const half = Math.floor(this.peers.length / 2);
+    const lastPeer = sortedPeers[this.peers.length - 1];
 
-    return [...neighbors, sortedPeers[this.peers.length - 1]];
+    if (lastPeer) neighbors.push(lastPeer);
+
+    return neighbors;
   }
 
   getNPeersClosestTo(n: number, hash: string): string[] {
@@ -277,7 +280,7 @@ export class Cell {
           ) {
             this.CASMeta[header.replaced_entry_address][CRUDStatus] = "Dead";
             this.CASMeta[header.replaced_entry_address][REPLACED_BY] = [
-              entryHash
+              entryHash,
             ];
           } else {
             let replacedBy = this.CASMeta[header.replaced_entry_address][

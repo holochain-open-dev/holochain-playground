@@ -16,7 +16,6 @@ export function dnaNodes(cells: Cell[]) {
   const cellNodes = sortedCells.map((cell) => ({
     data: { id: cell.agentId, label: `${cell.agentId.substr(0, 6)}...` },
   }));
-
   const edges = sortedCells.map((cell) =>
     cell.getNeighbors().map((neighbor) => ({
       data: {
@@ -44,7 +43,7 @@ export function sourceChainNodes(cell: Cell) {
       entry.type === EntryType.CreateEntry ? entry.payload.type : entry.type;
 
     nodes.push({
-      data: { id: headerHash, data: header, label: `header-${headerCount}` },
+      data: { id: headerHash, data: header, label: `header${headerCount}` },
       classes: ["header"],
     });
     nodes.push({
@@ -124,7 +123,7 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
       data: {
         id: key,
         data: entry,
-        label: `${entryType}-${entryTypeCount[entryType]}`,
+        label: `${entryType}${entryTypeCount[entryType]}`,
       },
       classes: [entry.type] as string[],
     });
