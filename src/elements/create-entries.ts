@@ -533,7 +533,9 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   renderConnectedPlaceholder() {
     return html`<div class="row fill center-content">
-      <span>Cannot create when connected to real conductors</span>
+      <span class="placeholder"
+        >Cannot create when connected to real conductors</span
+      >
     </div>`;
   }
 

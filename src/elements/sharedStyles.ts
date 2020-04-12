@@ -23,4 +23,8 @@ export const sharedStyles = css`
   .title {
     font-size: 20px;
   }
+
+  .placeholder {
+    color: grey;
+  }
 `;

@@ -24,7 +24,7 @@ export class TechnicalMode extends pinToBoard<Playground>(LitElement) {
             ? html` <conductor-detail class="fill"></conductor-detail> `
             : html`
                 <div class="row fill center-content">
-                  <span>Select node to see its state</span>
+                  <span class="placeholder">Select node to see its state</span>
                 </div>
               `}
         </div>

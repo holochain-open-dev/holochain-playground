@@ -1,13 +1,14 @@
 {
   "scripts": {
-    "build": "rimraf dist && NODE_ENV=production webpack --mode=production",
+    "build": "rimraf dist && rollup -c rollup.config.ts",
     "start": "webpack-dev-server",
-    "publish": "gh-pages -d dist"
+    "gh-pages": "rimraf dist-pages && NODE_ENV=production webpack --mode=production && gh-pages -d dist-pages"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/preset-typescript": "^7.9.0",
+    "@rollup/plugin-json": "^4.0.2",
     "babel-loader": "^8.1.0",
     "babel-polyfill": "^6.26.0",
     "base-href-webpack-plugin": "^2.0.0",
@@ -17,6 +18,10 @@
     "gh-pages": "^2.2.0",
     "html-webpack-plugin": "^3.2.0",
     "rimraf": "^2.6.3",
+    "rollup": "^2.6.0",
+    "rollup-plugin-sourcemaps": "^0.5.0",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "temp-dir": "^2.0.0",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
@@ -24,8 +29,8 @@
     "webpack-dev-server": "^3.10.3"
   },
   "name": "holochain-playground",
-  "version": "0.0.0",
-  "description": "Webcomponent holochain-playground following open-wc recommendations",
+  "version": "0.0.1",
+  "description": "Holochain playground that simulates real life holochain behaviour",
   "author": "holochain-playground",
   "license": "MIT",
   "dependencies": {

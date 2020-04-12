@@ -53,7 +53,7 @@ export class EntryDetail extends pinToBoard<Playground>(LitElement) {
             `
           : html`
               <div class="column fill center-content">
-                <span>Select entry to inspect</span>
+                <span class="placeholder">Select entry to inspect</span>
               </div>
             `}
       </div>
