@@ -60,6 +60,8 @@ export class HolochainPlayground extends LitElement {
   @property({ type: Object })
   blackboard: Blackboard<Playground>;
 
+  urlsState = {};
+
   static get styles() {
     return [
       sharedStyles,
@@ -155,14 +157,10 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
-  urlsState = {};
-
   setConnectionValidity(element) {
     element.validityTransform = (newValue, nativeValidity) => {
       let valid = false;
 
-      console.log(newValue, this.urlsState);
-      console.log(this.urlsState[newValue]);
       switch (this.urlsState[newValue]) {
         case "resolved":
           element.setCustomValidity("");
@@ -187,6 +185,7 @@ export class HolochainPlayground extends LitElement {
 
   updateFields() {
     const fields = this.getUrlFields();
+    this.dialogConductorUrls = fields.map((f) => f.value);
     for (const field of fields) {
       this.setConnectionValidity(field);
 
@@ -210,36 +209,60 @@ export class HolochainPlayground extends LitElement {
   renderConnectToNodes() {
     return html`<mwc-dialog id="connect-to-nodes">
       <div class="column">
-        <h3 class="title">Connected Nodes</h3>
-        ${this.dialogConductorUrls &&
-        this.dialogConductorUrls.map(
-          (url) => html`
-            <mwc-textfield
-              style="margin-bottom: 16px;"
-              class="url-field"
-              outlined
-              label="Conductor url"
-              value=${url}
-              @input=${() => this.updateFields()}
-            ></mwc-textfield>
-          `
-        )}
-        <mwc-button
-          label="Add node"
-          icon="add"
-          @click=${() => {
-            this.dialogConductorUrls = [...this.dialogConductorUrls, ""];
-            this.updateFields();
-          }}
-        >
+        <h3 class="title">${
+          this._conductorUrls ? "Connected Nodes" : "Connect to nodes"
+        }</h3>
+        ${
+          this.dialogConductorUrls &&
+          this.dialogConductorUrls.map(
+            (url) => html`
+              <mwc-textfield
+                style="margin-bottom: 16px;"
+                class="url-field"
+                outlined
+                .disabled=${!!this.conductorUrls}
+                label="Conductor url"
+                value=${url}
+                @input=${() => this.updateFields()}
+              ></mwc-textfield>
+            `
+          )
+        }
+        ${
+          this.conductorUrls
+            ? html``
+            : html`
+                <mwc-button
+                  label="Add node"
+                  icon="add"
+                  @click=${() => {
+                    this.dialogConductorUrls = [
+                      ...this.dialogConductorUrls,
+                      "",
+                    ];
+                    this.updateFields();
+                  }}
+                >
+                </mwc-button>
+              `
+        }
         </mwc-button>
       </div>
 
       <mwc-button
         slot="primaryAction"
         dialogAction="confirm"
-        label="Update connections"
-        .disabled=${!this.getUrlFields().every((field) => field.validity.valid)}
+        label=${
+          this.conductorUrls
+            ? "Ok"
+            : this._conductorUrls
+            ? "Update connections"
+            : "Connect to nodes"
+        }
+        .disabled=${
+          this.getUrlFields().length === 0 ||
+          !this.getUrlFields().every((field) => field.validity.valid)
+        }
         @click=${() => (this._conductorUrls = this.dialogConductorUrls)}
       >
       </mwc-button>
@@ -280,15 +303,23 @@ export class HolochainPlayground extends LitElement {
 
           <mwc-button
             slot="actionItems"
+            style="margin-right: 18px;"
             label=${this._conductorUrls
               ? "CONNECTED NODES"
               : "CONNECT TO NODES"}
             icon=${this._conductorUrls ? "sync" : "sync_disabled"}
             @click=${() => {
-              this.dialogConductorUrls = this._conductorUrls;
+              this.dialogConductorUrls = this._conductorUrls || [
+                "ws://localhost:8888",
+              ];
               (this.shadowRoot.getElementById(
                 "connect-to-nodes"
               ) as Dialog).open = true;
+
+              setTimeout(() => {
+                this.updateFields();
+                this.requestUpdate();
+              });
             }}
           ></mwc-button>
 

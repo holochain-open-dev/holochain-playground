@@ -241,7 +241,11 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
               (this.entryToCreate = {
                 entry: {
                   type: EntryType.CreateEntry,
-                  payload: JSON.parse(this.updateTextarea.value),
+                  payload: {
+                    content: JSON.parse(this.updateTextarea.value),
+                    type: selectEntry(this.state)(this.updateAddress.value)
+                      .payload.type,
+                  },
                 },
                 replaces: this.updateAddress.value,
               })}
@@ -440,7 +444,11 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   renderCommitDialog() {
     return html`
-      <mwc-dialog .open=${!!this.entryToCreate} heading="Commit new entry">
+      <mwc-dialog
+        .open=${!!this.entryToCreate}
+        heading="Commit new entry"
+        @closed=${() => (this.entryToCreate = undefined)}
+      >
         <div>
           This will create these DHT Operations on the given neighborhoods
         </div>

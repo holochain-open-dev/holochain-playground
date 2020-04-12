@@ -163,20 +163,20 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
           classes: ["explicit"],
         });
       }
-
-      if (entry.REPLACED_BY && entry.REPLACED_BY.length > 0) {
-        entryNodes.find((node) => node.data.id === key).classes.push("updated");
-        for (const replacedBy of entry.REPLACED_BY) {
-          linksEdges.push({
-            data: {
-              id: `${key}-replaced-by-${replacedBy}`,
-              source: key,
-              target: replacedBy,
-              label: "replaced by",
-            },
-            classes: ["update-link"],
-          });
-        }
+    }
+    
+    if (entry.REPLACED_BY && entry.REPLACED_BY.length > 0) {
+      entryNodes.find((node) => node.data.id === key).classes.push("updated");
+      for (const replacedBy of entry.REPLACED_BY) {
+        linksEdges.push({
+          data: {
+            id: `${key}-replaced-by-${replacedBy}`,
+            source: key,
+            target: replacedBy,
+            label: "replaced by",
+          },
+          classes: ["update-link"],
+        });
       }
     }
 

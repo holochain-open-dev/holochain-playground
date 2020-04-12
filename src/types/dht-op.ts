@@ -115,7 +115,7 @@ export function neighborhood(dhtOp: DHTOp): string {
     case DHTOpType.StoreHeader:
       return hash(dhtOp.header);
     case DHTOpType.StoreEntry:
-      return dhtOp.header.replaced_entry_address;
+      return dhtOp.header.entry_address;
     case DHTOpType.RegisterUpdatedTo:
       return dhtOp.header.replaced_entry_address;
     case DHTOpType.RegisterAgentActivity:

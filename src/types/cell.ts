@@ -350,6 +350,8 @@ export class Cell {
   handlePublishRequest(dhtOp: DHTOp) {
     const hash = hashDHTOp(dhtOp);
 
+    if (this.DHTOpTransforms[hash]) return;
+
     this.DHTOpTransforms[hash] = dhtOp;
 
     this.updateDHTShard();

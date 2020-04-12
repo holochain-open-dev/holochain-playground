@@ -26,7 +26,7 @@ export async function connectToConductors(
   conductorsUrls: string[]
 ): Promise<void> {
   const globalCAS = {};
-
+  
   const initialPlayground: Playground = {
     activeAgentId: null,
     activeDNA: null,
@@ -38,6 +38,7 @@ export async function connectToConductors(
 
   const promises = conductorsUrls.map(async (url) => {
     const { onSignal, call } = await connect({ url });
+
     const result = await call("debug/running_instances")({});
     const instance_id = result[0];
     const stateDump = await call("debug/state_dump")({

@@ -20,11 +20,11 @@ const layoutConfig = {
   unconstrIter: 1,
   userConstIter: 0,
   allConstIter: 1,
-  ready: e => {
-      e.cy.fit()
-      e.cy.center()
-  }
-}
+  ready: (e) => {
+    e.cy.fit();
+    e.cy.center();
+  },
+};
 
 export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
@@ -214,7 +214,9 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       ${this.renderEntryGraphHelp()}
       <mwc-card style="width: auto; position: relative;" class="fill">
         <div class="column fill">
-          <h3 class="title" style="margin-left: 16px; margin-top: 16px;">Entry Graph</h3>
+          <h3 class="title" style="margin-left: 16px; margin-top: 16px;">
+            Entry Graph
+          </h3>
 
           <div id="entry-graph" class="fill"></div>
 
