@@ -42,7 +42,7 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
 
   renderAgentHelp() {
     return html`
-      <mwc-dialog id="conductor-help" heading="Node Help">
+      <mwc-dialog id="conductor-help" heading="Node Help" style="--mdc-dialog-max-width: 700px">
         <span>
           You've selected the node or conductor with Agent ID
           ${this.state.activeAgentId}. Here you can see its internal state:
@@ -86,7 +86,7 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
       ${this.renderAgentHelp()}
       <mwc-card style="width: auto;" class="fill">
         <div class="column fill">
-          <div class="row center-content" style="padding: 16px">
+          <div class="row" style="padding: 16px">
             <div class="column" style="flex: 1;">
               <h3 class="title">Conductor Detail</h3>
               <span>Agent Id: ${this.state.activeAgentId}</span>

@@ -8,6 +8,7 @@ import "@material/mwc-formfield";
 import "@material/mwc-top-app-bar-fixed";
 import "@material/mwc-menu";
 import "@material/mwc-list/mwc-list-item";
+import "@authentic/mwc-circular-progress";
 
 import { sharedStyles } from "./sharedStyles";
 import { buildPlayground } from "../processors/build-playground";
@@ -21,7 +22,7 @@ import {
 } from "../state/selectors";
 import { Playground } from "../state/playground";
 import { connectToConductors } from "../processors/connect-to-conductors";
-import { Header } from '../types/header';
+import { Header } from "../types/header";
 
 export class HolochainPlayground extends LitElement {
   @query("#file-upload")
@@ -38,7 +39,7 @@ export class HolochainPlayground extends LitElement {
 
   @property({ type: Boolean })
   technicalMode: boolean = false;
-  
+
   @property({ type: Object })
   blackboard: Blackboard<Playground>;
 
@@ -107,7 +108,9 @@ export class HolochainPlayground extends LitElement {
           const entryHeaders =
             cell.CAS[entryId] &&
             Object.entries(cell.CAS)
-              .filter(([key, header]) => (header as Header).entry_address === entryId)
+              .filter(
+                ([key, header]) => (header as Header).entry_address === entryId
+              )
               .map(([key, _]) => key);
 
           const headerIds = cell.sourceChain;
@@ -129,7 +132,10 @@ export class HolochainPlayground extends LitElement {
   }
 
   render() {
-    if (!this.blackboard || !this.blackboard.state) return html`<span>Loading...</span>`;
+    if (!this.blackboard || !this.blackboard.state)
+      return html`<div class="row fill center-content">
+        <mwc-circular-progress></mwc-circular-progress>
+      </div>`;
 
     return html`
       <blackboard-container .blackboard=${this.blackboard} class="fill column">
