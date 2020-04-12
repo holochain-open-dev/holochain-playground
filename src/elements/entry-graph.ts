@@ -8,6 +8,7 @@ import { allEntries } from "../processors/graph";
 import { selectActiveCells } from "../state/selectors";
 import { sharedStyles } from "./sharedStyles";
 import { Dialog } from "@material/mwc-dialog";
+import { vectorsEqual } from '../processors/utils';
 
 cytoscape.use(cola);
 
@@ -160,16 +161,6 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     `;
   }
 
-  vectorsEqual(v1: string[], v2: string[]) {
-    if (v1.length !== v2.length) return false;
-    v1 = v1.sort();
-    v2 = v2.sort();
-    for (let i = 0; i < v1.length; i++) {
-      if (v1[i] !== v2[i]) return false;
-    }
-    return true;
-  }
-
   updatedGraph() {
     if (this.entryGraph.getBoundingClientRect().width === 0) return null;
 
@@ -179,7 +170,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     );
 
     if (
-      !this.vectorsEqual(
+      !vectorsEqual(
         this.lastEntriesIds,
         entries.map((e) => e.data.id)
       )

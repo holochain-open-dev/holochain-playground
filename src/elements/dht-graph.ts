@@ -8,6 +8,7 @@ import { Playground } from "../state/playground";
 import { selectActiveCells, selectHoldingCells } from "../state/selectors";
 import { DHTOp, DHTOpType } from "../types/dht-op";
 import { sharedStyles } from "./sharedStyles";
+import { vectorsEqual } from "../processors/utils";
 
 export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   @query("#graph")
@@ -16,7 +17,10 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   @query("#dht-help")
   dhtHelp: Dialog;
 
+  lastNodes: string[] = [];
+
   cy;
+  layout;
 
   static get styles() {
     return [
@@ -92,8 +96,16 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
     super.updated(changedValues);
 
     if (this.shadowRoot.getElementById("graph")) {
-      this.cy.add(dnaNodes(selectActiveCells(this.state)));
-      this.cy.layout({ name: "circle" }).run();
+      const newAgentIds = selectActiveCells(this.state).map((c) => c.agentId);
+      if (!vectorsEqual(this.lastNodes, newAgentIds)) {
+        if (this.layout) this.layout.stop();
+        this.cy.remove("nodes");
+        this.cy.add(dnaNodes(selectActiveCells(this.state)));
+
+        this.layout = this.cy.elements().makeLayout({ name: "circle" });
+        this.layout.run();
+        this.lastNodes = newAgentIds;
+      }
 
       selectActiveCells(this.state).forEach((cell) =>
         this.cy.getElementById(cell.agentId).removeClass("selected")
@@ -139,7 +151,9 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
   render() {
     return html`${this.renderDHTHelp()}
       <div class="column fill" style="position: relative">
-        <h3 style="position: absolute; left: 28px; top: 28px;" class="title">DHT Nodes</h3>
+        <h3 style="position: absolute; left: 28px; top: 28px;" class="title">
+          DHT Nodes
+        </h3>
         <div id="graph" style="height: 100%"></div>
 
         <mwc-icon-button
