@@ -1279,22 +1279,30 @@ limitations under the License.
       `]}firstUpdated(){this.conductorUrls||(this.playground=function(t,e){const n=[];for(let t=0;t<e;t++){const t=new Ss(3);n.push(t)}Es(n);const r=n.map(t=>t.agentIds[0]);for(const e of n)e.installDna(t,r.filter(t=>t!==e.agentIds[0]));for(const e of n)e.initDna(t);return{activeDNA:t,activeAgentId:void 0,connected:!1,activeEntryId:void 0,conductors:n,redundancyFactor:3}}(ps("dna1"),10)),this.blackboard=new Qs(this.playground),this.blackboard.subscribe(()=>this.requestUpdate())}updated(t){super.updated(t),t.has("conductorUrls")&&(this._conductorUrls=this.conductorUrls),t.has("_conductorUrls")&&async function(t,e){const n={},r={activeAgentId:null,activeDNA:null,activeEntryId:null,conductors:[],redundancyFactor:1,connected:!0},i=e.map(async e=>{const{onSignal:i,call:o}=await Object(sl.connect)({url:e}),a=(await o("debug/running_instances")({}))[0],c=await o("debug/state_dump")({instance_id:a,source_chain:!0,held_aspects:!0,queued_holding_workflows:!1}),s=async t=>{if(n[t])return n[t];const e=await o("debug/fetch_cas")({instance_id:a,address:t});return n[t]=e,e},l=await ul(c,s),u=new Ss(void 0,{agentIds:[l.agentId]}),d=ks.from(u,l);return u.cells[d.dna]=d,d.updateDHTShard(),i(async e=>{if(!e.instance_id)return;const n=await o("debug/state_dump")({instance_id:a,source_chain:!0,held_aspects:!0,queued_holding_workflows:!1}),i=await ul(n,s),c=r.conductors.findIndex(t=>t.agentIds.includes(i.agentId)),l=r.conductors[c],u=ks.from(l,i);l.cells[u.dna]=u,u.updateDHTShard(),t.update("conductors",r.conductors)}),u});r.conductors=await Promise.all(i),r.activeDNA=Object.keys(r.conductors[0].cells)[0],Es(r.conductors),t.updateState(r)}(this.blackboard,this._conductorUrls)}import(){const t=this.fileUpload.files[0];var e=new FileReader;e.onload=t=>{const e=JSON.parse(t.target.result);this.blackboard.updateState(function(t){const e=t.conductors.map(t=>Ss.from(t));return Es(e),{...t,conductors:e}}(e))},e.readAsText(t)}export(){const t=this.blackboard.state;for(const e of t.conductors)for(const t of Object.values(e.cells))t.conductor=void 0;const e=new Blob([JSON.stringify(t)],{type:"application/json"});!function(t,e){const n=window.URL.createObjectURL(e),r=document.createElement("a");r.style.display="none",r.href=n,r.download=t,document.body.appendChild(r),r.click(),window.URL.revokeObjectURL(n)}(`holochain-playground-${Date.now().toLocaleString()}.json`,e)}toggleMode(){if(this.technicalMode=!this.technicalMode,this.technicalMode&&this.blackboard.state.activeEntryId){const t=this.blackboard.state.activeEntryId,e=this.blackboard.state.activeDNA,n=this.blackboard.state.conductors.find(n=>{const r=n.cells[e],i=r.CAS[t]&&Object.entries(r.CAS).filter(([e,n])=>n.entry_address===t).map(([t,e])=>t),o=r.sourceChain;return i&&o.find(t=>i.includes(t))});this.blackboard.update("activeAgentId",n.cells[this.blackboard.state.activeDNA].agentId)}}setConnectionValidity(t){t.validityTransform=(e,n)=>{let r=!1;switch(this.urlsState[e]){case"resolved":t.setCustomValidity(""),r=!0;break;case"rejected":t.setCustomValidity("Could not connect to node");break;default:t.setCustomValidity("Checking connection...")}return this.requestUpdate(),{valid:r}}}getUrlFields(){return Array.apply(null,this.shadowRoot.querySelectorAll(".url-field"))}updateFields(){const t=this.getUrlFields();this.dialogConductorUrls=t.map(t=>t.value);for(const e of t){if(this.setConnectionValidity(e),!this.urlsState[e.value])try{ll(e.value).then(()=>this.urlsState[e.value]="resolved").catch(()=>this.urlsState[e.value]="rejected").finally(()=>{e.reportValidity()})}catch(t){this.urlsState[e.value]="rejected",e.reportValidity()}e.reportValidity()}}renderConnectToNodes(){return pt`<mwc-dialog id="connect-to-nodes">
       <div class="column">
         <h3 class="title">${this._conductorUrls?"Connected Nodes":"Connect to nodes"}</h3>
-        ${this.dialogConductorUrls&&this.dialogConductorUrls.map(t=>pt`
-              <mwc-textfield
-                style="margin-bottom: 16px;"
-                class="url-field"
-                outlined
-                .disabled=${!!this.conductorUrls}
-                label="Conductor url"
-                value=${t}
-                @input=${()=>this.updateFields()}
-              ></mwc-textfield>
-            `)}
+        ${this.dialogConductorUrls?this.dialogConductorUrls.map((t,e)=>pt`
+                  <div class="row">
+                    <mwc-textfield
+                      style="margin-bottom: 16px;"
+                      class="url-field"
+                      outlined
+                      .disabled=${!!this.conductorUrls}
+                      label="Conductor url"
+                      value=${t}
+                      @input=${()=>this.updateFields()}
+                    ></mwc-textfield>
+                    ${this.conductorUrls?pt``:pt`
+                          <mwc-icon-button
+                            icon="clear"
+                            @click=${()=>{this.dialogConductorUrls.splice(e,1),this.dialogConductorUrls=[...this.dialogConductorUrls],setTimeout(()=>this.updateFields())}}
+                          ></mwc-icon-button>
+                        `}
+                  </div>
+                `):pt``}
         ${this.conductorUrls?pt``:pt`
                 <mwc-button
                   label="Add node"
                   icon="add"
-                  @click=${()=>{this.dialogConductorUrls=[...this.dialogConductorUrls,""],this.updateFields()}}
+                  @click=${()=>{this.dialogConductorUrls=[...this.dialogConductorUrls,""],setTimeout(()=>this.updateFields())}}
                 >
                 </mwc-button>
               `}
