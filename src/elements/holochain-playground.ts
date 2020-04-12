@@ -167,7 +167,7 @@ export class HolochainPlayground extends LitElement {
           valid = true;
           break;
         case "rejected":
-          element.setCustomValidity("Could not connect to node");
+          element.setCustomValidity("Could not connect to node, check admin interface");
           break;
         default:
           element.setCustomValidity("Checking connection...");

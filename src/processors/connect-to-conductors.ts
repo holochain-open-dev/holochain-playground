@@ -15,7 +15,11 @@ export function checkConnection(url: string): Promise<void> {
     ws.onerror = () => reject();
     ws.onopen = () => {
       connect({ url, wsClient: ws })
-        .then(() => resolve())
+        .then(({ call }) => {
+          call("debug/running_instances")({})
+            .then(() => resolve())
+            .catch(() => reject());
+        })
         .catch(reject);
     };
   });
@@ -26,7 +30,7 @@ export async function connectToConductors(
   conductorsUrls: string[]
 ): Promise<void> {
   const globalCAS = {};
-  
+
   const initialPlayground: Playground = {
     activeAgentId: null,
     activeDNA: null,
