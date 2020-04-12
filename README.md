@@ -6,9 +6,9 @@ This is an experimental ongoing effort to build a holochain playground simulatio
 
 For now, it includes a limited set of features (cannot modify redundancy factor, or number or nodes...). My intention is to maintain it and improve it, to also achieve dynamic situtations (nodes dropping out of the network), contributions would be highly appreciated.
 
-This package is distributed as an [NPM package](https://npmjs.com/package/holochain-playground).
+This package is also distributed as an [NPM package](https://npmjs.com/package/holochain-playground), in the form of a `<holochain-playground>` customElement build with the [Custom Elements](https://developers.google.com/web/fundamentals/web-components/customelements) API.
 
-## Usage
+## Custom Element Usage
 
 1. Install the package with `npm i holochain-playground`.
 2. Import the package in your application like this:
@@ -25,7 +25,7 @@ import "holochain-playground";
 </body>
 ```
 
-4. Optionally, set the conductor urls to the nodes you want to create the playground with:
+4. Optionally, set the conductor urls to the nodes you want to bind the playground to:
 
 ```html
 <body>
