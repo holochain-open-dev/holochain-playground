@@ -9,6 +9,18 @@ import { Entry, EntryType } from "../types/entry";
 import { CellContents, Cell } from "../types/cell";
 import { entryToDHTOps, hashDHTOp } from "../types/dht-op";
 
+export function checkConnection(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(url);
+    ws.onerror = () => reject();
+    ws.onopen = () => {
+      connect({ url, wsClient: ws })
+        .then(() => resolve())
+        .catch(reject);
+    };
+  });
+}
+
 export async function connectToConductors(
   blackboard: Blackboard<Playground>,
   conductorsUrls: string[]

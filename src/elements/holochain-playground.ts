@@ -16,6 +16,7 @@ import "@material/mwc-top-app-bar-fixed";
 import "@material/mwc-menu";
 import "@material/mwc-list/mwc-list-item";
 import "@authentic/mwc-circular-progress";
+import { TextFieldBase } from "@material/mwc-textfield/mwc-textfield-base";
 
 import { sharedStyles } from "./sharedStyles";
 import { buildPlayground } from "../processors/build-playground";
@@ -28,7 +29,10 @@ import {
   selectUniqueDHTOps,
 } from "../state/selectors";
 import { Playground } from "../state/playground";
-import { connectToConductors } from "../processors/connect-to-conductors";
+import {
+  connectToConductors,
+  checkConnection,
+} from "../processors/connect-to-conductors";
 import { Header } from "../types/header";
 
 export class HolochainPlayground extends LitElement {
@@ -151,6 +155,58 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
+  urlsState = {};
+
+  setConnectionValidity(element) {
+    element.validityTransform = (newValue, nativeValidity) => {
+      let valid = false;
+
+      console.log(newValue, this.urlsState);
+      console.log(this.urlsState[newValue]);
+      switch (this.urlsState[newValue]) {
+        case "resolved":
+          element.setCustomValidity("");
+          valid = true;
+          break;
+        case "rejected":
+          element.setCustomValidity("Could not connect to node");
+          break;
+        default:
+          element.setCustomValidity("Checking connection...");
+          break;
+      }
+
+      this.requestUpdate();
+      return { valid };
+    };
+  }
+
+  getUrlFields(): TextFieldBase[] {
+    return Array.apply(null, this.shadowRoot.querySelectorAll(".url-field"));
+  }
+
+  updateFields() {
+    const fields = this.getUrlFields();
+    for (const field of fields) {
+      this.setConnectionValidity(field);
+
+      if (!this.urlsState[field.value]) {
+        try {
+          checkConnection(field.value)
+            .then(() => (this.urlsState[field.value] = "resolved"))
+            .catch(() => (this.urlsState[field.value] = "rejected"))
+            .finally(() => {
+              field.reportValidity();
+            });
+        } catch (e) {
+          this.urlsState[field.value] = "rejected";
+          field.reportValidity();
+        }
+      }
+      field.reportValidity();
+    }
+  }
+
   renderConnectToNodes() {
     return html`<mwc-dialog id="connect-to-nodes">
       <div class="column">
@@ -160,17 +216,21 @@ export class HolochainPlayground extends LitElement {
           (url) => html`
             <mwc-textfield
               style="margin-bottom: 16px;"
+              class="url-field"
               outlined
               label="Conductor url"
               value=${url}
+              @input=${() => this.updateFields()}
             ></mwc-textfield>
           `
         )}
         <mwc-button
           label="Add node"
           icon="add"
-          @click=${() =>
-            (this.dialogConductorUrls = [...this.dialogConductorUrls, ""])}
+          @click=${() => {
+            this.dialogConductorUrls = [...this.dialogConductorUrls, ""];
+            this.updateFields();
+          }}
         >
         </mwc-button>
       </div>
@@ -179,6 +239,7 @@ export class HolochainPlayground extends LitElement {
         slot="primaryAction"
         dialogAction="confirm"
         label="Update connections"
+        .disabled=${!this.getUrlFields().every((field) => field.validity.valid)}
         @click=${() => (this._conductorUrls = this.dialogConductorUrls)}
       >
       </mwc-button>
