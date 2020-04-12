@@ -2,7 +2,7 @@
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.ts",
     "start": "webpack-dev-server",
-    "gh-pages": "rimraf dist-pages && NODE_ENV=production webpack --mode=production && gh-pages -d dist-pages"
+    "gh-pages": "rimraf dist-pages && NODE_ENV=production webpack --mode=production && gh-pages -d dist-pages && rm -rf dist-pages"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
