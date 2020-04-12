@@ -31,7 +31,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "name": "holochain-playground",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Holochain playground that simulates real life holochain behaviour",
   "author": "holochain-playground",
   "license": "MIT",
