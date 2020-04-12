@@ -224,7 +224,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
             @click=${() => (this.entryGraphHelp.open = true)}
           ></mwc-icon-button>
 
-          <div class="row" style="align-items: end">
+          <div class="row" style="align-items: end;">
             <mwc-formfield label="Show all AgentId entries">
               <mwc-checkbox
                 checked

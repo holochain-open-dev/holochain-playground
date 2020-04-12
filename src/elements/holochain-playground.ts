@@ -1,8 +1,15 @@
-import { LitElement, html, css, property, query } from "lit-element";
+import {
+  LitElement,
+  html,
+  css,
+  property,
+  query,
+  PropertyValues,
+} from "lit-element";
 
 import "@material/mwc-icon-button";
 import "@material/mwc-button";
-import "@material/mwc-dialog";
+import { Dialog } from "@material/mwc-dialog";
 import "@material/mwc-switch";
 import "@material/mwc-formfield";
 import "@material/mwc-top-app-bar-fixed";
@@ -37,6 +44,12 @@ export class HolochainPlayground extends LitElement {
   @property({ type: Array })
   conductorUrls: string[] | undefined = undefined;
 
+  @property({ type: Array, attribute: false })
+  _conductorUrls: string[] | undefined = undefined;
+
+  @property({ type: Array, attribute: false })
+  dialogConductorUrls: string[] | undefined = undefined;
+
   @property({ type: Boolean })
   technicalMode: boolean = false;
 
@@ -47,9 +60,9 @@ export class HolochainPlayground extends LitElement {
     return [
       sharedStyles,
       css`
-        mwc-button,
-        mwc-formfield,
-        mwc-switch {
+        mwc-top-app-bar-fixed mwc-button,
+        mwc-top-app-bar-fixed mwc-formfield,
+        mwc-top-app-bar-fixed mwc-switch {
           --mdc-theme-primary: white;
         }
       `,
@@ -62,9 +75,16 @@ export class HolochainPlayground extends LitElement {
     }
     this.blackboard = new Blackboard(this.playground);
     this.blackboard.subscribe(() => this.requestUpdate());
+  }
 
-    if (this.conductorUrls) {
-      connectToConductors(this.blackboard, this.conductorUrls);
+  updated(changedValues: PropertyValues) {
+    super.updated(changedValues);
+
+    if (changedValues.has("conductorUrls")) {
+      this._conductorUrls = this.conductorUrls;
+    }
+    if (changedValues.has("_conductorUrls")) {
+      connectToConductors(this.blackboard, this._conductorUrls);
     }
   }
 
@@ -131,6 +151,40 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
+  renderConnectToNodes() {
+    return html`<mwc-dialog id="connect-to-nodes">
+      <div class="column">
+        <h3 class="title">Connected Nodes</h3>
+        ${this.dialogConductorUrls &&
+        this.dialogConductorUrls.map(
+          (url) => html`
+            <mwc-textfield
+              style="margin-bottom: 16px;"
+              outlined
+              label="Conductor url"
+              value=${url}
+            ></mwc-textfield>
+          `
+        )}
+        <mwc-button
+          label="Add node"
+          icon="add"
+          @click=${() =>
+            (this.dialogConductorUrls = [...this.dialogConductorUrls, ""])}
+        >
+        </mwc-button>
+      </div>
+
+      <mwc-button
+        slot="primaryAction"
+        dialogAction="confirm"
+        label="Update connections"
+        @click=${() => (this._conductorUrls = this.dialogConductorUrls)}
+      >
+      </mwc-button>
+    </mwc-dialog>`;
+  }
+
   render() {
     if (!this.blackboard || !this.blackboard.state)
       return html`<div class="row fill center-content">
@@ -138,6 +192,7 @@ export class HolochainPlayground extends LitElement {
       </div>`;
 
     return html`
+      ${this.renderConnectToNodes()}
       <blackboard-container .blackboard=${this.blackboard} class="fill column">
         <mwc-top-app-bar-fixed>
           <span slot="title">DNA: ${this.blackboard.state.activeDNA}</span>
@@ -147,9 +202,9 @@ export class HolochainPlayground extends LitElement {
             slot="actionItems"
             style="margin-right: 36px;"
           >
-            <span style="font-size: 0.875rem; margin-right: 10px;"
-              >DESIGNER MODE</span
-            >
+            <span style="font-size: 0.875rem; margin-right: 10px;">
+              DESIGNER MODE
+            </span>
 
             <mwc-formfield
               label="TECHNICAL MODE"
@@ -161,6 +216,20 @@ export class HolochainPlayground extends LitElement {
               ></mwc-switch>
             </mwc-formfield>
           </div>
+
+          <mwc-button
+            slot="actionItems"
+            label=${this._conductorUrls
+              ? "CONNECTED NODES"
+              : "CONNECT TO NODES"}
+            icon=${this._conductorUrls ? "sync" : "sync_disabled"}
+            @click=${() => {
+              this.dialogConductorUrls = this._conductorUrls;
+              (this.shadowRoot.getElementById(
+                "connect-to-nodes"
+              ) as Dialog).open = true;
+            }}
+          ></mwc-button>
 
           <div slot="actionItems" style="position: relative;">
             <mwc-menu

@@ -107,6 +107,8 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
   }
 
   firstUpdated() {
+    if (this.state.connected) return;
+
     this.setJsonValidity(this.createTextarea);
     this.setJsonValidity(this.updateTextarea);
     this.setEntryValidity(this.updateAddress);

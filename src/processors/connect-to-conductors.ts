@@ -54,7 +54,8 @@ export async function connectToConductors(
     conductor.cells[cell.dna] = cell;
     cell.updateDHTShard();
 
-    onSignal(async () => {
+    onSignal(async (params) => {
+      if (!params.instance_id) return;
       const stateDump = await call("debug/state_dump")({
         instance_id,
         source_chain: true,

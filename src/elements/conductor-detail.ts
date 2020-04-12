@@ -42,7 +42,11 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
 
   renderAgentHelp() {
     return html`
-      <mwc-dialog id="conductor-help" heading="Node Help" style="--mdc-dialog-max-width: 700px">
+      <mwc-dialog
+        id="conductor-help"
+        heading="Node Help"
+        style="--mdc-dialog-max-width: 700px"
+      >
         <span>
           You've selected the node or conductor with Agent ID
           ${this.state.activeAgentId}. Here you can see its internal state:
@@ -53,8 +57,8 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
               <a
                 href="https://developer.holochain.org/docs/concepts/3_private_data/"
                 target="_blank"
-                >headers</a
-              >
+                >headers
+              </a>
               of the entries, and in colors the entries themselves. When you
               select an entry, the other nodes that are holding the entry DHT
               will be hightlighted in the DHT.
