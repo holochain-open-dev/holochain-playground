@@ -213,20 +213,37 @@ export class HolochainPlayground extends LitElement {
           this._conductorUrls ? "Connected Nodes" : "Connect to nodes"
         }</h3>
         ${
-          this.dialogConductorUrls &&
-          this.dialogConductorUrls.map(
-            (url) => html`
-              <mwc-textfield
-                style="margin-bottom: 16px;"
-                class="url-field"
-                outlined
-                .disabled=${!!this.conductorUrls}
-                label="Conductor url"
-                value=${url}
-                @input=${() => this.updateFields()}
-              ></mwc-textfield>
-            `
-          )
+          this.dialogConductorUrls
+            ? this.dialogConductorUrls.map(
+                (url, index) => html`
+                  <div class="row">
+                    <mwc-textfield
+                      style="margin-bottom: 16px;"
+                      class="url-field"
+                      outlined
+                      .disabled=${!!this.conductorUrls}
+                      label="Conductor url"
+                      value=${url}
+                      @input=${() => this.updateFields()}
+                    ></mwc-textfield>
+                    ${this.conductorUrls
+                      ? html``
+                      : html`
+                          <mwc-icon-button
+                            icon="clear"
+                            @click=${() => {
+                              this.dialogConductorUrls.splice(index, 1);
+                              this.dialogConductorUrls = [
+                                ...this.dialogConductorUrls,
+                              ];
+                              setTimeout(() => this.updateFields());
+                            }}
+                          ></mwc-icon-button>
+                        `}
+                  </div>
+                `
+              )
+            : html``
         }
         ${
           this.conductorUrls
@@ -240,7 +257,7 @@ export class HolochainPlayground extends LitElement {
                       ...this.dialogConductorUrls,
                       "",
                     ];
-                    this.updateFields();
+                    setTimeout(() => this.updateFields());
                   }}
                 >
                 </mwc-button>
