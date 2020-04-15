@@ -125,7 +125,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       this.blackboard.update("activeEntryId", selectedEntryId);
     });
 
-    this.cy.ready((e) => setTimeout(() => this.updatedGraph(), 150));
+    this.cy.ready((e) => setTimeout(() => this.updatedGraph(), 250));
   }
 
   updated(changedValues) {
