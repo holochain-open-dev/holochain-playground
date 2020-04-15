@@ -92,9 +92,21 @@ export class Cell {
     this.CAS[entryId] = entry;
 
     const header = this.createHeader(entryId, replaces);
+    this.publishEntry(entry, header);
+  }
+
+  publishEntry(entry: Entry, header: Header) {
     const dhtOps = entryToDHTOps(entry, header);
 
     this.fastPush(dhtOps);
+  }
+
+  republish() {
+    for (const headerId of this.sourceChain) {
+      const header: Header = this.CAS[headerId];
+      const entry: Entry = this.CAS[header.entry_address];
+      this.publishEntry(entry, header);
+    }
   }
 
   fastPush(dhtOps: DHTOp[]): void {

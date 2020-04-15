@@ -39,9 +39,6 @@ export class HolochainPlayground extends LitElement {
   @query("#file-upload")
   fileUpload: HTMLInputElement;
 
-  @query("#stats")
-  stats: any;
-
   @property({ type: Object })
   playground: Playground;
 
@@ -340,35 +337,6 @@ export class HolochainPlayground extends LitElement {
             }}
           ></mwc-button>
 
-          <div slot="actionItems" style="position: relative;">
-            <mwc-menu
-              id="stats"
-              style="pointer-events: none; position: absolute; top: 40px;"
-            >
-              <mwc-list-item
-                >Nodes: ${selectCellCount(this.blackboard.state)}</mwc-list-item
-              >
-              <mwc-list-item
-                >Redundancy factor:
-                ${this.blackboard.state.redundancyFactor}</mwc-list-item
-              >
-              <mwc-list-item
-                >Global DHT Ops:
-                ${selectGlobalDHTOps(this.blackboard.state)}</mwc-list-item
-              >
-              <mwc-list-item
-                >Unique DHT Ops:
-                ${selectUniqueDHTOps(this.blackboard.state)}</mwc-list-item
-              >
-            </mwc-menu>
-
-            <mwc-button
-              label="DHT Stats"
-              icon="equalizer"
-              style="margin-right: 18px;"
-              @click=${() => (this.stats.open = true)}
-            ></mwc-button>
-          </div>
           <mwc-button
             slot="actionItems"
             label="Import"

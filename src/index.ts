@@ -18,7 +18,7 @@ customElements.define("conductor-detail", ConductorDetail);
 customElements.define("source-chain", SourceChain);
 customElements.define("dht-shard", DHTShard);
 customElements.define("create-entries", CreateEntries);
-customElements.define("dht-state", DHTStats);
+customElements.define("dht-stats", DHTStats);
 customElements.define("technical-mode", TechnicalMode);
 customElements.define("designer-mode", DesignerMode);
 customElements.define("entry-graph", EntryGraph);
