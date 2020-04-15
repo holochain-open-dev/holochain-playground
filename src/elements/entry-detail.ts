@@ -40,9 +40,9 @@ export class EntryDetail extends pinToBoard<Playground>(LitElement) {
                   .data=${selectActiveEntry(this.state)}
                 ></json-viewer>
                 ${this.withMetadata
-                  ? html` <span style="margin: 16px 0; font-weight: bold;"
-                        >Metadata</span
-                      >
+                  ? html` <span style="margin: 16px 0; font-weight: bold;">
+                        Metadata
+                      </span>
                       <json-viewer
                         .data=${selectEntryMetadata(this.state)(
                           this.state.activeEntryId

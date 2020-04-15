@@ -33,9 +33,22 @@ export interface EntryMetadata {
     type: string;
     timestamp: string;
   }>;
+  AGENT_HEADERS?: Dictionary<Header>;
 }
-export interface AgentActivity {
-  AGENT_HEADERS: Dictionary<Header>;
+
+export interface CASMetadata {
+  CRUDStatus: string;
+  REPLACES: string | undefined;
+  REPLACED_BY: string[];
+  DELETED_BY: string | undefined;
+  HEADERS: string[];
+  LINKS_TO: Array<{
+    target: string;
+    tag: string;
+    type: string;
+    timestamp: number;
+  }>;
+  AGENT_HEADERS?: string[];
 }
 
 export interface CellContents {
@@ -45,14 +58,14 @@ export interface CellContents {
   peers: string[];
   sourceChain: string[];
   CAS: Dictionary<any>;
-  CASMeta: Dictionary<Dictionary<any>>; // For the moment only DHT shard
+  CASMeta: Dictionary<CASMetadata>; // For the moment only DHT shard
   DHTOpTransforms: Dictionary<DHTOp>;
 }
 
 export class Cell {
   sourceChain: string[] = [];
   CAS: Dictionary<any> = {};
-  CASMeta: Dictionary<Dictionary<any>> = {}; // For the moment only DHT shard
+  CASMeta: Dictionary<CASMetadata> = {}; // For the moment only DHT shard
   DHTOpTransforms: Dictionary<DHTOp> = {};
 
   constructor(
@@ -139,44 +152,43 @@ export class Cell {
     return this.conductor.sendMessage(this.dna, this.agentId, peer[0], message);
   }
 
-  getDHTShard(): Dictionary<EntryMetadata | AgentActivity> {
+  getDHTShard(): Dictionary<EntryMetadata> {
     const dhtShard = {};
 
     for (const hash of Object.keys(this.CASMeta)) {
       const entryMetadata = this.getEntryMetadata(hash);
-      if ((entryMetadata as AgentActivity).AGENT_HEADERS) {
-        dhtShard[hash] = entryMetadata;
-      } else {
-        dhtShard[hash] = {
-          entry: this.CAS[hash],
-          metadata: entryMetadata,
-        };
-      }
+      dhtShard[hash] = {
+        entry: this.CAS[hash],
+        metadata: entryMetadata,
+      };
     }
 
     return dhtShard;
   }
 
-  getEntryMetadata(hash: string): EntryMetadata | AgentActivity | undefined {
+  getEntryMetadata(hash: string): EntryMetadata | undefined {
     const processHeaders = (headerAddresses: string[]) =>
       headerAddresses.reduce(
         (acc, next) => ({ ...acc, [next]: this.CAS[next] as Header }),
         {} as Dictionary<Header>
       );
 
-    const metadata = this.CASMeta[hash];
-    if (!metadata) return undefined;
+    if (!this.CASMeta[hash]) return undefined;
+    const metadata: CASMetadata = { ...this.CASMeta[hash] };
 
     if (metadata[AGENT_HEADERS]) {
-      return {
-        AGENT_HEADERS: processHeaders(metadata[AGENT_HEADERS]),
-      };
-    } else {
-      return {
-        ...(metadata as EntryMetadata),
-        HEADERS: processHeaders(metadata[HEADERS]),
-      };
+      ((metadata as unknown) as EntryMetadata)[AGENT_HEADERS] = processHeaders(
+        metadata[AGENT_HEADERS]
+      );
     }
+
+    if (metadata[HEADERS]) {
+      ((metadata as unknown) as EntryMetadata)[HEADERS] = processHeaders(
+        metadata[HEADERS]
+      );
+    }
+
+    return (metadata as unknown) as EntryMetadata;
   }
 
   getNeighbors(): string[] {
@@ -246,6 +258,7 @@ export class Cell {
         LINKS_TO: [],
         CRUDStatus: undefined,
         REPLACED_BY: undefined,
+        REPLACES: undefined,
         DELETED_BY: undefined,
       };
     }
@@ -264,10 +277,10 @@ export class Cell {
 
       switch (dhtOp.type) {
         case DHTOpType.RegisterAgentActivity:
-          if (!this.CASMeta[dhtOp.header.agent_id]) {
-            this.CASMeta[dhtOp.header.agent_id] = {
-              AGENT_HEADERS: [],
-            };
+          this.initDHTShardForEntry(dhtOp.header.agent_id);
+
+          if (!this.CASMeta[dhtOp.header.agent_id][AGENT_HEADERS]) {
+            this.CASMeta[dhtOp.header.agent_id][AGENT_HEADERS] = [];
           }
 
           this.CASMeta[dhtOp.header.agent_id][AGENT_HEADERS].push(headerHash);
