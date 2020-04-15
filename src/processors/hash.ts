@@ -3,6 +3,7 @@ import multihashes from "multihashes";
 import { Buffer } from "buffer";
 import CID from "cids";
 import bitwise from "bitwise";
+import { Dictionary } from "../types/common";
 
 export function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint16Array(buf));
@@ -28,20 +29,20 @@ export function hash(content: any): string {
   return cid.toString();
 }
 
-export const distanceResults = {};
+export const hashToInt: Dictionary<bigint> = {};
 
 export function distance(hash1: string, hash2: string): bigint {
-  const distanceId = `${hash1}-${hash2}`;
-  if (distanceResults[distanceId]) return distanceResults[distanceId];
+  if (!hashToInt[hash1]) {
+    hashToInt[hash1] = arrayToInt(multihashes.fromB58String(hash1));
+  }
 
-  const array1 = multihashes.fromB58String(hash1);
-  const array2 = multihashes.fromB58String(hash2);
+  if (!hashToInt[hash2]) {
+    hashToInt[hash2] = arrayToInt(multihashes.fromB58String(hash2));
+  }
 
-  const distance = arrayToInt(array1) - arrayToInt(array2);
+  const distance: bigint = hashToInt[hash1] - hashToInt[hash2];
 
-  const result = distance > 0 ? distance : -distance;
-  distanceResults[distanceId] = result;
-  return result;
+  return distance > 0 ? distance : -distance;
 }
 
 export function arrayToInt(array: Uint8Array): bigint {

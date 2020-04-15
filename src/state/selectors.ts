@@ -79,3 +79,17 @@ export const selectEntry = (state: Playground) => (entryId: string) => {
   }
   return undefined;
 };
+
+export const selectMedianHoldingDHTOps = (state: Playground) => {
+  const holdingDHTOps = [];
+
+  for (const cell of selectActiveCells(state)) {
+    holdingDHTOps.push(Object.keys(cell.DHTOpTransforms).length);
+  }
+
+  holdingDHTOps.sort();
+
+  const medianIndex = Math.floor(holdingDHTOps.length / 2);
+
+  return holdingDHTOps.sort((a, b) => a - b)[medianIndex];
+};

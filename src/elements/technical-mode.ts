@@ -20,6 +20,10 @@ export class TechnicalMode extends pinToBoard<Playground>(LitElement) {
     return html`
       <div class="row fill">
         <div style="flex: 1;" class="column">
+          <mwc-card style="width: auto; margin: 16px; margin-bottom: 0;">
+            <dht-stats></dht-stats>
+          </mwc-card>
+
           ${selectActiveConductor(this.state)
             ? html` <conductor-detail class="fill"></conductor-detail> `
             : html`

@@ -5,7 +5,7 @@ import {
   selectCellCount,
   selectGlobalDHTOps,
   selectUniqueDHTOps,
-  selectActiveCells,
+  selectMedianHoldingDHTOps,
 } from "../state/selectors";
 import { sharedStyles } from "./sharedStyles";
 import { createConductors } from "../processors/create-conductors";
@@ -64,28 +64,35 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
     const changedNodes = currentNodes !== newNodes;
 
     const rFactor = parseInt(this.rFactor.value);
+    const dna = this.state.activeDNA;
+    let conductors = this.state.conductors;
 
     if (newNodes > currentNodes) {
       const newNodesToCreate = newNodes - currentNodes;
-      const conductors = createConductors(
-        newNodesToCreate,
-        this.state.conductors,
-        rFactor,
-        this.state.activeDNA
-      );
-
-      this.blackboard.update("conductors", conductors);
+      conductors = createConductors(newNodesToCreate, conductors, rFactor, dna);
     } else if (newNodes < currentNodes) {
       const conductorsToRemove = currentNodes - newNodes;
-      const sortedConductors = this.state.conductors.sort((c1, c2) => c1.cells[this.state.activeDNA].sourceChain.length - c2.cells[this.state.activeDNA].sourceChain.length)
+      conductors = conductors.sort(
+        (c1, c2) =>
+          c1.cells[dna].sourceChain.length - c2.cells[dna].sourceChain.length
+      );
 
-      sortedConductors.splice(0, conductorsToRemove);
-
-      this.blackboard.update("conductors", sortedConductors);
+      conductors.splice(0, conductorsToRemove);
     }
 
+    if (changedNodes) {
+      const peers = conductors.map((c) => c.cells[dna].agentId);
+
+      for (const conductor of conductors) {
+        conductor.cells[dna].peers = peers.filter(
+          (p) => p !== conductor.cells[dna].agentId
+        );
+      }
+    }
+    this.blackboard.update("conductors", conductors);
+
     if (changedNodes || this.state.redundancyFactor !== rFactor) {
-      const cells = selectActiveCells(this.state);
+      const cells = conductors.map((c) => c.cells[dna]);
       for (const cell of cells) {
         cell.DHTOpTransforms = {};
         cell.redundancyFactor = rFactor;
@@ -148,13 +155,17 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
               ></mwc-textfield>
             </div>
             <div class="column fill">
-              <span style="margin-bottom: 6px;"
-                >Global DHT Ops:
-                <strong>${selectGlobalDHTOps(this.state)}</strong></span
-              >
-              <span
+              <span style="margin-bottom: 2px;"
                 >Unique DHT Ops:
                 <strong>${selectUniqueDHTOps(this.state)}</strong></span
+              >
+              <span style="margin-bottom: 2px;"
+                >Median DHT Ops per node:
+                <strong>${selectMedianHoldingDHTOps(this.state)}</strong></span
+              >
+              <span
+                >Global DHT Ops:
+                <strong>${selectGlobalDHTOps(this.state)}</strong></span
               >
             </div>
           </div>
