@@ -1,3 +1,5 @@
+import { hash } from '../processors/hash';
+
 export interface EntryContent<E extends EntryType, P> {
   type: E;
   payload: P;
@@ -28,4 +30,9 @@ export enum EntryType {
   LinkRemove = "LinkRemove",
   CapTokenGrant = "CapTokenGrant",
   CapTokenClaim = "CapTokenClaim",
+}
+
+export function hashEntry(entry: Entry): string {
+  if (entry.type === EntryType.AgentId) return entry.payload;
+  return hash(entry);
 }

@@ -7,7 +7,7 @@ import {
   hashDHTOp,
   sortDHTOps,
 } from "./dht-op";
-import { Entry, EntryType } from "./entry";
+import { Entry, EntryType, hashEntry } from "./entry";
 import { hash, distance, compareBigInts } from "../processors/hash";
 import { Header } from "./header";
 import { NetworkMessageType, NetworkMessage, SendMessage } from "./network";
@@ -87,7 +87,7 @@ export class Cell {
   }
 
   createEntry(entry: Entry, replaces: string | undefined) {
-    const entryId = hash(entry);
+    const entryId = hashEntry(entry);
 
     this.CAS[entryId] = entry;
 

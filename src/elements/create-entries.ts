@@ -9,7 +9,7 @@ import { sharedStyles } from "./sharedStyles";
 import { Cell } from "../types/cell";
 import { TextArea } from "@material/mwc-textarea";
 import { TextFieldBase } from "@material/mwc-textfield/mwc-textfield-base";
-import { EntryType, Entry } from "../types/entry";
+import { EntryType, Entry, hashEntry } from "../types/entry";
 
 import "@alenaksu/json-viewer";
 import { entryToDHTOps, neighborhood } from "../types/dht-op";
@@ -430,7 +430,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   buildDHTOpsTransforms() {
     const newHeader = this.cell().newHeader(
-      hash(this.entryToCreate.entry),
+      hashEntry(this.entryToCreate.entry),
       this.entryToCreate.replaces
     );
 
@@ -478,7 +478,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
       this.entryToCreate.entry,
       this.entryToCreate.replaces
     );
-    const entryId = hash(this.entryToCreate.entry);
+    const entryId = hashEntry(this.entryToCreate.entry);
     this.dispatchEvent(
       new CustomEvent("entry-committed", {
         detail: {
