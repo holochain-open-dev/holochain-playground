@@ -114,7 +114,10 @@ export class Cell {
       const hood = neighborhood(dhtOp);
       const message: NetworkMessage = {
         type: NetworkMessageType.Publish,
-        payload: dhtOp,
+        payload: {
+          dhtOpId: hashDHTOp(dhtOp),
+          dhtOp,
+        },
       };
 
       const peers = this.getNPeersClosestTo(this.redundancyFactor, hood);
@@ -252,7 +255,7 @@ export class Cell {
 
     for (const dhtOp of sortDHTOps(dhtOps)) {
       const header = dhtOp.header;
-      const headerHash = hash(header);
+      const headerHash = dhtOp.headerId;
       this.CAS[headerHash] = header;
       const entryHash = dhtOp.header.entry_address;
 
@@ -351,7 +354,10 @@ export class Cell {
   handleNetworkMessage(fromAgentId: string, message: NetworkMessage): any {
     switch (message.type) {
       case NetworkMessageType.Publish:
-        return this.handlePublishRequest(message.payload);
+        return this.handlePublishRequest(
+          message.payload.dhtOpId,
+          message.payload.dhtOp
+        );
       case NetworkMessageType.GetEntry:
         return this.CAS[message.payload];
     }
@@ -359,9 +365,7 @@ export class Cell {
 
   joinNetwork() {}
 
-  handlePublishRequest(dhtOp: DHTOp) {
-    const hash = hashDHTOp(dhtOp);
-
+  handlePublishRequest(hash: string, dhtOp: DHTOp) {
     if (this.DHTOpTransforms[hash]) return;
 
     this.DHTOpTransforms[hash] = dhtOp;

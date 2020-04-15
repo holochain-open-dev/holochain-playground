@@ -28,20 +28,26 @@ export function hash(content: any): string {
   return cid.toString();
 }
 
+export const distanceResults = {};
+
 export function distance(hash1: string, hash2: string): bigint {
+  const distanceId = `${hash1}-${hash2}`;
+  if (distanceResults[distanceId]) return distanceResults[distanceId];
+
   const array1 = multihashes.fromB58String(hash1);
   const array2 = multihashes.fromB58String(hash2);
-  const buffer = bitwise.buffer.xor(array1, array2);
 
   const distance = arrayToInt(array1) - arrayToInt(array2);
 
-  return distance > 0 ? distance : -distance;
+  const result = distance > 0 ? distance : -distance;
+  distanceResults[distanceId] = result;
+  return result;
 }
 
 export function arrayToInt(array: Uint8Array): bigint {
   var hex = [];
 
-  array.forEach(function(i) {
+  array.forEach(function (i) {
     var h = i.toString(16);
     if (h.length % 2) {
       h = "0" + h;

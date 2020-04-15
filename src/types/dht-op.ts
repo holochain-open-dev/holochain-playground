@@ -9,7 +9,7 @@ export enum DHTOpType {
   RegisterUpdatedTo = "RegisterUpdatedTo",
   RegisterDeletedBy = "RegisterDeletedBy",
   RegisterAddLink = "RegisterAddLink",
-  RegisterRemoveLink = "RegisterRemoveLink"
+  RegisterRemoveLink = "RegisterRemoveLink",
 }
 
 export const DHT_SORT_PRIORITY = [
@@ -19,10 +19,11 @@ export const DHT_SORT_PRIORITY = [
   DHTOpType.RegisterUpdatedTo,
   DHTOpType.RegisterDeletedBy,
   DHTOpType.RegisterAddLink,
-  DHTOpType.RegisterRemoveLink
+  DHTOpType.RegisterRemoveLink,
 ];
 
 export interface DHTOpContent<T, E> {
+  headerId: string;
   header: Header;
   type: T;
   entry: E;
@@ -54,59 +55,50 @@ export type DHTOp =
 
 export function entryToDHTOps(entry: Entry, header: Header): DHTOp[] {
   let additionalDHTOps: DHTOp[] = [];
-  
+  const headerId = hash(header);
+
   switch (entry.type) {
     case EntryType.CreateEntry:
       if (header.replaced_entry_address) {
         additionalDHTOps = [
           {
+            headerId,
             header,
             type: DHTOpType.RegisterUpdatedTo,
             entry: {
-              newEntry: entry
-            }
-          }
+              newEntry: entry,
+            },
+          },
         ];
       }
       break;
     case EntryType.RemoveEntry:
       additionalDHTOps = [
-        {
-          header,
-          type: DHTOpType.RegisterDeletedBy,
-          entry: entry
-        }
+        { headerId, header, type: DHTOpType.RegisterDeletedBy, entry: entry },
       ];
       break;
     case EntryType.LinkAdd:
       additionalDHTOps = [
-        {
-          header,
-          type: DHTOpType.RegisterAddLink,
-          entry: entry
-        }
+        { headerId, header, type: DHTOpType.RegisterAddLink, entry: entry },
       ];
       break;
     case EntryType.LinkRemove:
       additionalDHTOps = [
-        {
-          header,
-          type: DHTOpType.RegisterRemoveLink,
-          entry: entry
-        }
+        { headerId, header, type: DHTOpType.RegisterRemoveLink, entry: entry },
       ];
       break;
   }
 
   return [
     ...additionalDHTOps,
-    { header, type: DHTOpType.RegisterAgentActivity, entry: null },
+    { headerId, header, type: DHTOpType.RegisterAgentActivity, entry: null },
     {
       header,
+      headerId,
       type: DHTOpType.StoreEntry,
-      entry
+      entry,
     },
-    { header, type: DHTOpType.StoreHeader, entry: null }
+    { headerId, header, type: DHTOpType.StoreHeader, entry: null },
   ];
 }
 
@@ -134,7 +126,7 @@ export function hashDHTOp(dhtOp: DHTOp): string {
     case DHTOpType.RegisterUpdatedTo:
       return hash({
         entry: dhtOp.entry,
-        replaces: dhtOp.header.replaced_entry_address
+        replaces: dhtOp.header.replaced_entry_address,
       });
     case DHTOpType.RegisterDeletedBy:
       return hash(dhtOp.entry);
@@ -142,7 +134,7 @@ export function hashDHTOp(dhtOp: DHTOp): string {
 
   const hashable = {
     type: dhtOp.type,
-    header: dhtOp.header
+    header: dhtOp.header,
   };
 
   return hash(hashable);
@@ -150,6 +142,6 @@ export function hashDHTOp(dhtOp: DHTOp): string {
 
 export function sortDHTOps(dhtOps: DHTOp[]): DHTOp[] {
   const prio = (dhtOp: DHTOp) =>
-    DHT_SORT_PRIORITY.findIndex(type => type === dhtOp.type);
+    DHT_SORT_PRIORITY.findIndex((type) => type === dhtOp.type);
   return dhtOps.sort((dhtA: DHTOp, dhtB: DHTOp) => prio(dhtA) - prio(dhtB));
 }

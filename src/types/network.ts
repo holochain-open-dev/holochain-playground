@@ -11,7 +11,7 @@ export interface NetworkMessageBody<T, P> {
 }
 
 export type NetworkMessage =
-  | NetworkMessageBody<NetworkMessageType.Publish, DHTOp>
+  | NetworkMessageBody<NetworkMessageType.Publish, {dhtOpId: string, dhtOp: DHTOp}>
   | NetworkMessageBody<NetworkMessageType.GetEntry, string>;
 
 export type SendMessage = (
