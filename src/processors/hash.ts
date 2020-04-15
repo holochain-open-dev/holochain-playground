@@ -29,37 +29,57 @@ export function hash(content: any): string {
   return cid.toString();
 }
 
-export const hashToInt: Dictionary<bigint> = {};
+export const hashLocation: Dictionary<number> = {};
 
-export function distance(hash1: string, hash2: string): bigint {
-  if (!hashToInt[hash1]) {
-    hashToInt[hash1] = arrayToInt(multihashes.fromB58String(hash1));
+export function location(hash: string): number {
+  if (hashLocation[hash]) return hashLocation[hash];
+
+  const hexes = arrayToHexes(multihashes.fromB58String(hash).slice(2));
+
+  let xor = Buffer.from(hexes[0].slice(2), "hex");
+
+  for (let i = 1; i < hexes.length; i++) {
+    xor = bitwise.buffer.xor(xor, Buffer.from(hexes[i].slice(2), "hex"));
   }
+  const location = xor.readUIntBE(0, xor.length);
 
-  if (!hashToInt[hash2]) {
-    hashToInt[hash2] = arrayToInt(multihashes.fromB58String(hash2));
-  }
+  hashLocation[hash] = location;
 
-  const distance: bigint = hashToInt[hash1] - hashToInt[hash2];
-
-  return distance > 0 ? distance : -distance;
+  return location;
 }
 
-export function arrayToInt(array: Uint8Array): bigint {
-  var hex = [];
+const limit = Math.pow(2, 32) - 1;
 
-  array.forEach(function (i) {
-    var h = i.toString(16);
-    if (h.length % 2) {
-      h = "0" + h;
-    }
-    hex.push(h);
-  });
+export function distance(hash1: string, hash2: string): number {
+  const location1 = location(hash1);
+  const location2 = location(hash2);
 
-  return BigInt("0x" + hex.join(""));
+  if (location2 >= location1) return location2 - location1;
+  return limit - location1 + location2 + 1;
 }
 
-export function compareBigInts(a: bigint, b: bigint): number {
+export function arrayToHexes(array: Uint8Array): string[] {
+  var hexes = [];
+
+  const sliceSize = array.length / 8;
+
+  for (let i = 0; i < 8; i++) {
+    const subarray = array.subarray(i * sliceSize, (i + 1) * sliceSize);
+    let hex = [];
+    subarray.forEach(function (i) {
+      var h = i.toString(16);
+      if (h.length % 2) {
+        h = "0" + h;
+      }
+      hex.push(h);
+    });
+    hexes.push("0x" + hex.join(""));
+  }
+
+  return hexes;
+}
+
+export function compareBigInts(a: number, b: number): number {
   if (a > b) {
     return 1;
   } else if (a < b) {

@@ -1,5 +1,5 @@
 import { Cell } from "../types/cell";
-import { arrayToInt, compareBigInts } from "./hash";
+import { location, compareBigInts } from "./hash";
 import { Header } from "../types/header";
 import { Entry, EntryType } from "../types/entry";
 import multihashes from "multihashes";
@@ -7,10 +7,7 @@ import { Dictionary } from "../types/common";
 
 export function dnaNodes(cells: Cell[]) {
   const sortedCells = cells.sort((a: Cell, b: Cell) =>
-    compareBigInts(
-      arrayToInt(multihashes.fromB58String(a.agentId)),
-      arrayToInt(multihashes.fromB58String(b.agentId))
-    )
+    compareBigInts(location(a.agentId), location(b.agentId))
   );
 
   const cellNodes = sortedCells.map((cell) => ({
@@ -164,7 +161,7 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
         });
       }
     }
-    
+
     if (entry.REPLACED_BY && entry.REPLACED_BY.length > 0) {
       entryNodes.find((node) => node.data.id === key).classes.push("updated");
       for (const replacedBy of entry.REPLACED_BY) {
