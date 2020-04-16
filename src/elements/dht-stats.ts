@@ -134,6 +134,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
                 id="number-of-nodes"
                 min="1"
                 max="50"
+                outlined
                 type="number"
                 style="width: 5em;"
                 .disabled=${this.state.connected}
@@ -147,6 +148,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
                 id="r-factor"
                 min="1"
                 max="50"
+                outlined
                 type="number"
                 .disabled=${this.state.connected}
                 style="width: 5em;"
