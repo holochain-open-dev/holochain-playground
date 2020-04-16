@@ -2727,6 +2727,7 @@ limitations under the License.
                 id="number-of-nodes"
                 min="1"
                 max="50"
+                outlined
                 type="number"
                 style="width: 5em;"
                 .disabled=${this.state.connected}
@@ -2740,6 +2741,7 @@ limitations under the License.
                 id="r-factor"
                 min="1"
                 max="50"
+                outlined
                 type="number"
                 .disabled=${this.state.connected}
                 style="width: 5em;"
