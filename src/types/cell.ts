@@ -198,13 +198,13 @@ export class Cell {
       return compareBigInts(distanceA, ditsanceB);
     });
 
-    const neighbors = sortedPeers.slice(0, this.redundancyFactor);
+    const neighbors = sortedPeers.slice(0, 4);
 
-    if (neighbors.length > this.redundancyFactor) {
+    if (sortedPeers.length > 4) {
       const half = Math.floor(this.peers.length / 2);
       neighbors.push(sortedPeers[half]);
     }
-    if (neighbors.length > this.redundancyFactor + 5) {
+    if (sortedPeers.length > 8) {
       const prehalf = Math.floor(this.peers.length * 0.35);
       neighbors.push(sortedPeers[prehalf]);
       const posthalf = Math.floor(this.peers.length * 0.65);
