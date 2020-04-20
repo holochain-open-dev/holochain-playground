@@ -2,7 +2,6 @@ import { Cell } from "../types/cell";
 import { location, compareBigInts } from "./hash";
 import { Header } from "../types/header";
 import { Entry, EntryType } from "../types/entry";
-import multihashes from "multihashes";
 import { Dictionary } from "../types/common";
 
 export function dnaNodes(cells: Cell[]) {

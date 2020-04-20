@@ -198,15 +198,18 @@ export class Cell {
       return compareBigInts(distanceA, ditsanceB);
     });
 
-    const neighbors = sortedPeers.slice(0, 4);
+    const neighbors = sortedPeers.slice(0, this.redundancyFactor);
 
-    const prehalf = Math.floor(this.peers.length * 0.35);
-    const half = Math.floor(this.peers.length / 2);
-    const posthalf = Math.floor(this.peers.length * 0.65);
-
-    neighbors.push(sortedPeers[prehalf]);
-    neighbors.push(sortedPeers[half]);
-    neighbors.push(sortedPeers[posthalf]);
+    if (neighbors.length > this.redundancyFactor) {
+      const half = Math.floor(this.peers.length / 2);
+      neighbors.push(sortedPeers[half]);
+    }
+    if (neighbors.length > this.redundancyFactor + 5) {
+      const prehalf = Math.floor(this.peers.length * 0.35);
+      neighbors.push(sortedPeers[prehalf]);
+      const posthalf = Math.floor(this.peers.length * 0.65);
+      neighbors.push(sortedPeers[posthalf]);
+    }
 
     return neighbors;
   }

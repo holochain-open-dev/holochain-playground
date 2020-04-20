@@ -51,6 +51,7 @@ export async function connectToConductors(
       held_aspects: true,
       queued_holding_workflows: false,
     });
+    console.log(stateDump);
 
     const fetchCas = async (address) => {
       if (globalCAS[address]) return globalCAS[address];
