@@ -100,7 +100,11 @@ export function allEntries(cells: Cell[], showAgentIds: boolean) {
     const headersB: Header[] = Object.values(
       metadata[hashB].HEADERS || metadata[hashB].AGENT_HEADERS
     ).sort(compareHeader) as Header[];
-    return headersA[0].timestamp - headersB[0].timestamp;
+    return headersA.length > 0
+      ? headersA[0].timestamp
+      : 0 - headersB.length > 0
+      ? headersB[0].timestamp
+      : 0;
   };
   const sortedEntries = Object.entries(
     entries
