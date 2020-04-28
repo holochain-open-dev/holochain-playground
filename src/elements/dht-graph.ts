@@ -46,17 +46,31 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
       layout: { name: "circle" },
       style: `
             node {
-              background-color: grey;
+              background-color: gray;
               label: data(label);
               font-size: 20px;
-              width: 30px;
-              height: 30px;
+              width: 50px;
+              height: 50px;
             }
-    
+
+            
+             .desktop{
+                background-image: url("assets/desktop_windows-outline-white-36dp.svg");
+              }
+            
+             .laptop{
+                background-image: url("assets/laptop-outline-white-36dp.svg");
+             }
+            
+
             .selected {
               border-width: 4px;
               border-color: black;
               border-style: solid;
+            }
+
+            .smartphone{
+              background-image: url("assets/smartphone-outline-white-36dp.svg");
             }
     
             .highlighted {
