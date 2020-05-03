@@ -227,11 +227,12 @@ export class HolochainPlayground extends LitElement {
             icon="publish"
             style="margin-right: 18px;"
             @click=${() => this.fileUpload.click()}
-          ></mwc-button>
-          <mwc-button
+            ></mwc-button>
+            <mwc-button
             slot="actionItems"
             label="Export"
             icon="get_app"
+            style="margin-right: 18px;"
             @click=${() => this.export()}
           ></mwc-button>
         </mwc-top-app-bar-fixed>
