@@ -1,19 +1,19 @@
-import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { Playground } from "../state/playground";
-import { LitElement, query, html, property, css } from "lit-element";
-import cytoscape from "cytoscape";
-import cola from "cytoscape-cola";
-import "@material/mwc-checkbox";
-import { allEntries } from "../processors/graph";
-import { selectActiveCells } from "../state/selectors";
-import { sharedStyles } from "./sharedStyles";
-import { Dialog } from "@material/mwc-dialog";
+import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { Playground } from '../state/playground';
+import { LitElement, query, html, property, css } from 'lit-element';
+import cytoscape from 'cytoscape';
+import cola from 'cytoscape-cola';
+import '@material/mwc-checkbox';
+import { allEntries } from '../processors/graph';
+import { selectActiveCells } from '../state/selectors';
+import { sharedStyles } from './sharedStyles';
+import { Dialog } from '@material/mwc-dialog';
 import { vectorsEqual } from '../processors/utils';
 
 cytoscape.use(cola);
 
 const layoutConfig = {
-  name: "cola",
+  name: 'cola',
   handleDisconnected: true,
   animate: true,
   avoidOverlap: true,
@@ -31,15 +31,16 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
   showAgentsIds: boolean = true;
 
-  @query("#entry-graph-help")
+  @query('#entry-graph-help')
   entryGraphHelp: Dialog;
 
-  @query("#entry-graph")
+  @query('#entry-graph')
   entryGraph: HTMLElement;
 
   lastEntriesIds: string[] = [];
   cy;
   layout;
+  ready = false;
 
   firstUpdated() {
     this.cy = cytoscape({
@@ -120,12 +121,18 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
             `,
     });
 
-    this.cy.on("tap", "node", (event) => {
+    this.cy.on('tap', 'node', (event) => {
       const selectedEntryId = event.target.id();
-      this.blackboard.update("activeEntryId", selectedEntryId);
+      this.blackboard.update('activeEntryId', selectedEntryId);
     });
-
-    this.cy.ready((e) => setTimeout(() => this.updatedGraph(), 250));
+    
+    this.cy.ready((e) => {
+      this.updatedGraph();
+      setTimeout(() => {
+        this.ready = true;
+        this.updatedGraph();
+      }, 250);
+    });
   }
 
   updated(changedValues) {
@@ -162,7 +169,8 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
   }
 
   updatedGraph() {
-    if (this.entryGraph.getBoundingClientRect().width === 0) return null;
+    if (this.entryGraph.getBoundingClientRect().width === 0 || !this.ready)
+      return null;
 
     const entries = allEntries(
       selectActiveCells(this.state),
@@ -176,7 +184,7 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
       )
     ) {
       if (this.layout) this.layout.stop();
-      this.cy.remove("nodes");
+      this.cy.remove('nodes');
       this.cy.add(entries);
 
       this.layout = this.cy.elements().makeLayout(layoutConfig);
@@ -185,8 +193,8 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
 
     this.lastEntriesIds = entries.map((e) => e.data.id);
 
-    this.cy.filter("node").removeClass("selected");
-    this.cy.getElementById(this.state.activeEntryId).addClass("selected");
+    this.cy.filter('node').removeClass('selected');
+    this.cy.getElementById(this.state.activeEntryId).addClass('selected');
   }
 
   static get styles() {
