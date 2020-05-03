@@ -85,6 +85,7 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
       </mwc-dialog>
     `;
   }
+  
   render() {
     return html`
       ${this.renderAgentHelp()}
