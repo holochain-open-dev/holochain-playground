@@ -156,6 +156,15 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
+  resetState() {
+    this.blackboard.reset();
+    if (this.conductorUrls) {
+      connectToConductors(this.blackboard, this.conductorUrls);
+    } else {
+      this.blackboard.updateState(this.initialPlayground());
+    }
+  }
+
   render() {
     if (!this.blackboard || !this.blackboard.state)
       return html`<div class="row fill center-content">
@@ -209,8 +218,7 @@ export class HolochainPlayground extends LitElement {
             label="Reset"
             style="margin-right: 18px;"
             icon="settings_backup_restore"
-            @click=${() =>
-              this.blackboard.updateState(this.initialPlayground())}
+            @click=${() => this.resetState()}
           ></mwc-button>
 
           <mwc-button
