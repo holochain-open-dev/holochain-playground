@@ -44,16 +44,11 @@ export class HolochainPlayground extends LitElement {
   @property({ type: Array })
   conductorUrls: string[] | undefined = undefined;
 
-  @property({ type: Array, attribute: false })
-  dialogConductorUrls: string[] | undefined = undefined;
-
   @property({ type: Boolean })
   technicalMode: boolean = false;
 
   @property({ type: Object })
   blackboard: Blackboard<Playground>;
-
-  urlsState = {};
 
   static get styles() {
     return [
@@ -68,9 +63,13 @@ export class HolochainPlayground extends LitElement {
     ];
   }
 
+  initialPlayground() {
+    return buildPlayground(hash('dna1'), 10);
+  }
+
   firstUpdated() {
     if (!this.conductorUrls) {
-      this.playground = buildPlayground(hash('dna1'), 10);
+      this.playground = this.initialPlayground();
     }
     this.blackboard = new Blackboard(this.playground, {
       persistId: 'playground',
@@ -157,141 +156,6 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
-  setConnectionValidity(element) {
-    element.validityTransform = (newValue, nativeValidity) => {
-      let valid = false;
-
-      switch (this.urlsState[newValue]) {
-        case 'resolved':
-          element.setCustomValidity('');
-          valid = true;
-          break;
-        case 'rejected':
-          element.setCustomValidity(
-            'Could not connect to node, check admin interface'
-          );
-          break;
-        default:
-          element.setCustomValidity('Checking connection...');
-          break;
-      }
-
-      this.requestUpdate();
-      return { valid };
-    };
-  }
-
-  getUrlFields(): TextFieldBase[] {
-    return Array.apply(null, this.shadowRoot.querySelectorAll('.url-field'));
-  }
-
-  updateFields() {
-    const fields = this.getUrlFields();
-    this.dialogConductorUrls = fields.map((f) => f.value);
-    for (const field of fields) {
-      this.setConnectionValidity(field);
-
-      if (!this.urlsState[field.value]) {
-        try {
-          checkConnection(field.value)
-            .then(() => (this.urlsState[field.value] = 'resolved'))
-            .catch(() => (this.urlsState[field.value] = 'rejected'))
-            .finally(() => {
-              field.reportValidity();
-            });
-        } catch (e) {
-          this.urlsState[field.value] = 'rejected';
-          field.reportValidity();
-        }
-      }
-      field.reportValidity();
-    }
-  }
-
-  renderConnectToNodes() {
-    return html`<mwc-dialog id="connect-to-nodes">
-      <div class="column">
-        <h3 class="title">${
-          this.blackboard.state.conductorsUrls
-            ? 'Connected Nodes'
-            : 'Connect to nodes'
-        }</h3>
-        ${
-          this.dialogConductorUrls
-            ? this.dialogConductorUrls.map(
-                (url, index) => html`
-                  <div class="row" style="margin-bottom: 16px;">
-                    <mwc-textfield
-                      style="width: 20em;"
-                      class="url-field"
-                      outlined
-                      .disabled=${!!this.conductorUrls}
-                      label="Conductor url"
-                      value=${url}
-                      @input=${() => this.updateFields()}
-                    ></mwc-textfield>
-                    ${this.conductorUrls
-                      ? html``
-                      : html`
-                          <mwc-icon-button
-                            icon="clear"
-                            style="padding-top: 4px;"
-                            @click=${() => {
-                              this.dialogConductorUrls.splice(index, 1);
-                              this.dialogConductorUrls = [
-                                ...this.dialogConductorUrls,
-                              ];
-                              setTimeout(() => this.updateFields());
-                            }}
-                          ></mwc-icon-button>
-                        `}
-                  </div>
-                `
-              )
-            : html``
-        }
-        ${
-          this.conductorUrls
-            ? html``
-            : html`
-                <mwc-button
-                  label="Add node"
-                  icon="add"
-                  @click=${() => {
-                    this.dialogConductorUrls = [
-                      ...this.dialogConductorUrls,
-                      '',
-                    ];
-                    setTimeout(() => this.updateFields());
-                  }}
-                >
-                </mwc-button>
-              `
-        }
-        </mwc-button>
-      </div>
-
-      <mwc-button
-        slot="primaryAction"
-        dialogAction="confirm"
-        label=${
-          this.conductorUrls
-            ? 'Ok'
-            : this.blackboard.state.conductorsUrls
-            ? 'Update connections'
-            : 'Connect to nodes'
-        }
-        .disabled=${
-          this.getUrlFields().length === 0 ||
-          !this.getUrlFields().every((field) => field.validity.valid)
-        }
-        @click=${() =>
-          this.blackboard.update('conductorsUrls', this.dialogConductorUrls)}
-      >
-      </mwc-button>
-    </mwc-dialog>`;
-  }
-
   render() {
     if (!this.blackboard || !this.blackboard.state)
       return html`<div class="row fill center-content">
@@ -299,8 +163,8 @@ export class HolochainPlayground extends LitElement {
       </div>`;
 
     return html`
-      ${this.renderConnectToNodes()}
       <blackboard-container .blackboard=${this.blackboard} class="fill column">
+        <connect-to-nodes id="connect-to-nodes"></connect-to-nodes>
         <mwc-top-app-bar-fixed>
           <span slot="title">DNA: ${this.blackboard.state.activeDNA}</span>
 
@@ -334,17 +198,19 @@ export class HolochainPlayground extends LitElement {
               ? 'sync'
               : 'sync_disabled'}
             @click=${() => {
-              this.dialogConductorUrls = this.blackboard.state
-                .conductorsUrls || ['ws://localhost:8888'];
               (this.shadowRoot.getElementById(
                 'connect-to-nodes'
-              ) as Dialog).open = true;
-
-              setTimeout(() => {
-                this.updateFields();
-                this.requestUpdate();
-              });
+              ) as any).open = true;
             }}
+          ></mwc-button>
+
+          <mwc-button
+            slot="actionItems"
+            label="Reset"
+            style="margin-right: 18px;"
+            icon="settings_backup_restore"
+            @click=${() =>
+              this.blackboard.updateState(this.initialPlayground())}
           ></mwc-button>
 
           <mwc-button
