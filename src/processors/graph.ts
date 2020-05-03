@@ -5,16 +5,15 @@ import { Entry, EntryType } from "../types/entry";
 import { Dictionary } from "../types/common";
 
 export function dnaNodes(cells: Cell[]) {
-  const iconIndex = Math.floor(Math.random() * 3)
-  const images = ["smartphone", "desktop", "laptop"]  
+  const images = ["smartphone", "desktop", "laptop"]
 
   const sortedCells = cells.sort((a: Cell, b: Cell) =>
     compareBigInts(location(a.agentId), location(b.agentId))
   );
-
+  
   const cellNodes = sortedCells.map((cell) => ({
     data: { id: cell.agentId, label: `${cell.agentId.substr(0, 6)}...` },
-    classes: [images[iconIndex]],
+    classes: [images[Math.floor(Math.random() * 3)]],
   }));
   const edges = sortedCells.map((cell) =>
     cell.getNeighbors().map((neighbor) => ({
