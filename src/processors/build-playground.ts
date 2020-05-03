@@ -1,5 +1,5 @@
-import { Playground } from "../state/playground";
-import { createConductors } from "./create-conductors";
+import { Playground } from '../state/playground';
+import { createConductors } from './create-conductors';
 
 export function buildPlayground(
   dna: string,
@@ -12,7 +12,7 @@ export function buildPlayground(
   return {
     activeDNA: dna,
     activeAgentId: undefined,
-    connected: false,
+    conductorsUrls: undefined,
     activeEntryId: undefined,
     conductors,
     redundancyFactor,

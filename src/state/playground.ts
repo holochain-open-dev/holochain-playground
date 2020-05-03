@@ -1,4 +1,4 @@
-import { Conductor } from "../types/conductor";
+import { Conductor } from '../types/conductor';
 
 export interface Playground {
   activeDNA: string;
@@ -6,5 +6,5 @@ export interface Playground {
   activeEntryId: string | undefined;
   conductors: Conductor[];
   redundancyFactor: number;
-  connected: boolean;
+  conductorsUrls: string[] | undefined;
 }

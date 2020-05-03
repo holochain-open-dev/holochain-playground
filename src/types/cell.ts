@@ -1,4 +1,4 @@
-import { Dictionary } from "./common";
+import { Dictionary } from './common';
 import {
   DHTOp,
   entryToDHTOps,
@@ -6,20 +6,20 @@ import {
   DHTOpType,
   hashDHTOp,
   sortDHTOps,
-} from "./dht-op";
-import { Entry, EntryType, hashEntry } from "./entry";
-import { hash, distance, compareBigInts } from "../processors/hash";
-import { Header } from "./header";
-import { NetworkMessageType, NetworkMessage, SendMessage } from "./network";
-import { Conductor } from "./conductor";
+} from './dht-op';
+import { Entry, EntryType, hashEntry } from './entry';
+import { hash, distance, compareBigInts } from '../processors/hash';
+import { Header } from './header';
+import { NetworkMessageType, NetworkMessage, SendMessage } from './network';
+import { Conductor } from './conductor';
 
-export const AGENT_HEADERS = "AGENT_HEADERS";
-export const CRUDStatus = "CRUDStatus";
-export const REPLACES = "REPLACES";
-export const REPLACED_BY = "REPLACED_BY";
-export const DELETED_BY = "DELETED_BY";
-export const HEADERS = "HEADERS";
-export const LINKS_TO = "LINKS_TO";
+export const AGENT_HEADERS = 'AGENT_HEADERS';
+export const CRUDStatus = 'CRUDStatus';
+export const REPLACES = 'REPLACES';
+export const REPLACED_BY = 'REPLACED_BY';
+export const DELETED_BY = 'DELETED_BY';
+export const HEADERS = 'HEADERS';
+export const LINKS_TO = 'LINKS_TO';
 
 export interface EntryMetadata {
   CRUDStatus: string;
@@ -89,6 +89,19 @@ export class Cell {
     cell.CASMeta = contents.CASMeta;
     cell.DHTOpTransforms = contents.DHTOpTransforms;
     return cell;
+  }
+
+  toContents(): CellContents {
+    return {
+      CAS: this.CAS,
+      CASMeta: this.CASMeta,
+      DHTOpTransforms: this.DHTOpTransforms,
+      agentId: this.agentId,
+      dna: this.dna,
+      peers: this.peers,
+      redundancyFactor: this.redundancyFactor,
+      sourceChain: this.sourceChain,
+    };
   }
 
   init() {
@@ -293,7 +306,7 @@ export class Cell {
 
           this.initDHTShardForEntry(entryHash);
 
-          this.CASMeta[entryHash][CRUDStatus] = "Live";
+          this.CASMeta[entryHash][CRUDStatus] = 'Live';
 
           if (dhtOp.header.replaced_entry_address) {
             this.CASMeta[entryHash][REPLACES] =
@@ -310,9 +323,9 @@ export class Cell {
 
           if (
             !this.CASMeta[header.replaced_entry_address][CRUDStatus] ||
-            this.CASMeta[header.replaced_entry_address][CRUDStatus] !== "Dead"
+            this.CASMeta[header.replaced_entry_address][CRUDStatus] !== 'Dead'
           ) {
-            this.CASMeta[header.replaced_entry_address][CRUDStatus] = "Dead";
+            this.CASMeta[header.replaced_entry_address][CRUDStatus] = 'Dead';
             this.CASMeta[header.replaced_entry_address][REPLACED_BY] = [
               entryHash,
             ];
@@ -321,7 +334,7 @@ export class Cell {
               REPLACED_BY
             ];
             this.CASMeta[header.replaced_entry_address][CRUDStatus] =
-              "CONFLICT";
+              'CONFLICT';
             replacedBy.push(entryHash);
             this.CASMeta[header.replaced_entry_address][
               REPLACED_BY
@@ -334,7 +347,7 @@ export class Cell {
 
           this.initDHTShardForEntry(deletedEntryHash);
 
-          this.CASMeta[deletedEntryHash][CRUDStatus] = "Dead";
+          this.CASMeta[deletedEntryHash][CRUDStatus] = 'Dead';
           this.CASMeta[deletedEntryHash][REPLACED_BY] = undefined;
           this.CASMeta[deletedEntryHash][DELETED_BY] = header.entry_address;
 

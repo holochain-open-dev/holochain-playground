@@ -1,13 +1,12 @@
-import { Dictionary } from "./common";
-import { Cell, CellContents } from "./cell";
-import { hash } from "../processors/hash";
-import { SendMessage, NetworkMessage } from "./network";
+import { Dictionary } from './common';
+import { Cell, CellContents } from './cell';
+import { hash } from '../processors/hash';
+import { SendMessage, NetworkMessage } from './network';
 
 export interface ConductorContents {
   agentIds: string[];
   cells: Dictionary<CellContents>;
   redundancyFactor: number;
-  seed: string;
 }
 
 export type ConductorOptions =
@@ -40,14 +39,25 @@ export class Conductor {
 
   static from(contents: ConductorContents) {
     const conductor = new Conductor(contents.redundancyFactor, {
-      seed: contents.seed,
+      agentIds: contents.agentIds,
     });
-    conductor.agentIds = contents.agentIds;
     for (const [key, cell] of Object.entries(contents.cells)) {
       conductor.cells[key] = Cell.from(conductor, cell);
     }
 
     return conductor;
+  }
+
+  toContents(): ConductorContents {
+    const cellContents = {};
+    for (const [key, cell] of Object.entries(this.cells)) {
+      cellContents[key] = cell.toContents();
+    }
+    return {
+      agentIds: this.agentIds,
+      redundancyFactor: this.redundancyFactor,
+      cells: cellContents,
+    };
   }
 
   installDna(dna: string, peers: string[]): Cell {

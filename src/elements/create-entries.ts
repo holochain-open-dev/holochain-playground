@@ -107,7 +107,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
   }
 
   firstUpdated() {
-    if (this.state.connected) return;
+    if (this.state.conductorsUrls !== undefined) return;
 
     this.setJsonValidity(this.createTextarea);
     this.setJsonValidity(this.updateTextarea);
@@ -544,7 +544,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
       <div class="column fill">
         <h3 class="title">Commit Entries</h3>
 
-        ${this.state.connected
+        ${this.state.conductorsUrls !== undefined
           ? this.renderConnectedPlaceholder()
           : html`
               <div class="row fill">

@@ -137,7 +137,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
                 outlined
                 type="number"
                 style="width: 5em;"
-                .disabled=${this.state.connected}
+                .disabled=${this.state.conductorsUrls !== undefined}
                 @change=${() => this.updateDHTStats()}
                 .value=${selectCellCount(this.state).toString()}
               ></mwc-textfield>
@@ -150,7 +150,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
                 max="50"
                 outlined
                 type="number"
-                .disabled=${this.state.connected}
+                .disabled=${this.state.conductorsUrls !== undefined}
                 style="width: 5em;"
                 @change=${() => this.updateDHTStats()}
                 .value=${this.state.redundancyFactor.toString()}

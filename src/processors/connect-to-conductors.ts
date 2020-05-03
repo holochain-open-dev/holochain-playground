@@ -1,13 +1,13 @@
-import { connect } from "@holochain/hc-web-client";
-import { Blackboard } from "../blackboard/blackboard";
-import { Playground } from "../state/playground";
-import { Conductor } from "../types/conductor";
-import { hookUpConductors } from "./message";
-import { Header } from "../types/header";
-import { hash } from "./hash";
-import { Entry, EntryType } from "../types/entry";
-import { CellContents, Cell } from "../types/cell";
-import { entryToDHTOps, hashDHTOp } from "../types/dht-op";
+import { connect } from '@holochain/hc-web-client';
+import { Blackboard } from '../blackboard/blackboard';
+import { Playground } from '../state/playground';
+import { Conductor } from '../types/conductor';
+import { hookUpConductors } from './message';
+import { Header } from '../types/header';
+import { hash } from './hash';
+import { Entry, EntryType } from '../types/entry';
+import { CellContents, Cell } from '../types/cell';
+import { entryToDHTOps, hashDHTOp } from '../types/dht-op';
 
 export function checkConnection(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -16,7 +16,7 @@ export function checkConnection(url: string): Promise<void> {
     ws.onopen = () => {
       connect({ url, wsClient: ws })
         .then(({ call }) => {
-          call("debug/running_instances")({})
+          call('debug/running_instances')({})
             .then(() => resolve())
             .catch(() => reject());
         })
@@ -37,15 +37,15 @@ export async function connectToConductors(
     activeEntryId: null,
     conductors: [],
     redundancyFactor: 1,
-    connected: true,
+    conductorsUrls,
   };
 
   const promises = conductorsUrls.map(async (url) => {
     const { onSignal, call } = await connect({ url });
 
-    const result = await call("debug/running_instances")({});
+    const result = await call('debug/running_instances')({});
     const instance_id = result[0];
-    const stateDump = await call("debug/state_dump")({
+    const stateDump = await call('debug/state_dump')({
       instance_id,
       source_chain: true,
       held_aspects: true,
@@ -55,7 +55,7 @@ export async function connectToConductors(
 
     const fetchCas = async (address) => {
       if (globalCAS[address]) return globalCAS[address];
-      const casResult = await call("debug/fetch_cas")({
+      const casResult = await call('debug/fetch_cas')({
         instance_id,
         address: address,
       });
@@ -74,7 +74,7 @@ export async function connectToConductors(
 
     onSignal(async (params) => {
       if (!params.instance_id) return;
-      const stateDump = await call("debug/state_dump")({
+      const stateDump = await call('debug/state_dump')({
         instance_id,
         source_chain: true,
         held_aspects: true,
@@ -89,7 +89,7 @@ export async function connectToConductors(
       const cell = Cell.from(conductor, cellContent);
       conductor.cells[cell.dna] = cell;
       cell.updateDHTShard();
-      blackboard.update("conductors", initialPlayground.conductors);
+      blackboard.update('conductors', initialPlayground.conductors);
     });
 
     return conductor;
@@ -127,7 +127,7 @@ export async function processStateDump(
   const dhtPromises = aspects.map(async (aspect) => {
     const op = await fetchCas(aspect);
 
-    if (op.type !== "UNKNOWN") return [];
+    if (op.type !== 'UNKNOWN') return [];
     const headerAspect = JSON.parse(op.content);
     const header = processHeader(headerAspect);
     const entry = await fetchCas(header.entry_address);
@@ -172,22 +172,22 @@ export function processHeader(header: any): Header {
 
 export function processEntry(dna: string, agent_id: string, entry: any): Entry {
   switch (entry.type) {
-    case "%dna":
+    case '%dna':
       return {
         type: EntryType.DNA,
         payload: dna,
       };
-    case "%agent_id":
+    case '%agent_id':
       return {
         type: EntryType.AgentId,
         payload: agent_id,
       };
-    case "%cap_token_grant":
+    case '%cap_token_grant':
       return {
         type: EntryType.CapTokenGrant,
         payload: entry.content,
       };
-    case "%link_add":
+    case '%link_add':
       return {
         type: EntryType.LinkAdd,
         payload: processLinkContent(entry.content),
@@ -206,9 +206,9 @@ export function processEntry(dna: string, agent_id: string, entry: any): Entry {
 export function processLinkContent(
   link: string
 ): { base: string; target: string; type: string; tag: string } {
-  const parsed = link.split(")");
-  const typeTag = parsed[0].trim().split("#");
-  const baseTarget = parsed[1].split("=>");
+  const parsed = link.split(')');
+  const typeTag = parsed[0].trim().split('#');
+  const baseTarget = parsed[1].split('=>');
   return {
     base: baseTarget[0].trim(),
     target: baseTarget[1].trim(),
