@@ -1,60 +1,60 @@
-import { LitElement, html, property, query, css } from "lit-element";
-import "@material/mwc-textarea";
-import "@material/mwc-button";
-import "@material/mwc-textfield";
-import "@material/mwc-dialog";
-import "@material/mwc-radio";
-import "@material/mwc-formfield";
-import { sharedStyles } from "./sharedStyles";
-import { Cell } from "../types/cell";
-import { TextArea } from "@material/mwc-textarea";
-import { TextFieldBase } from "@material/mwc-textfield/mwc-textfield-base";
-import { EntryType, Entry, hashEntry } from "../types/entry";
+import { LitElement, html, property, query, css } from 'lit-element';
+import '@material/mwc-textarea';
+import '@material/mwc-button';
+import '@material/mwc-textfield';
+import '@material/mwc-dialog';
+import '@material/mwc-radio';
+import '@material/mwc-formfield';
+import { sharedStyles } from './sharedStyles';
+import { Cell } from '../types/cell';
+import { TextArea } from '@material/mwc-textarea';
+import { TextFieldBase } from '@material/mwc-textfield/mwc-textfield-base';
+import { EntryType, Entry, hashEntry } from '../types/entry';
 
-import "@alenaksu/json-viewer";
-import { entryToDHTOps, neighborhood } from "../types/dht-op";
-import { hash } from "../processors/hash";
-import { Playground } from "../state/playground";
-import { pinToBoard } from "../blackboard/blackboard-mixin";
+import '@alenaksu/json-viewer';
+import { entryToDHTOps, neighborhood } from '../types/dht-op';
+import { hash } from '../processors/hash';
+import { Playground } from '../state/playground';
+import { pinToBoard } from '../blackboard/blackboard-mixin';
 import {
   selectActiveCell,
   selectEntry,
   selectActiveCells,
-} from "../state/selectors";
+} from '../state/selectors';
 
 export class CreateEntries extends pinToBoard<Playground>(LitElement) {
   @property({ attribute: false })
   selectedEntryType: number = 0;
 
-  @query("#create-entry-textarea")
+  @query('#create-entry-textarea')
   createTextarea: TextArea;
-  @query("#create-entry-type")
+  @query('#create-entry-type')
   createType: TextFieldBase;
 
-  @query("#update-entry-textarea")
+  @query('#update-entry-textarea')
   updateTextarea: TextArea;
-  @query("#update-entry-address")
+  @query('#update-entry-address')
   updateAddress: TextFieldBase;
 
-  @query("#remove-entry-address")
+  @query('#remove-entry-address')
   removeAddress: TextFieldBase;
 
-  @query("#add-from-address")
+  @query('#add-from-address')
   addFromAddress: TextFieldBase;
-  @query("#add-to-address")
+  @query('#add-to-address')
   addToAddress: TextFieldBase;
-  @query("#add-type")
+  @query('#add-type')
   addType: TextFieldBase;
-  @query("#add-tag")
+  @query('#add-tag')
   addTag: TextFieldBase;
 
-  @query("#remove-from-address")
+  @query('#remove-from-address')
   removeFromAddress: TextFieldBase;
-  @query("#remove-to-address")
+  @query('#remove-to-address')
   removeToAddress: TextFieldBase;
-  @query("#remove-type")
+  @query('#remove-type')
   removeType: TextFieldBase;
-  @query("#remove-timestamp")
+  @query('#remove-timestamp')
   removeTimestamp: TextFieldBase;
 
   @property({ attribute: false })
@@ -67,7 +67,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
         const entry = selectEntry(this.state)(newValue);
         if (entry) return { valid: true };
       }
-      element.setCustomValidity("Entry does not exist");
+      element.setCustomValidity('Entry does not exist');
       return {
         valid: false,
       };
@@ -78,7 +78,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     element.validityTransform = (newValue, nativeValidity) => {
       this.requestUpdate();
       if (newValue.length === 0) {
-        element.setCustomValidity("Type must not be empty");
+        element.setCustomValidity('Type must not be empty');
         return { valid: false };
       }
       return {
@@ -89,17 +89,17 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
 
   setJsonValidity(element) {
     element.validityTransform = (newValue, nativeValidity) => {
-      if (newValue === "") return { valid: false };
+      if (newValue === '') return { valid: false };
       try {
         const json = JSON.parse(newValue);
-        element.setCustomValidity("");
+        element.setCustomValidity('');
 
         this.requestUpdate();
         return {
           valid: true,
         };
       } catch (e) {
-        element.setCustomValidity("Bad JSON input");
+        element.setCustomValidity('Bad JSON input');
         this.requestUpdate();
         return { valid: false };
       }
@@ -128,7 +128,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
       this.addToAddress,
       this.removeFromAddress,
       this.removeToAddress,
-    ].forEach((ele) => ele["formElement"] && ele.setCustomValidity(""));
+    ].forEach((ele) => ele['formElement'] && ele.setCustomValidity(''));
   }
 
   static get styles() {
@@ -159,7 +159,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     return html`
       <div
         class="column"
-        style=${this.selectedEntryType === 0 ? "" : "display: none;"}
+        style=${this.selectedEntryType === 0 ? '' : 'display: none;'}
       >
         <h3>Create Entry</h3>
         <div class="column center-content">
@@ -208,7 +208,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     return html`
       <div
         class="column"
-        style=${this.selectedEntryType === 1 ? "" : "display: none;"}
+        style=${this.selectedEntryType === 1 ? '' : 'display: none;'}
       >
         <h3>Update Entry</h3>
         <div class="column center-content">
@@ -259,7 +259,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     return html`
       <div
         class="column"
-        style=${this.selectedEntryType === 2 ? "" : "display: none;"}
+        style=${this.selectedEntryType === 2 ? '' : 'display: none;'}
       >
         <h3>Remove Entry</h3>
         <div class="column center-content">
@@ -293,7 +293,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     return html`
       <div
         class="column"
-        style=${this.selectedEntryType === 3 ? "" : "display: none;"}
+        style=${this.selectedEntryType === 3 ? '' : 'display: none;'}
       >
         <h3>Link Entries</h3>
         <div class="column center-content">
@@ -357,7 +357,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     return html`
       <div
         class="column"
-        style=${this.selectedEntryType === 4 ? "" : "display: none;"}
+        style=${this.selectedEntryType === 4 ? '' : 'display: none;'}
       >
         <h3>Remove Link</h3>
         <div class="column center-content">
@@ -480,7 +480,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     );
     const entryId = hashEntry(this.entryToCreate.entry);
     this.dispatchEvent(
-      new CustomEvent("entry-committed", {
+      new CustomEvent('entry-committed', {
         detail: {
           entryId,
         },
@@ -488,7 +488,7 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
         composed: true,
       })
     );
-    this.blackboard.update("activeEntryId", entryId);
+    this.blackboard.update('activeEntryId', entryId);
     this.entryToCreate = undefined;
   }
 
@@ -542,8 +542,6 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
   render() {
     return html`
       <div class="column fill">
-        <h3 class="title">Commit Entries</h3>
-
         ${this.state.conductorsUrls !== undefined
           ? this.renderConnectedPlaceholder()
           : html`
