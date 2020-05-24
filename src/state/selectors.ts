@@ -34,12 +34,16 @@ export const selectActiveConductor = (state: Playground) =>
       )
     : undefined;
 
-export const selectActiveCell = (state: Playground) =>
-  selectActiveConductor(state)
-    ? Object.values(selectActiveConductor(state).cells).find(
-        (cell) => cell.agentId === state.activeAgentId
-      )
-    : undefined;
+export const selectActiveCell = (state: Playground) => {
+  const conductor = selectActiveConductor(state);
+
+  if (!conductor) return undefined;
+
+  return Object.values(conductor.cells).find(
+    (cell) =>
+      cell.agentId === state.activeAgentId && cell.dna == state.activeDNA
+  );
+};
 
 export const selectUniqueDHTOps = (state: Playground) => {
   const globalDHTOps = {};
@@ -93,4 +97,15 @@ export const selectMedianHoldingDHTOps = (state: Playground) => {
   const medianIndex = Math.floor(holdingDHTOps.length / 2);
 
   return holdingDHTOps.sort((a, b) => a - b)[medianIndex];
+};
+
+export const selectAllDNAs = (state: Playground) => {
+  const dnas = {};
+
+  for (const conductor of state.conductors) {
+    for (const cell of Object.values(conductor.cells)) {
+      dnas[cell.dna] = true;
+    }
+  }
+  return Object.keys(dnas);
 };

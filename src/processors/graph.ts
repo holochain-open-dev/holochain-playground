@@ -29,6 +29,8 @@ export function dnaNodes(cells: Cell[]) {
 }
 
 export function sourceChainNodes(cell: Cell) {
+  if (!cell) return [];
+
   const nodes = [];
 
   const headersHashes = cell.sourceChain;

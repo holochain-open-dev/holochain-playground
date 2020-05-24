@@ -168,7 +168,7 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
         <h3 style="position: absolute; left: 28px; top: 28px;" class="title">
           DHT Nodes
         </h3>
-        <div id="graph" style="height: 100%"></div>
+        <div id="graph" style="height: 98%"></div>
 
         <mwc-icon-button
           style="position: absolute; right: 20px; top: 20px;"

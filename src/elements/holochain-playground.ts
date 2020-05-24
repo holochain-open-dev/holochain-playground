@@ -9,14 +9,14 @@ import {
 
 import '@material/mwc-icon-button';
 import '@material/mwc-button';
-import { Dialog } from '@material/mwc-dialog';
 import '@material/mwc-switch';
+import '@material/mwc-select';
 import '@material/mwc-formfield';
 import '@material/mwc-top-app-bar-fixed';
 import '@material/mwc-menu';
 import '@material/mwc-list/mwc-list-item';
 import '@authentic/mwc-circular-progress';
-import { TextFieldBase } from '@material/mwc-textfield/mwc-textfield-base';
+import { Snackbar } from '@material/mwc-snackbar';
 
 import { sharedStyles } from './sharedStyles';
 import { buildPlayground } from '../processors/build-playground';
@@ -24,22 +24,26 @@ import { hash } from '../processors/hash';
 import { Blackboard } from '../blackboard/blackboard';
 import { downloadFile, fileToPlayground } from '../processors/files';
 import { Playground } from '../state/playground';
-import {
-  connectToConductors,
-  checkConnection,
-} from '../processors/connect-to-conductors';
+import { connectToConductors } from '../processors/connect-to-conductors';
 import { Header } from '../types/header';
 import {
   serializePlayground,
   deserializePlayground,
 } from '../processors/serialize';
+import { selectAllDNAs } from '../state/selectors';
 
 export class HolochainPlayground extends LitElement {
   @query('#file-upload')
   fileUpload: HTMLInputElement;
 
+  @query('#snackbar')
+  snackbar: Snackbar;
+
   @property({ type: Object })
   playground: Playground;
+
+  @property({ type: String })
+  message: string | undefined;
 
   @property({ type: Array })
   conductorUrls: string[] | undefined = undefined;
@@ -58,6 +62,17 @@ export class HolochainPlayground extends LitElement {
         mwc-top-app-bar-fixed mwc-formfield,
         mwc-top-app-bar-fixed mwc-switch {
           --mdc-theme-primary: white;
+        }
+
+        mwc-select {
+          --mdc-theme-primary: black;
+          --mdc-select-focused-label-color: white;
+          --mdc-select-focused-dropdown-icon-color: white;
+          --mdc-select-ink-color: white;
+          --mdc-select-label-ink-color: white;
+          --mdc-select-outlined-idle-border-color: white;
+          --mdc-select-dropdown-icon-color: white;
+          --mdc-select-outlined-hover-border-color: white;
         }
       `,
     ];
@@ -78,11 +93,20 @@ export class HolochainPlayground extends LitElement {
     });
 
     this.blackboard.subscribe(() => this.requestUpdate());
-    this.blackboard.select('conductorsUrls').subscribe((urls) => {
+    this.blackboard.select('conductorsUrls').subscribe(async (urls) => {
       if (urls !== undefined) {
-        connectToConductors(this.blackboard, urls);
+        try {
+          await connectToConductors(this.blackboard, urls);
+        } catch (e) {
+          this.showError('Error when connecting with the nodes');
+        }
       }
     });
+  }
+
+  showError(error: string) {
+    this.message = error;
+    this.snackbar.show();
   }
 
   updated(changedValues: PropertyValues) {
@@ -165,90 +189,136 @@ export class HolochainPlayground extends LitElement {
     }
   }
 
-  render() {
-    if (!this.blackboard || !this.blackboard.state)
-      return html`<div class="row fill center-content">
-        <mwc-circular-progress></mwc-circular-progress>
-      </div>`;
-
+  renderSnackbar() {
     return html`
-      <blackboard-container .blackboard=${this.blackboard} class="fill column">
-        <connect-to-nodes id="connect-to-nodes"></connect-to-nodes>
-        <mwc-top-app-bar-fixed>
-          <span slot="title">DNA: ${this.blackboard.state.activeDNA}</span>
+      <mwc-snackbar id="snackbar" labelText=${this.message}>
+        <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+      </mwc-snackbar>
+    `;
+  }
 
-          <div
-            class="row center-content"
-            slot="actionItems"
-            style="margin-right: 36px;"
-          >
-            <span style="font-size: 0.875rem; margin-right: 10px;">
-              DESIGNER MODE
-            </span>
+  selectDNA(dna: string) {
+    this.blackboard.update('activeAgentId', null);
+    this.blackboard.update('activeEntryId', null);
+    this.blackboard.update('activeDNA', dna);
+  }
 
-            <mwc-formfield
-              label="TECHNICAL MODE"
-              style="--mdc-theme-text-primary-on-background: white;"
+  renderDNA() {
+    const dnas = selectAllDNAs(this.blackboard.state);
+    if (dnas.length === 1) return html`<span>DNA: ${dnas[0]}</span>`;
+    else {
+      return html`
+        <span style="margin-right: 16px;">DNA</span>
+        <mwc-select
+          outlined
+          style="width: 28em; position: absolute; top: 4px;"
+          fullwidth
+          @selected=${(e) => this.selectDNA(dnas[e.detail.index])}
+        >
+          ${dnas.map(
+            (dna) =>
+              html`
+                <mwc-list-item
+                  ?selected=${this.blackboard.state.activeDNA === dna}
+                  .value=${dna}
+                  >${dna}</mwc-list-item
+                >
+              `
+          )}
+        </mwc-select>
+      `;
+    }
+  }
+
+  render() {
+    return html`
+      ${this.renderSnackbar()}
+      ${!this.blackboard || !this.blackboard.state
+        ? html`<div class="row fill center-content">
+            <mwc-circular-progress></mwc-circular-progress>
+          </div>`
+        : html`
+            <blackboard-container
+              .blackboard=${this.blackboard}
+              class="fill column"
             >
-              <mwc-switch
-                .checked=${this.technicalMode}
-                @change=${() => this.toggleMode()}
-              ></mwc-switch>
-            </mwc-formfield>
-          </div>
+              <connect-to-nodes id="connect-to-nodes"></connect-to-nodes>
+              <mwc-top-app-bar-fixed>
+                <div slot="title">${this.renderDNA()}</div>
 
-          <mwc-button
-            slot="actionItems"
-            style="margin-right: 18px;"
-            label=${this.blackboard.state.conductorsUrls
-              ? 'CONNECTED NODES'
-              : 'CONNECT TO NODES'}
-            icon=${this.blackboard.state.conductorsUrls
-              ? 'sync'
-              : 'sync_disabled'}
-            @click=${() => {
-              (this.shadowRoot.getElementById(
-                'connect-to-nodes'
-              ) as any).open = true;
-            }}
-          ></mwc-button>
+                <div
+                  class="row center-content"
+                  slot="actionItems"
+                  style="margin-right: 36px;"
+                >
+                  <span style="font-size: 0.875rem; margin-right: 10px;">
+                    DESIGNER MODE
+                  </span>
 
-          <mwc-button
-            slot="actionItems"
-            label="Reset"
-            style="margin-right: 18px;"
-            icon="settings_backup_restore"
-            @click=${() => this.resetState()}
-          ></mwc-button>
+                  <mwc-formfield
+                    label="TECHNICAL MODE"
+                    style="--mdc-theme-text-primary-on-background: white;"
+                  >
+                    <mwc-switch
+                      .checked=${this.technicalMode}
+                      @change=${() => this.toggleMode()}
+                    ></mwc-switch>
+                  </mwc-formfield>
+                </div>
 
-          <mwc-button
-            slot="actionItems"
-            label="Import"
-            icon="publish"
-            style="margin-right: 18px;"
-            @click=${() => this.fileUpload.click()}
-            ></mwc-button>
-            <mwc-button
-            slot="actionItems"
-            label="Export"
-            icon="get_app"
-            style="margin-right: 18px;"
-            @click=${() => this.export()}
-          ></mwc-button>
-        </mwc-top-app-bar-fixed>
-        <div class="row fill">
-          ${this.technicalMode
-            ? html` <technical-mode class="fill"></technical-mode> `
-            : html` <designer-mode class="fill"></designer-mode> `}
-        </div>
-      </blackboard-container>
-      <input
-        type="file"
-        id="file-upload"
-        accept="application/json"
-        style="display:none"
-        @change=${() => this.import()}
-      />
+                <mwc-button
+                  slot="actionItems"
+                  style="margin-right: 18px;"
+                  label=${this.blackboard.state.conductorsUrls
+                    ? 'CONNECTED NODES'
+                    : 'CONNECT TO NODES'}
+                  icon=${this.blackboard.state.conductorsUrls
+                    ? 'sync'
+                    : 'sync_disabled'}
+                  @click=${() => {
+                    (this.shadowRoot.getElementById(
+                      'connect-to-nodes'
+                    ) as any).open = true;
+                  }}
+                ></mwc-button>
+
+                <mwc-button
+                  slot="actionItems"
+                  label="Reset"
+                  style="margin-right: 18px;"
+                  icon="settings_backup_restore"
+                  @click=${() => this.resetState()}
+                ></mwc-button>
+
+                <mwc-button
+                  slot="actionItems"
+                  label="Import"
+                  icon="publish"
+                  style="margin-right: 18px;"
+                  @click=${() => this.fileUpload.click()}
+                ></mwc-button>
+                <mwc-button
+                  slot="actionItems"
+                  label="Export"
+                  icon="get_app"
+                  style="margin-right: 18px;"
+                  @click=${() => this.export()}
+                ></mwc-button>
+              </mwc-top-app-bar-fixed>
+              <div class="row fill">
+                ${this.technicalMode
+                  ? html` <technical-mode class="fill"></technical-mode> `
+                  : html` <designer-mode class="fill"></designer-mode> `}
+              </div>
+            </blackboard-container>
+            <input
+              type="file"
+              id="file-upload"
+              accept="application/json"
+              style="display:none"
+              @change=${() => this.import()}
+            />
+          `}
     `;
   }
 }

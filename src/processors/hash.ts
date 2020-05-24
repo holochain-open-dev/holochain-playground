@@ -1,45 +1,43 @@
-import multihashing from "multihashing";
-import multihashes from "multihashes";
-import { Buffer } from "buffer";
-import CID from "cids";
-import bitwise from "bitwise";
-import { Dictionary } from "../types/common";
-
-export function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
-}
-
-export function str2ab(str) {
-  var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-  var bufView = new Uint16Array(buf);
-  for (var i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-}
+import multihashing from 'multihashing';
+import multihashes from 'multihashes';
+import { Buffer } from 'buffer';
+import CID from 'cids';
+import bitwise from 'bitwise';
+import { Dictionary } from '../types/common';
+import { Encoding } from '@holochain/hcid-js';
 
 export function hash(content: any): string {
   const contentString =
-    typeof content === "string" ? content : JSON.stringify(content);
-  const buffer = Buffer.from(contentString, "utf-8");
+    typeof content === 'string' ? content : JSON.stringify(content);
+  const buffer = Buffer.from(contentString, 'utf-8');
 
-  const encoded = multihashing(buffer, "sha2-256");
-  const cid = new CID(0, "dag-pb", encoded);
+  const encoded = multihashing(buffer, 'sha2-256');
+  const cid = new CID(0, 'dag-pb', encoded);
 
   return cid.toString();
 }
 
 export const hashLocation: Dictionary<number> = {};
+(new Encoding('hcs0') as any).then((enc) => (window['enc'] = enc));
+
+function hashBytes(hash: string): Uint8Array {
+  try {
+    return multihashes.fromB58String(hash).slice(2);
+  } catch (e) {
+    return window['enc'].decode(hash);
+  }
+}
 
 export function location(hash: string): number {
   if (hashLocation[hash]) return hashLocation[hash];
 
-  const hexes = arrayToHexes(multihashes.fromB58String(hash).slice(2));
+  const bytes = hashBytes(hash);
+  const hexes = arrayToHexes(bytes);
 
-  let xor = Buffer.from(hexes[0].slice(2), "hex");
+  let xor = Buffer.from(hexes[0].slice(2), 'hex');
 
   for (let i = 1; i < hexes.length; i++) {
-    xor = bitwise.buffer.xor(xor, Buffer.from(hexes[i].slice(2), "hex"));
+    xor = bitwise.buffer.xor(xor, Buffer.from(hexes[i].slice(2), 'hex'));
   }
   const location = xor.readUIntBE(0, xor.length);
 
@@ -69,11 +67,11 @@ export function arrayToHexes(array: Uint8Array): string[] {
     subarray.forEach(function (i) {
       var h = i.toString(16);
       if (h.length % 2) {
-        h = "0" + h;
+        h = '0' + h;
       }
       hex.push(h);
     });
-    hexes.push("0x" + hex.join(""));
+    hexes.push('0x' + hex.join(''));
   }
 
   return hexes;

@@ -25,12 +25,12 @@ export function checkConnection(url: string): Promise<void> {
   });
 }
 
+const globalCAS = {};
+
 export async function connectToConductors(
   blackboard: Blackboard<Playground>,
   conductorsUrls: string[]
 ): Promise<void> {
-  const globalCAS = {};
-
   const initialPlayground: Playground = {
     activeAgentId: null,
     activeDNA: null,
@@ -43,44 +43,33 @@ export async function connectToConductors(
   const promises = conductorsUrls.map(async (url) => {
     const { onSignal, call } = await connect({ url });
 
-    const result = await call('debug/running_instances')({});
-    const instance_id = result[0];
-    const stateDump = await call('debug/state_dump')({
-      instance_id,
-      source_chain: true,
-      held_aspects: true,
-      queued_holding_workflows: false,
-    });
-    console.log(stateDump);
+    const contents = await getCellContents(call);
 
-    const fetchCas = async (address) => {
-      if (globalCAS[address]) return globalCAS[address];
-      const casResult = await call('debug/fetch_cas')({
-        instance_id,
-        address: address,
-      });
-      globalCAS[address] = casResult;
-      return casResult;
-    };
-
-    const cellContent = await processStateDump(stateDump, fetchCas);
+    const agentIds = contents.map((c) => c.agentId);
 
     const conductor = new Conductor(undefined, {
-      agentIds: [cellContent.agentId],
+      agentIds,
     });
-    const cell = Cell.from(conductor, cellContent);
-    conductor.cells[cell.dna] = cell;
-    cell.updateDHTShard();
+
+    for (const content of contents) {
+      const cell = Cell.from(conductor, content);
+      conductor.cells[cell.dna] = cell;
+      cell.updateDHTShard();
+    }
 
     onSignal(async (params) => {
       if (!params.instance_id) return;
       const stateDump = await call('debug/state_dump')({
-        instance_id,
+        instance_id: params.instance_id,
         source_chain: true,
         held_aspects: true,
         queued_holding_workflows: false,
       });
-      const cellContent = await processStateDump(stateDump, fetchCas);
+      const cellContent = await processStateDump(
+        call,
+        params.instance_id,
+        stateDump
+      );
 
       const conductorIndex = initialPlayground.conductors.findIndex((c) =>
         c.agentIds.includes(cellContent.agentId)
@@ -104,11 +93,50 @@ export async function connectToConductors(
   hookUpConductors(initialPlayground.conductors);
 
   blackboard.updateState(initialPlayground);
+  console.log(initialPlayground.conductors);
+}
+
+export async function getCellContents(call): Promise<Array<CellContents>> {
+  const instancesIds: Array<string> = await call('debug/running_instances')({});
+
+  const promises = instancesIds.map((id) => getCellContent(call, id));
+  return Promise.all(promises);
+}
+
+export async function fetchCas(
+  call,
+  instance_id: string,
+  address: string
+): Promise<any> {
+  if (globalCAS[address]) return globalCAS[address];
+  const casResult = await call('debug/fetch_cas')({
+    instance_id,
+    address: address,
+  });
+  globalCAS[address] = casResult;
+  return casResult;
+}
+
+export async function getCellContent(
+  call,
+  instance_id: string
+): Promise<CellContents> {
+  const stateDump = await call('debug/state_dump')({
+    instance_id,
+    source_chain: true,
+    held_aspects: true,
+    queued_holding_workflows: false,
+  });
+  console.log(stateDump);
+
+  const cellContent = await processStateDump(call, instance_id, stateDump);
+  return cellContent;
 }
 
 export async function processStateDump(
-  stateDump: any,
-  fetchCas: (address: string) => Promise<any>
+  call,
+  instanceId: string,
+  stateDump: any
 ): Promise<CellContents> {
   const CAS = {};
   const dna = stateDump.source_chain[0].entry_address;
@@ -117,7 +145,7 @@ export async function processStateDump(
   const promises = stateDump.source_chain.map(async (header) => {
     CAS[hash(header)] = processHeader(header);
 
-    const casResult = await fetchCas(header.entry_address);
+    const casResult = await fetchCas(call, instanceId, header.entry_address);
 
     CAS[header.entry_address] = processEntry(dna, agentId, casResult);
   });
@@ -125,12 +153,12 @@ export async function processStateDump(
   const aspects = Object.keys(stateDump.held_aspects);
 
   const dhtPromises = aspects.map(async (aspect) => {
-    const op = await fetchCas(aspect);
+    const op = await fetchCas(call, instanceId, aspect);
 
     if (op.type !== 'UNKNOWN') return [];
     const headerAspect = JSON.parse(op.content);
     const header = processHeader(headerAspect);
-    const entry = await fetchCas(header.entry_address);
+    const entry = await fetchCas(call, instanceId, header.entry_address);
 
     const ops = entryToDHTOps(processEntry(dna, agentId, entry), header);
     return ops;
@@ -185,7 +213,7 @@ export function processEntry(dna: string, agent_id: string, entry: any): Entry {
     case '%cap_token_grant':
       return {
         type: EntryType.CapTokenGrant,
-        payload: entry.content,
+        payload: JSON.parse(entry.content).CapTokenGrant,
       };
     case '%link_add':
       return {
