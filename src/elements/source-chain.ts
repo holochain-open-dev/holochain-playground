@@ -27,9 +27,9 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
     this.cy = cytoscape({
       container: this.shadowRoot.getElementById("source-chain-graph"),
       layout: { name: "dagre" },
-      userPanningEnabled: false,
       autoungrabify: true,
-      userZoomingEnabled: false,    
+      userZoomingEnabled: true,
+      userPanningEnabled: true,
       style: `
         node {
           width: 30px;

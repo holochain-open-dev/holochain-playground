@@ -98,6 +98,7 @@ export class HolochainPlayground extends LitElement {
         try {
           await connectToConductors(this.blackboard, urls);
         } catch (e) {
+          console.error(e);
           this.showError('Error when connecting with the nodes');
         }
       }
