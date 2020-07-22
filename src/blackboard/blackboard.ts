@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash-es';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { map, last, flatMap, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 import { Dictionary } from '../types/common';
 

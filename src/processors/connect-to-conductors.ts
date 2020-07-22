@@ -133,22 +133,62 @@ export async function getCellContent(
   return cellContent;
 }
 
-export async function processStateDump(
+export async function processSourceChainOld(
   call,
   instanceId: string,
-  stateDump: any
-): Promise<CellContents> {
+  sourceChain
+): Promise<{ CAS: any; dna: string; agentId: string }> {
+  const dna = sourceChain[0].entry_address;
+  const agentId = sourceChain[1].entry_address;
   const CAS = {};
-  const dna = stateDump.source_chain[0].entry_address;
-  const agentId = stateDump.source_chain[1].entry_address;
-
-  const promises = stateDump.source_chain.map(async (header) => {
+  const promises = sourceChain.map(async (header) => {
     CAS[hash(header)] = processHeader(header);
 
     const casResult = await fetchCas(call, instanceId, header.entry_address);
 
     CAS[header.entry_address] = processEntry(dna, agentId, casResult);
   });
+
+  await Promise.all(promises);
+
+  return { CAS, dna, agentId };
+}
+export async function processSourceChainNew(
+  call,
+  instanceId,
+  sourceChain
+): Promise<{ CAS: any; dna: string; agentId: string }> {
+  const dna = sourceChain[0][0].header.entry_address;
+  const agentId = sourceChain[1][0].header.entry_address;
+
+  return {
+    CAS,
+      
+  }
+}
+
+export async function processSourceChain(
+  call,
+  instanceId: string,
+  sourceChain
+): Promise<{ CAS: any; dna: string; agentId: string }> {
+  if (Array.isArray(sourceChain[0])) {
+    return processSourceChainNew(call, instanceId, sourceChain);
+  } else {
+    return processSourceChainOld(call, instanceId, sourceChain);
+  }
+}
+
+export async function processStateDump(
+  call,
+  instanceId: string,
+  stateDump: any
+): Promise<CellContents> {
+  const { CAS, dna, agentId } = await processSourceChain(
+    call,
+    instanceId,
+    stateDump.source_chain
+  );
 
   const aspects = Object.keys(stateDump.held_aspects);
 
@@ -173,8 +213,6 @@ export async function processStateDump(
   }
 
   const sourceChain = stateDump.source_chain.map(hash);
-
-  await Promise.all(promises);
 
   return {
     CAS,

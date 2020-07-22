@@ -1,9 +1,8 @@
-import { LitElement, property, PropertyValues, html } from "lit-element";
-import { Cell, AGENT_HEADERS, HEADERS } from "../types/cell";
+import { LitElement, PropertyValues, html } from "lit-element";
 import { sharedStyles } from "./sharedStyles";
 import { Playground } from "../state/playground";
 import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { selectActiveCells, selectActiveCell } from "../state/selectors";
+import { selectActiveCell } from "../state/selectors";
 
 export class DHTShard extends pinToBoard<Playground>(LitElement) {
   static style() {

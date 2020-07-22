@@ -1,6 +1,5 @@
 import { Constructor, LitElement } from "lit-element";
 import { Blackboard } from "./blackboard";
-import { CustomElement } from "./custom-element";
 
 export interface PinnedElement<S> {
   state: S;

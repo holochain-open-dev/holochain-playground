@@ -6,7 +6,6 @@ import { dnaNodes } from "../processors/graph";
 import { pinToBoard } from "../blackboard/blackboard-mixin";
 import { Playground } from "../state/playground";
 import { selectActiveCells, selectHoldingCells } from "../state/selectors";
-import { DHTOp, DHTOpType } from "../types/dht-op";
 import { sharedStyles } from "./sharedStyles";
 import { vectorsEqual } from "../processors/utils";
 
