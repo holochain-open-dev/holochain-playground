@@ -14,6 +14,7 @@ export function checkConnection(url: string): Promise<void> {
     const ws = new WebSocket(url);
     ws.onerror = () => reject();
     ws.onopen = () => {
+      debugger;
       connect({ url, wsClient: ws })
         .then(({ call }) => {
           call('debug/running_instances')({})
@@ -133,22 +134,43 @@ export async function getCellContent(
   return cellContent;
 }
 
+async function getDnaHeader(
+  call,
+  instanceId: string,
+  dnaHeaderAddress: string
+): Promise<any> {
+  const header = await fetchCas(call, instanceId, dnaHeaderAddress);
+  console.log(header);
+  return JSON.parse(header.content);
+}
+
 export async function processStateDump(
   call,
   instanceId: string,
   stateDump: any
 ): Promise<CellContents> {
   const CAS = {};
-  const dna = stateDump.source_chain[0].entry_address;
-  const agentId = stateDump.source_chain[1].entry_address;
 
-  const promises = stateDump.source_chain.map(async (header) => {
-    CAS[hash(header)] = processHeader(header);
+  const agentIdHeader = stateDump.source_chain[0][0].header;
+  const dnaHeader = await getDnaHeader(call, instanceId, agentIdHeader.link);
+  const dna = dnaHeader.entry_address;
+  const agentId = agentIdHeader.entry_address;
 
-    const casResult = await fetchCas(call, instanceId, header.entry_address);
+  stateDump.source_chain.unshift([
+    { entry: null, header: dnaHeader },
+    agentIdHeader.link,
+  ]);
 
-    CAS[header.entry_address] = processEntry(dna, agentId, casResult);
-  });
+  const promises = stateDump.source_chain.map(
+    async ([headerWithEntry, headerAddress]) => {
+      const header = headerWithEntry.header;
+      CAS[headerAddress] = processHeader(header);
+
+      const casResult = await fetchCas(call, instanceId, header.entry_address);
+
+      CAS[header.entry_address] = processEntry(dna, agentId, casResult);
+    }
+  );
 
   const aspects = Object.keys(stateDump.held_aspects);
 
@@ -172,7 +194,9 @@ export async function processStateDump(
     DHTOpTransforms[hashDHTOp(dhtOp)] = dhtOp;
   }
 
-  const sourceChain = stateDump.source_chain.map(hash);
+  const sourceChain = stateDump.source_chain.map(
+    ([headerWithEntry, headerAddress]) => headerAddress
+  );
 
   await Promise.all(promises);
 
@@ -199,6 +223,7 @@ export function processHeader(header: any): Header {
 }
 
 export function processEntry(dna: string, agent_id: string, entry: any): Entry {
+  console.log(entry);
   switch (entry.type) {
     case '%dna':
       return {
