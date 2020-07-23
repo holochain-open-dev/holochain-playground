@@ -60,6 +60,7 @@ export async function connectToConductors(
 
     let numHeldEntries = 0;
     let numHeldAspects = 0;
+    let lastRefresh = 0;
     onSignal(async (params) => {
       const instance_id = Object.keys(params.instance_stats)[0];
       const newHeldEntries =
@@ -67,23 +68,25 @@ export async function connectToConductors(
       const newHeldAspects =
         params.instance_stats[instance_id].number_held_aspects;
 
-      if (newHeldEntries == numHeldEntries || newHeldAspects == numHeldAspects)
+      if (
+        newHeldEntries == numHeldEntries ||
+        newHeldAspects == numHeldAspects ||
+        Date.now() - lastRefresh < 5000
+      )
         return;
+
+      lastRefresh = Date.now();
 
       numHeldAspects = newHeldAspects;
       numHeldEntries = newHeldEntries;
 
       const stateDump = await call('debug/state_dump')({
-        instance_id: params.instance_id,
+        instance_id: instance_id,
         source_chain: true,
         held_aspects: true,
         queued_holding_workflows: false,
       });
-      const cellContent = await processStateDump(
-        call,
-        params.instance_id,
-        stateDump
-      );
+      const cellContent = await processStateDump(call, instance_id, stateDump);
 
       const conductorIndex = initialPlayground.conductors.findIndex((c) =>
         c.agentIds.includes(cellContent.agentId)
@@ -92,6 +95,7 @@ export async function connectToConductors(
       const cell = Cell.from(conductor, cellContent);
       conductor.cells[cell.dna] = cell;
       cell.updateDHTShard();
+
       blackboard.update('conductors', initialPlayground.conductors);
     });
 
@@ -153,7 +157,6 @@ async function getDnaHeader(
   dnaHeaderAddress: string
 ): Promise<any> {
   const header = await fetchCas(call, instanceId, dnaHeaderAddress);
-  console.log(header);
   return JSON.parse(header.content);
 }
 

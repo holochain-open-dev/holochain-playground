@@ -1,12 +1,14 @@
-import { LitElement, property, html, PropertyValues, css } from "lit-element";
-import { sourceChainNodes } from "../processors/graph";
-import cytoscape from "cytoscape";
-import dagre from "cytoscape-dagre";
+import { LitElement, property, html, PropertyValues, css } from 'lit-element';
+import { sourceChainNodes } from '../processors/graph';
+import cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
 
-import { sharedStyles } from "./sharedStyles";
-import { Playground } from "../state/playground";
-import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { selectActiveCell, selectActiveEntry } from "../state/selectors";
+import { isEqual } from 'lodash-es';
+
+import { sharedStyles } from './sharedStyles';
+import { Playground } from '../state/playground';
+import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { selectActiveCell, selectActiveEntry } from '../state/selectors';
 cytoscape.use(dagre); // register extension
 
 export class SourceChain extends pinToBoard<Playground>(LitElement) {
@@ -23,10 +25,12 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
 
   cy: cytoscape.Core;
 
+  nodes: any[] = [];
+
   firstUpdated() {
     this.cy = cytoscape({
-      container: this.shadowRoot.getElementById("source-chain-graph"),
-      layout: { name: "dagre" },
+      container: this.shadowRoot.getElementById('source-chain-graph'),
+      layout: { name: 'dagre' },
       autoungrabify: true,
       userZoomingEnabled: true,
       userPanningEnabled: true,
@@ -82,9 +86,9 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
         }
       `,
     });
-    this.cy.on("tap", "node", (event) => {
+    this.cy.on('tap', 'node', (event) => {
       const selectedEntryId = event.target.id();
-      this.blackboard.update("activeEntryId", selectedEntryId);
+      this.blackboard.update('activeEntryId', selectedEntryId);
     });
     this.requestUpdate();
   }
@@ -92,14 +96,18 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
   updated(changedValues: PropertyValues) {
     super.updated(changedValues);
 
-    this.cy.remove("nodes");
     const nodes = sourceChainNodes(selectActiveCell(this.state));
-    this.cy.add(nodes);
-    this.cy.layout({ name: "dagre" }).run();
+    if (!isEqual(nodes, this.nodes)) {
+      this.nodes = nodes;
 
-    this.cy.filter("node").removeClass("selected");
+      this.cy.remove('nodes');
+      this.cy.add(nodes);
+      this.cy.layout({ name: 'dagre' }).run();
+    }
 
-    this.cy.getElementById(this.state.activeEntryId).addClass("selected");
+    this.cy.filter('node').removeClass('selected');
+
+    this.cy.getElementById(this.state.activeEntryId).addClass('selected');
   }
 
   render() {
