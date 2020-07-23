@@ -58,8 +58,21 @@ export async function connectToConductors(
       cell.updateDHTShard();
     }
 
+    let numHeldEntries = 0;
+    let numHeldAspects = 0;
     onSignal(async (params) => {
-      if (!params.instance_id) return;
+      const instance_id = Object.keys(params.instance_stats)[0];
+      const newHeldEntries =
+        params.instance_stats[instance_id].number_held_entries;
+      const newHeldAspects =
+        params.instance_stats[instance_id].number_held_aspects;
+
+      if (newHeldEntries == numHeldEntries || newHeldAspects == numHeldAspects)
+        return;
+
+      numHeldAspects = newHeldAspects;
+      numHeldEntries = newHeldEntries;
+
       const stateDump = await call('debug/state_dump')({
         instance_id: params.instance_id,
         source_chain: true,
@@ -223,7 +236,6 @@ export function processHeader(header: any): Header {
 }
 
 export function processEntry(dna: string, agent_id: string, entry: any): Entry {
-  console.log(entry);
   switch (entry.type) {
     case '%dna':
       return {
