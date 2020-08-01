@@ -11,9 +11,9 @@ import '@material/mwc-list/mwc-list-item';
 import '@authentic/mwc-circular-progress';
 
 import { connectToConductors } from 'holochain-playground/processors/connect-to-conductors';
-import 'holochain-playground/elements/holocahin-playground-container';
-import 'holochain-playground/elements/holocahin-playground-select-dna';
-import 'holochain-playground/elements/holocahin-playground-connect-to-nodes';
+import 'holochain-playground/elements/holochain-playground-container';
+import 'holochain-playground/elements/holochain-playground-select-dna';
+import 'holochain-playground/elements/holochain-playground-connect-to-nodes';
 import 'holochain-playground/blackboard/blackboard-connect';
 
 import './designer-mode';

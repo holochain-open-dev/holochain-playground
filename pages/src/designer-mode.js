@@ -24,6 +24,7 @@ export class DesignerMode extends blackboardConnect(
       `,
     ];
   }
+
   render() {
     return html`
       <div class="row fill">
@@ -31,10 +32,12 @@ export class DesignerMode extends blackboardConnect(
           class="fill padding"
           style="flex: 20; padding-right: 0;"
         ></holochain-playground-entry-graph>
+
         <div class="column" style="flex: 16;">
           <mwc-card style="width: auto;" class="padding center-content">
             <holochain-playground-dht-stats></holochain-playground-dht-stats>
           </mwc-card>
+
           ${this.state.conductorsUrls === undefined
             ? html`
                 <mwc-card
@@ -47,6 +50,7 @@ export class DesignerMode extends blackboardConnect(
                 </mwc-card>
               `
             : html``}
+
           <mwc-card style="width: auto; padding-top: 0;" class="padding fill">
             <holochain-playground-entry-detail
               class="padding fill"
