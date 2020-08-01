@@ -1,4 +1,4 @@
-import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
 import { LitElement, query, html, property, css } from 'lit-element';
 import cytoscape from 'cytoscape';
@@ -27,7 +27,10 @@ const layoutConfig = {
   },
 };
 
-export class EntryGraph extends pinToBoard<Playground>(LitElement) {
+export class EntryGraph extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   @property({ attribute: false })
   showAgentsIds: boolean = true;
 
@@ -237,3 +240,5 @@ export class EntryGraph extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-entry-graph', EntryGraph);

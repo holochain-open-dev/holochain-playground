@@ -1,26 +1,33 @@
-import { LitElement, property, html, css, query } from "lit-element";
-import "@authentic/mwc-card";
-import "@material/mwc-select";
-import "@material/mwc-list";
-import "@material/mwc-list/mwc-list-item";
-import "@alenaksu/json-viewer";
-import "@material/mwc-tab-bar";
-import "@material/mwc-tab";
-import { Dialog } from "@material/mwc-dialog";
+import { LitElement, property, html, css, query } from 'lit-element';
+import '@authentic/mwc-card';
+import '@material/mwc-select';
+import '@material/mwc-list';
+import '@material/mwc-list/mwc-list-item';
+import '@alenaksu/json-viewer';
+import '@material/mwc-tab-bar';
+import '@material/mwc-tab';
+import { Dialog } from '@material/mwc-dialog';
 
-import { sharedStyles } from "./sharedStyles";
-import { Playground } from "../state/playground";
-import { pinToBoard } from "../blackboard/blackboard-mixin";
+import { sharedStyles } from './sharedStyles';
+import { Playground } from '../state/playground';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 
-export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
+import './holochain-playground-source-chain';
+import './holochain-playground-create-entries';
+import './holochain-playground-dht-shard';
+
+export class ConductorDetail extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   @property({ type: Number })
   selectedTabIndex: number = 0;
 
-  @query("#conductor-help")
+  @query('#conductor-help')
   conductorHelp: Dialog;
 
   firstUpdated() {
-    this.addEventListener("entry-committed", (e: CustomEvent) => {
+    this.addEventListener('entry-committed', (e: CustomEvent) => {
       this.selectedTabIndex = 0;
     });
   }
@@ -85,7 +92,7 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
       </mwc-dialog>
     `;
   }
-  
+
   render() {
     return html`
       ${this.renderAgentHelp()}
@@ -113,10 +120,18 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
             </mwc-tab-bar>
             <div style="padding: 16px;" class="column fill">
               ${this.selectedTabIndex === 0
-                ? html` <source-chain class="fill"></source-chain> `
+                ? html`
+                    <holochain-playground-source-chain
+                      class="fill"
+                    ></holochain-playground-source-chain>
+                  `
                 : this.selectedTabIndex === 1
-                ? html` <dht-shard></dht-shard> `
-                : html` <create-entries></create-entries> `}
+                ? html`
+                    <holochain-playground-dht-shard></holochain-playground-dht-shard>
+                  `
+                : html`
+                    <holochain-playground-create-entries></holochain-playground-create-entries>
+                  `}
             </div>
           </div>
         </div>
@@ -124,3 +139,5 @@ export class ConductorDetail extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-conductor-detail', ConductorDetail);

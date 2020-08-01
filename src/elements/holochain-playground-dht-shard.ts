@@ -1,11 +1,14 @@
-import { LitElement, property, PropertyValues, html } from "lit-element";
-import { Cell, AGENT_HEADERS, HEADERS } from "../types/cell";
-import { sharedStyles } from "./sharedStyles";
-import { Playground } from "../state/playground";
-import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { selectActiveCells, selectActiveCell } from "../state/selectors";
+import { LitElement, property, PropertyValues, html } from 'lit-element';
+import { Cell, AGENT_HEADERS, HEADERS } from '../types/cell';
+import { sharedStyles } from './sharedStyles';
+import { Playground } from '../state/playground';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
+import { selectActiveCells, selectActiveCell } from '../state/selectors';
 
-export class DHTShard extends pinToBoard<Playground>(LitElement) {
+export class DHTShard extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   static style() {
     return sharedStyles;
   }
@@ -19,7 +22,7 @@ export class DHTShard extends pinToBoard<Playground>(LitElement) {
   updated(changedValues: PropertyValues) {
     super.updated(changedValues);
 
-    const dhtShard: any = this.shadowRoot.getElementById("dht-shard");
+    const dhtShard: any = this.shadowRoot.getElementById('dht-shard');
     if (dhtShard) dhtShard.data = this.buildDHTShardJson();
   }
 
@@ -37,3 +40,5 @@ export class DHTShard extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-dht-shard', DHTShard);

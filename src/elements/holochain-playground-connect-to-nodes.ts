@@ -1,10 +1,13 @@
-import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
 import { LitElement, html, property } from 'lit-element';
 import { TextFieldBase } from '@material/mwc-textfield/mwc-textfield-base';
 import { checkConnection } from '../processors/connect-to-conductors';
 
-export class ConnectToNodes extends pinToBoard<Playground>(LitElement) {
+export class ConnectToNodes extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   @property({ type: Array })
   conductorUrls: string[] | undefined = ['ws://localhost:8888'];
 
@@ -73,7 +76,7 @@ export class ConnectToNodes extends pinToBoard<Playground>(LitElement) {
     }
   }
 
-  render() {
+  renderDialog() {
     return html`<mwc-dialog
       id="connect-to-nodes"
       .open=${this.open}
@@ -134,6 +137,26 @@ export class ConnectToNodes extends pinToBoard<Playground>(LitElement) {
           this.blackboard.update('conductorsUrls', this.conductorUrls)}
       >
       </mwc-button>
-    </mwc-dialog>`;
+    </mwc-dialog> `;
+  }
+
+  render() {
+    return html`
+      ${this.renderDialog()}
+      <mwc-button
+        style="margin-right: 18px;"
+        label=${this.blackboard.state.conductorsUrls
+          ? 'CONNECTED NODES'
+          : 'CONNECT TO NODES'}
+        icon=${this.blackboard.state.conductorsUrls ? 'sync' : 'sync_disabled'}
+        @click=${() => {
+          (this.shadowRoot.getElementById(
+            'connect-to-nodes'
+          ) as any).open = true;
+        }}
+      ></mwc-button>
+    `;
   }
 }
+
+customElements.define('holochain-playground-connect-to-nodes', ConnectToNodes);

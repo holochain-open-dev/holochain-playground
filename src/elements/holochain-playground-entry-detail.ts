@@ -1,11 +1,14 @@
 import { LitElement, html, property, css } from 'lit-element';
 
-import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
 import { sharedStyles } from './sharedStyles';
 import { selectActiveEntry, selectEntryMetadata } from '../state/selectors';
 
-export class EntryDetail extends pinToBoard<Playground>(LitElement) {
+export class EntryDetail extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   @property({ type: Boolean })
   withMetadata = false;
 
@@ -75,3 +78,5 @@ export class EntryDetail extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-entry-detail', EntryDetail);

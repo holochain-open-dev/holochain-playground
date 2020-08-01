@@ -1,20 +1,23 @@
-import { LitElement, html, query, css } from "lit-element";
-import cytoscape from "cytoscape";
-import { Dialog } from "@material/mwc-dialog";
+import { LitElement, html, query, css } from 'lit-element';
+import cytoscape from 'cytoscape';
+import { Dialog } from '@material/mwc-dialog';
 
-import { dnaNodes } from "../processors/graph";
-import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { Playground } from "../state/playground";
-import { selectActiveCells, selectHoldingCells } from "../state/selectors";
-import { DHTOp, DHTOpType } from "../types/dht-op";
-import { sharedStyles } from "./sharedStyles";
-import { vectorsEqual } from "../processors/utils";
+import { dnaNodes } from '../processors/graph';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
+import { Playground } from '../state/playground';
+import { selectActiveCells, selectHoldingCells } from '../state/selectors';
+import { DHTOp, DHTOpType } from '../types/dht-op';
+import { sharedStyles } from './sharedStyles';
+import { vectorsEqual } from '../processors/utils';
 
-export class DHTGraph extends pinToBoard<Playground>(LitElement) {
-  @query("#graph")
+export class DHTGraph extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
+  @query('#graph')
   element: HTMLElement;
 
-  @query("#dht-help")
+  @query('#dht-help')
   dhtHelp: Dialog;
 
   lastNodes: string[] = [];
@@ -37,13 +40,13 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
     const nodes = dnaNodes(selectActiveCells(this.state));
 
     this.cy = cytoscape({
-      container: this.shadowRoot.getElementById("graph"),
+      container: this.shadowRoot.getElementById('graph'),
       boxSelectionEnabled: false,
       elements: nodes,
       autoungrabify: true,
       userPanningEnabled: false,
       userZoomingEnabled: false,
-      layout: { name: "circle" },
+      layout: { name: 'circle' },
       style: `
             node {
               background-color: gray;
@@ -84,12 +87,12 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
           `,
     });
 
-    this.cy.on("tap", "node", (evt) => {
-      this.blackboard.update("activeAgentId", evt.target.id());
-      this.blackboard.update("activeEntryId", null);
+    this.cy.on('tap', 'node', (evt) => {
+      this.blackboard.update('activeAgentId', evt.target.id());
+      this.blackboard.update('activeEntryId', null);
     });
 
-    this.addEventListener("entry-committed", (e: CustomEvent) => {
+    this.addEventListener('entry-committed', (e: CustomEvent) => {
       this.requestUpdate();
       this.highlightNodesWithEntry(e.detail.entryId);
     });
@@ -97,34 +100,34 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
 
   highlightNodesWithEntry(entryId: string) {
     selectActiveCells(this.state).forEach((cell) =>
-      this.cy.getElementById(cell.agentId).removeClass("highlighted")
+      this.cy.getElementById(cell.agentId).removeClass('highlighted')
     );
     const cells = selectHoldingCells(this.state)(entryId);
 
     for (const cell of cells) {
-      this.cy.getElementById(cell.agentId).addClass("highlighted");
+      this.cy.getElementById(cell.agentId).addClass('highlighted');
     }
   }
 
   updated(changedValues) {
     super.updated(changedValues);
 
-    if (this.shadowRoot.getElementById("graph")) {
+    if (this.shadowRoot.getElementById('graph')) {
       const newAgentIds = selectActiveCells(this.state).map((c) => c.agentId);
       if (!vectorsEqual(this.lastNodes, newAgentIds)) {
         if (this.layout) this.layout.stop();
-        this.cy.remove("nodes");
+        this.cy.remove('nodes');
         this.cy.add(dnaNodes(selectActiveCells(this.state)));
 
-        this.layout = this.cy.elements().makeLayout({ name: "circle" });
+        this.layout = this.cy.elements().makeLayout({ name: 'circle' });
         this.layout.run();
         this.lastNodes = newAgentIds;
       }
 
       selectActiveCells(this.state).forEach((cell) =>
-        this.cy.getElementById(cell.agentId).removeClass("selected")
+        this.cy.getElementById(cell.agentId).removeClass('selected')
       );
-      this.cy.getElementById(this.state.activeAgentId).addClass("selected");
+      this.cy.getElementById(this.state.activeAgentId).addClass('selected');
 
       this.highlightNodesWithEntry(this.state.activeEntryId);
     }
@@ -178,3 +181,5 @@ export class DHTGraph extends pinToBoard<Playground>(LitElement) {
       </div>`;
   }
 }
+
+customElements.define('holochain-playground-dht-graph', DHTGraph);

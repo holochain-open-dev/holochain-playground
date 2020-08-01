@@ -1,6 +1,5 @@
-import { Constructor, LitElement } from "lit-element";
-import { Blackboard } from "./blackboard";
-import { CustomElement } from "./custom-element";
+import { Constructor, LitElement } from 'lit-element';
+import { Blackboard } from './blackboard';
 
 export interface PinnedElement<S> {
   state: S;
@@ -9,10 +8,11 @@ export interface PinnedElement<S> {
   stateUpdated(state: S): void;
 }
 
-export const pinToBoard = <
+export const blackboardConnect = <
   S,
   T extends Constructor<LitElement> = Constructor<LitElement>
 >(
+  blackboardId: string,
   baseElement: T
 ): {
   new (...args: any[]): PinnedElement<S> & LitElement & T;
@@ -25,12 +25,15 @@ export const pinToBoard = <
     }
     connectedCallback() {
       super.connectedCallback();
-      const e = new CustomEvent("pin-to-board", {
+      const e = new CustomEvent('connect-to-blackboard', {
         bubbles: true,
         composed: true,
+        detail: {
+          blackboardId,
+        },
       });
       this.dispatchEvent(e);
-      this.blackboard = e["blackboard"];
+      this.blackboard = e['blackboard'];
       this.blackboard.subscribe((state) => {
         if (((this as unknown) as LitElement).requestUpdate) {
           ((this as unknown) as LitElement).requestUpdate();

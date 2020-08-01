@@ -15,14 +15,17 @@ import '@alenaksu/json-viewer';
 import { entryToDHTOps, neighborhood } from '../types/dht-op';
 import { hash } from '../processors/hash';
 import { Playground } from '../state/playground';
-import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 import {
   selectActiveCell,
   selectEntry,
   selectActiveCells,
 } from '../state/selectors';
 
-export class CreateEntries extends pinToBoard<Playground>(LitElement) {
+export class CreateEntries extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   @property({ attribute: false })
   selectedEntryType: number = 0;
 
@@ -560,3 +563,5 @@ export class CreateEntries extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-create-entries', CreateEntries);

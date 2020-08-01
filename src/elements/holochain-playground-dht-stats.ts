@@ -1,24 +1,27 @@
-import { pinToBoard } from "../blackboard/blackboard-mixin";
-import { Playground } from "../state/playground";
-import { LitElement, html, query, property } from "lit-element";
+import { blackboardConnect } from '../blackboard/blackboard-connect';
+import { Playground } from '../state/playground';
+import { LitElement, html, query, property } from 'lit-element';
 import {
   selectCellCount,
   selectGlobalDHTOps,
   selectUniqueDHTOps,
   selectMedianHoldingDHTOps,
-} from "../state/selectors";
-import { sharedStyles } from "./sharedStyles";
-import { createConductors } from "../processors/create-conductors";
-import { Dialog } from "@material/mwc-dialog";
-import { TextFieldBase } from "@material/mwc-textfield/mwc-textfield-base";
-import "@material/mwc-linear-progress";
+} from '../state/selectors';
+import { sharedStyles } from './sharedStyles';
+import { createConductors } from '../processors/create-conductors';
+import { Dialog } from '@material/mwc-dialog';
+import { TextFieldBase } from '@material/mwc-textfield/mwc-textfield-base';
+import '@material/mwc-linear-progress';
 
-export class DHTStats extends pinToBoard<Playground>(LitElement) {
-  @query("#stats-help")
+export class DHTStats extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
+  @query('#stats-help')
   statsHelp: Dialog;
-  @query("#number-of-nodes")
+  @query('#number-of-nodes')
   nNodes: TextFieldBase;
-  @query("#r-factor")
+  @query('#r-factor')
   rFactor: TextFieldBase;
 
   timeout;
@@ -89,7 +92,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
         );
       }
     }
-    this.blackboard.update("conductors", conductors);
+    this.blackboard.update('conductors', conductors);
 
     if (changedNodes || this.state.redundancyFactor !== rFactor) {
       const cells = conductors.map((c) => c.cells[dna]);
@@ -102,7 +105,7 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
       }
     }
 
-    this.blackboard.update("redundancyFactor", rFactor);
+    this.blackboard.update('redundancyFactor', rFactor);
     this.processing = false;
   }
 
@@ -179,3 +182,5 @@ export class DHTStats extends pinToBoard<Playground>(LitElement) {
     `;
   }
 }
+
+customElements.define('holochain-playground-dht-stats', DHTStats);

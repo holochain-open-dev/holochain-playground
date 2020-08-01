@@ -7,11 +7,14 @@ import { isEqual } from 'lodash-es';
 
 import { sharedStyles } from './sharedStyles';
 import { Playground } from '../state/playground';
-import { pinToBoard } from '../blackboard/blackboard-mixin';
+import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { selectActiveCell, selectActiveEntry } from '../state/selectors';
 cytoscape.use(dagre); // register extension
 
-export class SourceChain extends pinToBoard<Playground>(LitElement) {
+export class SourceChain extends blackboardConnect<Playground>(
+  'holochain-playground',
+  LitElement
+) {
   static get styles() {
     return [
       sharedStyles,
@@ -112,11 +115,9 @@ export class SourceChain extends pinToBoard<Playground>(LitElement) {
 
   render() {
     return html`
-      <div class="row fill">
-        <div style="width: 400px; height: 95%;" id="source-chain-graph"></div>
-
-        <entry-detail style="flex: 1"></entry-detail>
-      </div>
+      <div style="width: 400px; height: 95%;" id="source-chain-graph"></div>
     `;
   }
 }
+
+customElements.define('holochain-playground-source-chain', SourceChain);
