@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit-element';
 
-import 'holochain-playground/elements/holochain-playground-entry-graph';
-import 'holochain-playground/elements/holochain-playground-dht-stats';
-import 'holochain-playground/elements/holochain-playground-create-entries';
-import 'holochain-playground/elements/holochain-playground-entry-detail';
-import { blackboardConnect } from 'holochain-playground/blackboard/blackboard-connect';
+import '../../dist/elements/holochain-playground-entry-graph';
+import '../../dist/elements/holochain-playground-dht-stats';
+import '../../dist/elements/holochain-playground-create-entries';
+import '../../dist/elements/holochain-playground-entry-detail';
+import { blackboardConnect } from '../../dist/blackboard/blackboard-connect';
 
 export class DesignerMode extends blackboardConnect(
   'holochain-playground',

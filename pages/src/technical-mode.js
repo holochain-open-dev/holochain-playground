@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import { selectActiveConductor } from 'holochain-playground/state/selectors';
-import { blackboardConnect } from 'holochain-playground/blackboard/blackboard-connect';
+import { selectActiveConductor } from '../../dist/state/selectors';
+import { blackboardConnect } from '../../dist/blackboard/blackboard-connect';
 
 export class TechnicalMode extends blackboardConnect(
   'holochain-playground',

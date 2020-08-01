@@ -10,11 +10,11 @@ import '@material/mwc-menu';
 import '@material/mwc-list/mwc-list-item';
 import '@authentic/mwc-circular-progress';
 
-import { connectToConductors } from 'holochain-playground/processors/connect-to-conductors';
-import 'holochain-playground/elements/holochain-playground-container';
-import 'holochain-playground/elements/holochain-playground-select-dna';
-import 'holochain-playground/elements/holochain-playground-connect-to-nodes';
-import 'holochain-playground/blackboard/blackboard-connect';
+import { connectToConductors } from '../../dist/processors/connect-to-conductors';
+import '../../dist/elements/holochain-playground-container';
+import '../../dist/elements/holochain-playground-select-dna';
+import '../../dist/elements/holochain-playground-connect-to-nodes';
+import '../../dist/blackboard/blackboard-connect';
 
 import './designer-mode';
 import './technical-mode';

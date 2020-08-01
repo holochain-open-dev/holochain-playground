@@ -15,6 +15,7 @@
     "emitDecoratorMetadata": true,
     "noImplicitThis": false,
     "alwaysStrict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true
   },
   "include": ["src"],
