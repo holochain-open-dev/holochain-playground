@@ -1,7 +1,6 @@
 import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
-import { LitElement, query } from 'lit-element';
-import { html } from 'lit-html';
+import { LitElement, query, html } from 'lit-element';
 
 import '@material/mwc-button';
 import { downloadFile, fileToPlayground } from '../processors/files';
@@ -44,14 +43,12 @@ export class ImportExport extends blackboardConnect<Playground>(
   render() {
     return html`
       <mwc-button
-        slot="actionItems"
         label="Import"
         icon="publish"
         style="margin-right: 18px;"
         @click=${() => this.fileUpload.click()}
       ></mwc-button>
       <mwc-button
-        slot="actionItems"
         label="Export"
         icon="get_app"
         style="margin-right: 18px;"

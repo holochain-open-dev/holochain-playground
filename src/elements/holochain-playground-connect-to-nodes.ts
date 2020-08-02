@@ -1,6 +1,6 @@
 import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
-import { LitElement, html, property } from 'lit-element';
+import { LitElement, html, property, css } from 'lit-element';
 import { TextFieldBase } from '@material/mwc-textfield/mwc-textfield-base';
 import { checkConnection } from '../processors/connect-to-conductors';
 
@@ -15,6 +15,14 @@ export class ConnectToNodes extends blackboardConnect<Playground>(
   open: Boolean = false;
 
   urlsState = {};
+
+  static get styles() {
+    return css`
+      mwc-dialog {
+        --mdc-theme-primary: black;
+      }
+    `;
+  }
 
   firstUpdated() {
     if (this.state.conductorsUrls !== undefined) {

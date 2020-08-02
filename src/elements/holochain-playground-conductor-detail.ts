@@ -126,18 +126,22 @@ export class ConductorDetail extends blackboardConnect<Playground>(
                       <holochain-playground-source-chain
                         class="fill"
                       ></holochain-playground-source-chain>
-                      <holochain-playground-entry-detail
-                        class="fill"
-                      ></holochain-playground-entry-detail>
+                      <div class="flex-scrollable-parent">
+                        <div class="flex-scrollable-container">
+                          <div class="flex-scrollable-y">
+                            <holochain-playground-entry-detail
+                              class="fill"
+                            ></holochain-playground-entry-detail>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   `
                 : this.selectedTabIndex === 1
                 ? html`
-                    <div style="position: relative; display: flex;" class="fill">
-                      <div
-                        style="position: absolute; top:0;left:0;right:0;bottom:0;"
-                      >
-                        <div style="max-height: 100%; overflow-y: auto;">
+                    <div class="flex-scrollable-parent">
+                      <div class="flex-scrollable-container">
+                        <div class="flex-scrollable-y">
                           <holochain-playground-dht-shard></holochain-playground-dht-shard>
                         </div>
                       </div>

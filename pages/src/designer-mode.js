@@ -55,10 +55,16 @@ export class DesignerMode extends blackboardConnect(
             : html``}
 
           <mwc-card style="width: auto; padding-top: 0;" class="padding fill">
-            <holochain-playground-entry-detail
-              class="padding fill"
-              withMetadata
-            ></holochain-playground-entry-detail>
+            <div class="flex-scrollable-parent">
+              <div class="flex-scrollable-container">
+                <div class="flex-scrollable-y">
+                  <holochain-playground-entry-detail
+                    class="padding fill"
+                    withMetadata
+                  ></holochain-playground-entry-detail>
+                </div>
+              </div>
+            </div>
           </mwc-card>
         </div>
       </div>

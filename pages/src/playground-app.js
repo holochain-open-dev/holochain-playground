@@ -15,6 +15,7 @@ import { connectToConductors } from '../../dist/processors/connect-to-conductors
 import '../../dist/elements/holochain-playground-container';
 import '../../dist/elements/holochain-playground-select-dna';
 import '../../dist/elements/holochain-playground-connect-to-nodes';
+import '../../dist/elements/holochain-playground-import-export';
 import '../../dist/blackboard/blackboard-connect';
 import { sharedStyles } from '../../dist/elements/sharedStyles';
 
@@ -40,7 +41,7 @@ export class PlaygroundApp extends blackboardConnect(
         }
         holochain-playground-connect-to-nodes,
         holochain-playground-import-export {
-          --mdc-theme-primary: black;
+          --mdc-theme-primary: white;
           --mdc-select-focused-label-color: white;
           --mdc-select-focused-dropdown-icon-color: white;
           --mdc-select-ink-color: white;
