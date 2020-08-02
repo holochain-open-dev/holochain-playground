@@ -10,5 +10,11 @@ export default {
   input: `src/**/*.ts`,
   output: { dir: 'dist', format: 'es', sourcemap: true },
   external: [...Object.keys(pkg.dependencies), /@material/, /rxjs/],
-  plugins: [multiInput(), json(), typescript(), resolve(), sourceMaps()],
+  plugins: [
+    multiInput(),
+    json(),
+    typescript(),
+    resolve(),
+    sourceMaps(),
+  ],
 };

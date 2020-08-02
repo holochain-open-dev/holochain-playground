@@ -1,26 +1,464 @@
 {
-  "version": 2,
+  "version": "experimental",
   "tags": [
     {
-      "name": "pag-es",
-      "description": "An application with a title and an action counter",
-      "properties": [
+      "name": "holochain-playground-conductor-detail",
+      "path": "./src/elements/holochain-playground-conductor-detail.ts",
+      "attributes": [
         {
-          "name": "title",
-          "type": "String",
-          "description": "The title of your application",
-          "default": "Hey there"
-        },
-        {
-          "name": "page",
-          "type": "String",
-          "description": "Which page to show",
-          "default": "main"
+          "name": "selectedTabIndex",
+          "type": "number",
+          "default": "0"
         }
       ],
-      "events": [],
-      "slots": [],
-      "cssProperties": []
+      "properties": [
+        {
+          "name": "selectedTabIndex",
+          "attribute": "selectedTabIndex",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "conductorHelp",
+          "type": "Dialog"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-connect-to-nodes",
+      "path": "./src/elements/holochain-playground-connect-to-nodes.ts",
+      "attributes": [
+        {
+          "name": "conductorUrls",
+          "type": "string[] | undefined",
+          "default": "[\"ws://localhost:8888\"]"
+        },
+        {
+          "name": "open",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "conductorUrls",
+          "attribute": "conductorUrls",
+          "type": "string[] | undefined",
+          "default": "[\"ws://localhost:8888\"]"
+        },
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "name": "urlsState",
+          "type": "object",
+          "default": "{}"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-container",
+      "path": "./src/elements/holochain-playground-container.ts",
+      "attributes": [
+        {
+          "name": "initialPlayground",
+          "type": "Playground"
+        },
+        {
+          "name": "message",
+          "type": "string | undefined"
+        }
+      ],
+      "properties": [
+        {
+          "name": "initialPlayground",
+          "attribute": "initialPlayground",
+          "type": "Playground"
+        },
+        {
+          "name": "snackbar",
+          "type": "Snackbar"
+        },
+        {
+          "name": "message",
+          "attribute": "message",
+          "type": "string | undefined"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-create-entries",
+      "path": "./src/elements/holochain-playground-create-entries.ts",
+      "properties": [
+        {
+          "name": "selectedEntryType",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "createTextarea",
+          "type": "TextArea"
+        },
+        {
+          "name": "createType",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "updateTextarea",
+          "type": "TextArea"
+        },
+        {
+          "name": "updateAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "removeAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "addFromAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "addToAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "addType",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "addTag",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "removeFromAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "removeToAddress",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "removeType",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "removeTimestamp",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "entryToCreate",
+          "type": "{ entry: Entry; replaces?: string | undefined; } | undefined",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "entry-committed"
+        },
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-graph",
+      "path": "./src/elements/holochain-playground-dht-graph.ts",
+      "properties": [
+        {
+          "name": "element",
+          "type": "HTMLElement"
+        },
+        {
+          "name": "dhtHelp",
+          "type": "Dialog"
+        },
+        {
+          "name": "lastNodes",
+          "type": "string[]",
+          "default": "[]"
+        },
+        {
+          "name": "cy"
+        },
+        {
+          "name": "layout"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-shard",
+      "path": "./src/elements/holochain-playground-dht-shard.ts",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-stats",
+      "path": "./src/elements/holochain-playground-dht-stats.ts",
+      "attributes": [
+        {
+          "name": "processing",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "statsHelp",
+          "type": "Dialog"
+        },
+        {
+          "name": "nNodes",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "rFactor",
+          "type": "TextFieldBase"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "processing",
+          "attribute": "processing",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-detail",
+      "path": "./src/elements/holochain-playground-entry-detail.ts",
+      "attributes": [
+        {
+          "name": "withMetadata",
+          "type": "boolean",
+          "default": "false"
+        }
+      ],
+      "properties": [
+        {
+          "name": "withMetadata",
+          "attribute": "withMetadata",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-graph",
+      "path": "./src/elements/holochain-playground-entry-graph.ts",
+      "properties": [
+        {
+          "name": "showAgentsIds",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "entryGraphHelp",
+          "type": "Dialog"
+        },
+        {
+          "name": "entryGraph",
+          "type": "HTMLElement"
+        },
+        {
+          "name": "lastEntriesIds",
+          "type": "string[]",
+          "default": "[]"
+        },
+        {
+          "name": "cy"
+        },
+        {
+          "name": "layout"
+        },
+        {
+          "name": "ready",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-import-export",
+      "path": "./src/elements/holochain-playground-import-export.ts",
+      "properties": [
+        {
+          "name": "fileUpload",
+          "type": "HTMLInputElement"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-select-dna",
+      "path": "./src/elements/holochain-playground-select-dna.ts",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-source-chain",
+      "path": "./src/elements/holochain-playground-source-chain.ts",
+      "properties": [
+        {
+          "name": "cy"
+        },
+        {
+          "name": "nodes",
+          "type": "array",
+          "default": "[]"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
     }
   ]
 }

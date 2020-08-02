@@ -4,7 +4,7 @@
     "dev": "rimraf dist && rollup -c rollup.config.ts -w",
     "test": "karma start --coverage",
     "test:watch": "concurrently --kill-others --names tsc,karma \"npm run tsc:watch\" \"karma start --auto-watch=true --single-run=false\"",
-    "storybook": "concurrently --kill-others --names tsc,storybook \"npm run tsc:watch\" \"start-storybook --node-resolve --watch --open\"",
+    "storybook": "concurrently --kill-others --names tsc,storybook \"npm run dev\" \"start-storybook --node-resolve --watch --open\"",
     "storybook:build": "build-storybook"
   },
   "devDependencies": {
@@ -15,12 +15,14 @@
     "@open-wc/testing": "^2.0.0",
     "@open-wc/testing-karma": "^3.0.0",
     "@rollup/plugin-alias": "^3.1.1",
+    "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "^7.1.2",
     "@rollup/plugin-typescript": "^5.0.2",
     "@types/lodash-es": "^4.17.3",
     "babel-loader": "^8.1.0",
     "babel-polyfill": "^6.26.0",
+    "concurrently": "^5.2.0",
     "deepmerge": "^3.2.0",
     "es-dev-commonjs-transformer": "^0.2.0",
     "es-dev-server": "^1.5.0",
@@ -72,6 +74,8 @@
     "lodash-es": "^4.17.15",
     "multihashes": "^2.0.0",
     "multihashing": "^0.3.3",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
     "rxjs": "^6.5.5"
   },
   "files": [
