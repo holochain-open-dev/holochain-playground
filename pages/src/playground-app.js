@@ -36,12 +36,14 @@ export class PlaygroundApp extends blackboardConnect(
 
         mwc-top-app-bar-fixed mwc-button,
         mwc-top-app-bar-fixed mwc-formfield,
-        mwc-top-app-bar-fixed mwc-switch {
-          --mdc-theme-primary: white;
-        }
+        mwc-top-app-bar-fixed mwc-switch,
         holochain-playground-connect-to-nodes,
         holochain-playground-import-export {
           --mdc-theme-primary: white;
+        }
+
+        mwc-select {
+          --mdc-theme-primary: black;
           --mdc-select-focused-label-color: white;
           --mdc-select-focused-dropdown-icon-color: white;
           --mdc-select-ink-color: white;
