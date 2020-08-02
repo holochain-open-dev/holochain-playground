@@ -4,7 +4,10 @@ import '../../dist/elements/holochain-playground-entry-graph';
 import '../../dist/elements/holochain-playground-dht-stats';
 import '../../dist/elements/holochain-playground-create-entries';
 import '../../dist/elements/holochain-playground-entry-detail';
+import { sharedStyles } from '../../dist/elements/sharedStyles';
 import { blackboardConnect } from '../../dist/blackboard/blackboard-connect';
+
+import '@authentic/mwc-card';
 
 export class DesignerMode extends blackboardConnect(
   'holochain-playground',

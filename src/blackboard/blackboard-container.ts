@@ -2,35 +2,38 @@ import { Constructor, LitElement } from 'lit-element';
 import { Blackboard } from './blackboard';
 import { CustomElement } from './custom-element';
 
-export interface BlackboardProviderElement<S> {
+export interface BlackboardContainerElement<S> extends HTMLElement {
   blackboard: Blackboard<S>;
 }
 
-export const blackboardProvider = <
+export const blackboardContainer = <
   S,
   T extends Constructor<LitElement> = Constructor<LitElement>
 >(
   blackboardId: string,
   baseElement: T
-): {
-  new (...args: any[]): BlackboardProviderElement<S> & LitElement & T;
-  prototype: any;
-} =>
-  (class extends baseElement implements BlackboardProviderElement<S> {
+): Constructor<BlackboardContainerElement<S>> => {
+  abstract class BlackboardContainer extends baseElement
+    implements BlackboardContainerElement<S> {
     blackboard: Blackboard<S>;
     get state() {
       return this.blackboard.state;
     }
     connectedCallback() {
       super.connectedCallback();
+
+      this.blackboard = this.buildBlackboard();
+
       this.addEventListener('connect-to-blackboard', (e: CustomEvent) => {
-        if ((e.detail.blackboardId = blackboardId)) {
+        if (e.detail.blackboardId == blackboardId) {
           e.stopPropagation();
           e['blackboard'] = this.blackboard;
         }
       });
     }
-  } as unknown) as {
-    new (...args: any[]): BlackboardProviderElement<S> & LitElement & T;
-    prototype: any;
-  };
+
+    abstract buildBlackboard(): Blackboard<S>;
+  }
+
+  return BlackboardContainer;
+};

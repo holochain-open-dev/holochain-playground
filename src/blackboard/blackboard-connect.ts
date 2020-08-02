@@ -34,6 +34,13 @@ export const blackboardConnect = <
       });
       this.dispatchEvent(e);
       this.blackboard = e['blackboard'];
+
+      if (!this.blackboard) {
+        throw new Error(
+          'Could not connect to the blackboard: this element must be contained inside a blackboard-container element with the same blackboardId'
+        );
+      }
+
       this.blackboard.subscribe((state) => {
         if (((this as unknown) as LitElement).requestUpdate) {
           ((this as unknown) as LitElement).requestUpdate();

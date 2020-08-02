@@ -1,11 +1,14 @@
-/* eslint-disable import/no-extraneous-dependencies */
+const alias = require('@rollup/plugin-alias');
 const { createDefaultConfig } = require('@open-wc/testing-karma');
+const cjsTransformer = require('es-dev-commonjs-transformer');
 const merge = require('deepmerge');
+const { wrapRollupPlugin } = require('es-dev-server-rollup');
 
 module.exports = (config) => {
   config.set(
     merge(createDefaultConfig(config), {
-      frameworks: ['commonjs'],
+      browsers: ['ChromeHeadlessNoSandbox'],
+
       files: [
         // runs all files ending with .test in the test folder,
         // can be overwritten by passing a --grep flag. examples:
@@ -19,10 +22,24 @@ module.exports = (config) => {
       ],
 
       esm: {
-        nodeResolve: true,
-      },
-      preprocessors: {
-        '**/*.js': ['commonjs'],
+        nodeResolve: {
+          browser: true,
+        },
+        responseTransformers: [
+          cjsTransformer([
+            '**/node_modules/@open-wc/**/*',
+            '**/node_modules/chai/**/*',
+            '**/node_modules/chai-dom/**/*',
+            '**/node_modules/sinon-chai/**/*',
+          ]),
+        ],
+        plugins: [
+          wrapRollupPlugin(
+            alias({
+              entries: [{ find: 'crypto', replacement: 'crypto-browserify' }],
+            })
+          ),
+        ],
       },
 
       // you can overwrite/extend the config further

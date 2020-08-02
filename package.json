@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.ts",
+    "dev": "rimraf dist && rollup -c rollup.config.ts -w",
     "test": "karma start --coverage",
     "test:watch": "concurrently --kill-others --names tsc,karma \"npm run tsc:watch\" \"karma start --auto-watch=true --single-run=false\"",
     "storybook": "concurrently --kill-others --names tsc,storybook \"npm run tsc:watch\" \"start-storybook --node-resolve --watch --open\"",
@@ -13,6 +14,7 @@
     "@open-wc/demoing-storybook": "^2.0.0",
     "@open-wc/testing": "^2.0.0",
     "@open-wc/testing-karma": "^3.0.0",
+    "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-json": "^4.0.2",
     "@rollup/plugin-node-resolve": "^7.1.2",
     "@rollup/plugin-typescript": "^5.0.2",
@@ -20,8 +22,9 @@
     "babel-loader": "^8.1.0",
     "babel-polyfill": "^6.26.0",
     "deepmerge": "^3.2.0",
+    "es-dev-commonjs-transformer": "^0.2.0",
     "es-dev-server": "^1.5.0",
-    "karma-commonjs": "^1.0.0",
+    "es-dev-server-rollup": "0.0.6",
     "rimraf": "^2.6.3",
     "rollup": "^2.6.0",
     "rollup-plugin-multi-input": "^1.1.1",
@@ -67,7 +70,7 @@
     "cytoscape-spread": "^3.0.0",
     "lit-element": "^2.3.1",
     "lodash-es": "^4.17.15",
-    "multihashes": "^0.4.18",
+    "multihashes": "^2.0.0",
     "multihashing": "^0.3.3",
     "rxjs": "^6.5.5"
   },

@@ -15,6 +15,7 @@ import { blackboardConnect } from '../blackboard/blackboard-connect';
 import './holochain-playground-source-chain';
 import './holochain-playground-create-entries';
 import './holochain-playground-dht-shard';
+import './holochain-playground-entry-detail';
 
 export class ConductorDetail extends blackboardConnect<Playground>(
   'holochain-playground',
@@ -121,13 +122,26 @@ export class ConductorDetail extends blackboardConnect<Playground>(
             <div style="padding: 16px;" class="column fill">
               ${this.selectedTabIndex === 0
                 ? html`
-                    <holochain-playground-source-chain
-                      class="fill"
-                    ></holochain-playground-source-chain>
+                    <div class="row fill">
+                      <holochain-playground-source-chain
+                        class="fill"
+                      ></holochain-playground-source-chain>
+                      <holochain-playground-entry-detail
+                        class="fill"
+                      ></holochain-playground-entry-detail>
+                    </div>
                   `
                 : this.selectedTabIndex === 1
                 ? html`
-                    <holochain-playground-dht-shard></holochain-playground-dht-shard>
+                    <div style="position: relative; display: flex;" class="fill">
+                      <div
+                        style="position: absolute; top:0;left:0;right:0;bottom:0;"
+                      >
+                        <div style="max-height: 100%; overflow-y: auto;">
+                          <holochain-playground-dht-shard></holochain-playground-dht-shard>
+                        </div>
+                      </div>
+                    </div>
                   `
                 : html`
                     <holochain-playground-create-entries></holochain-playground-create-entries>

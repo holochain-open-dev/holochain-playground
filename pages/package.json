@@ -1,16 +1,16 @@
 {
   "scripts": {
-    "build": "rimraf dist && rollup -c rollup.config.js",
-    "start:build": "npm run build && es-dev-server --root-dir dist --app-index index.html --open --compatibility none",
-    "start": "es-dev-server --app-index index.html --node-resolve --open --watch"
+    "build": "webpack",
+    "start": "webpack-dev-server"
   },
   "devDependencies": {
-    "@open-wc/building-rollup": "^1.0.0",
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "es-dev-server": "^1.5.0",
+    "base-href-webpack-plugin": "^2.0.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "html-webpack-plugin": "^3.2.0",
     "rimraf": "^2.6.3",
-    "rollup": "^2.3.4"
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "name": "pag-es",
   "version": "0.0.0",

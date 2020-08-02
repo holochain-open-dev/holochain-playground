@@ -1,6 +1,6 @@
 import { Snackbar } from '@material/mwc-snackbar';
 
-import { blackboardProvider } from '../blackboard/blackboard-container';
+import { blackboardContainer } from '../blackboard/blackboard-container';
 import { LitElement, html, css, query, property } from 'lit-element';
 import { Playground } from '../state/playground';
 import { connectToConductors } from '../processors/connect-to-conductors';
@@ -12,7 +12,7 @@ import { Blackboard } from '../blackboard/blackboard';
 import { buildPlayground } from '../processors/build-playground';
 import { hash } from '../processors/hash';
 
-export class PlaygroundContainer extends blackboardProvider<Playground>(
+export class PlaygroundContainer extends blackboardContainer<Playground>(
   'holochain-playground',
   LitElement
 ) {
@@ -37,17 +37,20 @@ export class PlaygroundContainer extends blackboardProvider<Playground>(
     return buildPlayground(hash('dna1'), 10);
   }
 
-  firstUpdated() {
+  buildBlackboard() {
     let playground = this.initialPlayground;
-    if (!this.initialPlayground.conductorsUrls) {
+    if (!this.initialPlayground || !this.initialPlayground.conductorsUrls) {
       playground = this.buildInitialSimulatedPlayground();
     }
-    this.blackboard = new Blackboard(playground, {
+
+    return new Blackboard(playground, {
       persistId: 'holochain-playground',
       serializer: serializePlayground,
       deserializer: deserializePlayground,
     });
+  }
 
+  firstUpdated() {
     this.blackboard.select('conductorsUrls').subscribe(async (urls) => {
       if (urls !== undefined) {
         try {

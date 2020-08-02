@@ -10,11 +10,13 @@ import '@material/mwc-menu';
 import '@material/mwc-list/mwc-list-item';
 import '@authentic/mwc-circular-progress';
 
+import { blackboardConnect } from '../../dist/blackboard/blackboard-connect';
 import { connectToConductors } from '../../dist/processors/connect-to-conductors';
 import '../../dist/elements/holochain-playground-container';
 import '../../dist/elements/holochain-playground-select-dna';
 import '../../dist/elements/holochain-playground-connect-to-nodes';
 import '../../dist/blackboard/blackboard-connect';
+import { sharedStyles } from '../../dist/elements/sharedStyles';
 
 import './designer-mode';
 import './technical-mode';
@@ -25,14 +27,19 @@ export class PlaygroundApp extends blackboardConnect(
 ) {
   static get styles() {
     return [
+      sharedStyles,
       css`
+        :host {
+          display: contents;
+        }
+
         mwc-top-app-bar-fixed mwc-button,
         mwc-top-app-bar-fixed mwc-formfield,
         mwc-top-app-bar-fixed mwc-switch {
           --mdc-theme-primary: white;
         }
-
-        mwc-select {
+        holochain-playground-connect-to-nodes,
+        holochain-playground-import-export {
           --mdc-theme-primary: black;
           --mdc-select-focused-label-color: white;
           --mdc-select-focused-dropdown-icon-color: white;
@@ -44,6 +51,14 @@ export class PlaygroundApp extends blackboardConnect(
         }
       `,
     ];
+  }
+
+  static get properties() {
+    return {
+      technicalMode: {
+        type: Boolean,
+      },
+    };
   }
 
   toggleMode() {
@@ -95,50 +110,53 @@ export class PlaygroundApp extends blackboardConnect(
             <mwc-circular-progress></mwc-circular-progress>
           </div>`
         : html`
-            <mwc-top-app-bar-fixed>
-              <holochain-playground-select-dna slot="title">
-              </holochain-playground-select-dna>
+            <div class="column fill">
+              <mwc-top-app-bar-fixed>
+                <holochain-playground-select-dna slot="title">
+                </holochain-playground-select-dna>
 
-              <div
-                class="row center-content"
-                slot="actionItems"
-                style="margin-right: 36px;"
-              >
-                <span style="font-size: 0.875rem; margin-right: 10px;">
-                  DESIGNER MODE
-                </span>
-
-                <mwc-formfield
-                  label="TECHNICAL MODE"
-                  style="--mdc-theme-text-primary-on-background: white;"
+                <div
+                  class="row center-content"
+                  slot="actionItems"
+                  style="margin-right: 36px;"
                 >
-                  <mwc-switch
-                    .checked=${this.technicalMode}
-                    @change=${() => this.toggleMode()}
-                  ></mwc-switch>
-                </mwc-formfield>
+                  <span style="font-size: 0.875rem; margin-right: 10px;">
+                    DESIGNER MODE
+                  </span>
+
+                  <mwc-formfield
+                    label="TECHNICAL MODE"
+                    style="--mdc-theme-text-primary-on-background: white;"
+                  >
+                    <mwc-switch
+                      .checked=${this.technicalMode}
+                      @change=${() => this.toggleMode()}
+                    ></mwc-switch>
+                  </mwc-formfield>
+                </div>
+
+                <holochain-playground-connect-to-nodes
+                  id="connect-to-nodes"
+                  slot="actionItems"
+                ></holochain-playground-connect-to-nodes>
+
+                <mwc-button
+                  slot="actionItems"
+                  label="Reset"
+                  style="margin-right: 18px;"
+                  icon="settings_backup_restore"
+                  @click=${() => this.resetState()}
+                ></mwc-button>
+
+                <holochain-playground-import-export
+                  slot="actionItems"
+                ></holochain-playground-import-export>
+              </mwc-top-app-bar-fixed>
+              <div class="row fill">
+                ${this.technicalMode
+                  ? html` <technical-mode class="fill"></technical-mode> `
+                  : html` <designer-mode class="fill"></designer-mode> `}
               </div>
-
-              <holochain-playground-connect-to-nodes
-                id="connect-to-nodes"
-              ></holochain-playground-connect-to-nodes>
-
-              <mwc-button
-                slot="actionItems"
-                label="Reset"
-                style="margin-right: 18px;"
-                icon="settings_backup_restore"
-                @click=${() => this.resetState()}
-              ></mwc-button>
-
-              <holochain-playground-import-export
-                slot="actionItems"
-              ></holochain-playground-import-export>
-            </mwc-top-app-bar-fixed>
-            <div class="row fill">
-              ${this.technicalMode
-                ? html` <technical-mode class="fill"></technical-mode> `
-                : html` <designer-mode class="fill"></designer-mode> `}
             </div>
           `}
     `;
