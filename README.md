@@ -2,38 +2,74 @@
 
 Visit the [playground](https://holochain-open-dev.github.io/holochain-playground/).
 
-This is an experimental ongoing effort to build a holochain playground simulation. It's trying to follow as accurately as possible the internal mechanisms of holochain, displaying the DHT and enablind detailed inspection.
+This is an experimental ongoing effort to build a holochain playground simulation. It's trying to follow as accurately as possible the internal mechanisms of holochain, displaying the DHT and enabling detailed inspection.
 
-For now, it includes a limited set of features (cannot modify redundancy factor, or number or nodes...). My intention is to maintain it and improve it, to also achieve dynamic situtations (nodes dropping out of the network), contributions would be highly appreciated.
+This package is distributed as an [NPM package component library](https://npmjs.com/package/holochain-playground), in the form of a collection of web-components build with the [Custom Elements](https://developers.google.com/web/fundamentals/web-components/customelements) API.
 
-This package is also distributed as an [NPM package](https://npmjs.com/package/holochain-playground), in the form of a `<holochain-playground>` customElement build with the [Custom Elements](https://developers.google.com/web/fundamentals/web-components/customelements) API.
+## Library Usage
 
-## Custom Element Usage
+1. Install the package with `npm i holochain-playground` .
+2. Import the `holochain-playground-container` in your application like this:
 
-1. Install the package with `npm i holochain-playground`.
-2. Import the package in your application like this:
-
-```js
-import "holochain-playground";
+``` js
+import "holochain-playground/elements/holochain-playground-container";
 ```
 
-3. Declare the `<holochain-playground></holochain-playground>` element:
+3. Declare the `<holochain-playground-container></holochain-playground-container>` element:
 
-```html
+``` html
 <body>
-  <holochain-playground id="playground"></holochain-playground>
+    <holochain-playground-container id="playground"></holochain-playground-container>
 </body>
 ```
 
-4. Optionally, set the conductor urls to the nodes you want to bind the playground to:
+This is the fundamental element for the playground to work, as it provides the state for all other elements you declare inside it.
 
-```html
+4. Import any elements you want from the library, and declare them inside the `holochain-playground-container` :
+
+``` js
+import 'holochain-playground/elements/holochain-playground-dht-graph'
+```
+
+``` html
 <body>
-  <holochain-playground id="playground"></holochain-playground>
-
-  <script>
-    const playground = document.getElementById("playground");
-    playground.conductorUrls = ["ws://localhost:33000"];
-  </script>
+    <holochain-playground-container id="playground">
+        <holochain-playground-dht-graph></holochain-playground-dht-graph>
+    </holochain-playground-container>
 </body>
 ```
+
+5. Optionally, set the conductor urls to the nodes you want to bind the playground to:
+
+``` html
+<body>
+    <holochain-playground-container id="playground"></holochain-playground-container>
+
+    <script>
+        const playground = document.getElementById("playground");
+        playground.initialPlayground = {
+            conductorUrls: ["ws://localhost:33000"];
+        };
+    </script>
+</body>
+```
+
+## Elements Library
+
+In the future, this will be shown with storybook.
+
+### Technical data display
+
+- `holochain-playground-dht-graph`
+- `holochain-playground-dht-stats`
+- `holochain-playground-dht-shard`
+- `holochain-playground-entry-detail`
+- `holochain-playground-entry-graph`
+- `holochain-playground-source-chain`
+
+### Utilities
+- `holochain-playground-conductor-detail`
+- `holochain-playground-create-entries`
+- `holochain-playground-import-export`
+- `holochain-playground-connect-to-nodes`
+- `holochain-playground-select-dna`

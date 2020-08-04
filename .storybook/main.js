@@ -1,8 +1,7 @@
 const commonjs = require('@rollup/plugin-commonjs');
 const cjsTransformer = require('es-dev-commonjs-transformer');
 const { wrapRollupPlugin } = require('es-dev-server-rollup');
-const builtins = require('rollup-plugin-node-builtins');
-const globals = require('rollup-plugin-node-globals');
+const replace = require('@rollup/plugin-replace');
 
 module.exports = {
   // Globs of all the stories in your project
@@ -29,7 +28,13 @@ module.exports = {
         /* Exclude Paths Array */ ['**/node_modules/@open-wc/**/*']
       ),
     ],
-    plugins: [wrapRollupPlugin(globals()), wrapRollupPlugin(builtins())],
+    plugins: [
+      wrapRollupPlugin(
+        replace({
+          isNode: false,
+        })
+      ),
+    ],
   },
 
   // Rollup build output directory (build-storybook only)
