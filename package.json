@@ -5,7 +5,8 @@
     "test": "karma start --coverage",
     "test:watch": "concurrently --kill-others --names tsc,karma \"npm run tsc:watch\" \"karma start --auto-watch=true --single-run=false\"",
     "storybook": "concurrently --kill-others --names tsc,storybook \"npm run dev\" \"start-storybook --node-resolve --watch --open\"",
-    "storybook:build": "build-storybook"
+    "storybook:build": "build-storybook",
+    "build:publish": "npm run build && cp -t dist package.json package-lock.json README.md && cd dist && npm publish"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -38,7 +39,7 @@
     "typescript": "^3.8.3"
   },
   "name": "holochain-playground",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "description": "Holochain playground that simulates real life holochain behaviour",
   "author": "holochain-playground",
   "license": "MIT",
@@ -79,8 +80,5 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rxjs": "^6.5.5"
-  },
-  "files": [
-    "dist/**/*"
-  ]
+  }
 }
