@@ -6,7 +6,6 @@ import { dnaNodes } from '../processors/graph';
 import { blackboardConnect } from '../blackboard/blackboard-connect';
 import { Playground } from '../state/playground';
 import { selectActiveCells, selectHoldingCells } from '../state/selectors';
-import { DHTOp, DHTOpType } from '../types/dht-op';
 import { sharedStyles } from './sharedStyles';
 import { vectorsEqual } from '../processors/utils';
 
@@ -14,16 +13,13 @@ export class DHTGraph extends blackboardConnect<Playground>(
   'holochain-playground',
   LitElement
 ) {
-  @query('#graph')
-  element: HTMLElement;
-
   @query('#dht-help')
-  dhtHelp: Dialog;
+  private dhtHelp: Dialog;
 
-  lastNodes: string[] = [];
+  private lastNodes: string[] = [];
 
-  cy;
-  layout;
+  private cy;
+  private layout;
 
   static get styles() {
     return [

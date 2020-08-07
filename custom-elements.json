@@ -3,6 +3,655 @@
   "tags": [
     {
       "name": "holochain-playground-conductor-detail",
+      "path": "./dist/elements/holochain-playground-conductor-detail.js",
+      "properties": [
+        {
+          "name": "selectedTabIndex",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-connect-to-nodes",
+      "path": "./dist/elements/holochain-playground-connect-to-nodes.js",
+      "properties": [
+        {
+          "name": "conductorUrls",
+          "type": "string[]",
+          "default": "[\"ws://localhost:8888\"]"
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "urlsState",
+          "type": "object",
+          "default": "{}"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-container",
+      "path": "./dist/elements/holochain-playground-container.js",
+      "properties": [
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-create-entries",
+      "path": "./dist/elements/holochain-playground-create-entries.js",
+      "properties": [
+        {
+          "name": "selectedEntryType",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "entryToCreate",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ],
+      "events": [
+        {
+          "name": "entry-committed"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-graph",
+      "path": "./dist/elements/holochain-playground-dht-graph.js",
+      "properties": [
+        {
+          "name": "lastNodes",
+          "type": "never[]",
+          "default": "[]"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-shard",
+      "path": "./dist/elements/holochain-playground-dht-shard.js",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-stats",
+      "path": "./dist/elements/holochain-playground-dht-stats.js",
+      "properties": [
+        {
+          "name": "processing",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-detail",
+      "path": "./dist/elements/holochain-playground-entry-detail.js",
+      "properties": [
+        {
+          "name": "withMetadata",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-graph",
+      "path": "./dist/elements/holochain-playground-entry-graph.js",
+      "properties": [
+        {
+          "name": "showAgentsIds",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "lastEntriesIds",
+          "type": "never[]",
+          "default": "[]"
+        },
+        {
+          "name": "ready",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-import-export",
+      "path": "./dist/elements/holochain-playground-import-export.js",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-select-dna",
+      "path": "./dist/elements/holochain-playground-select-dna.js",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-source-chain",
+      "path": "./dist/elements/holochain-playground-source-chain.js",
+      "properties": [
+        {
+          "name": "nodes",
+          "type": "never[]",
+          "default": "[]"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-container",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-select-dna",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-connect-to-nodes",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "conductorUrls",
+          "type": "string[]",
+          "default": "[\"ws://localhost:8888\"]"
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "urlsState",
+          "type": "object",
+          "default": "{}"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-graph",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "showAgentsIds",
+          "type": "boolean",
+          "default": "true"
+        },
+        {
+          "name": "lastEntriesIds",
+          "type": "never[]",
+          "default": "[]"
+        },
+        {
+          "name": "ready",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-dht-stats",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "processing",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "json-object-node",
+      "path": "./pages/dist/playground-app.js",
+      "attributes": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "collapsed"
+        }
+      ],
+      "properties": [
+        {
+          "name": "data",
+          "attribute": "data"
+        },
+        {
+          "name": "collapsed",
+          "attribute": "collapsed"
+        }
+      ]
+    },
+    {
+      "name": "json-nested-object-node",
+      "path": "./pages/dist/playground-app.js",
+      "attributes": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "collapsed"
+        },
+        {
+          "name": "key"
+        }
+      ],
+      "properties": [
+        {
+          "name": "data",
+          "attribute": "data"
+        },
+        {
+          "name": "collapsed",
+          "attribute": "collapsed"
+        },
+        {
+          "name": "key",
+          "attribute": "key"
+        }
+      ]
+    },
+    {
+      "name": "json-viewer",
+      "path": "./pages/dist/playground-app.js",
+      "attributes": [
+        {
+          "name": "data"
+        }
+      ],
+      "properties": [
+        {
+          "name": "data",
+          "attribute": "data"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-create-entries",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "selectedEntryType",
+          "type": "number",
+          "default": "0"
+        },
+        {
+          "name": "entryToCreate",
+          "default": "\"undefined\""
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "entry-committed"
+        },
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-entry-detail",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "withMetadata",
+          "type": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "hasUpdated",
+          "type": "number"
+        },
+        {
+          "name": "updateComplete",
+          "type": "Promise<any>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "designer-mode",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "state"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "technical-mode",
+      "path": "./pages/dist/playground-app.js",
+      "properties": [
+        {
+          "name": "state"
+        }
+      ],
+      "events": [
+        {
+          "name": "connect-to-blackboard"
+        }
+      ]
+    },
+    {
+      "name": "playground-app",
+      "path": "./pages/dist/playground-app.js"
+    },
+    {
+      "name": "designer-mode",
+      "path": "./pages/src/designer-mode.js",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "playground-app",
+      "path": "./pages/src/playground-app.js",
+      "attributes": [
+        {
+          "name": "technicalMode",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "technicalMode",
+          "attribute": "technicalMode",
+          "type": "boolean"
+        },
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "technical-mode",
+      "path": "./pages/src/technical-mode.js",
+      "properties": [
+        {
+          "name": "state",
+          "type": "S"
+        },
+        {
+          "name": "blackboard",
+          "type": "Blackboard<S>"
+        }
+      ]
+    },
+    {
+      "name": "holochain-playground-conductor-detail",
       "path": "./src/elements/holochain-playground-conductor-detail.ts",
       "attributes": [
         {
@@ -120,6 +769,14 @@
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
+        },
+        {
+          "name": "floatingLabelFoundation",
+          "type": "MDCFloatingLabelFoundation | undefined"
+        },
+        {
+          "name": "lineRippleFoundation",
+          "type": "MDCLineRippleFoundation | undefined"
         }
       ]
     },
@@ -211,25 +868,6 @@
       "name": "holochain-playground-dht-graph",
       "path": "./src/elements/holochain-playground-dht-graph.ts",
       "properties": [
-        {
-          "name": "element",
-          "type": "HTMLElement"
-        },
-        {
-          "name": "dhtHelp",
-          "type": "Dialog"
-        },
-        {
-          "name": "lastNodes",
-          "type": "string[]",
-          "default": "[]"
-        },
-        {
-          "name": "cy"
-        },
-        {
-          "name": "layout"
-        },
         {
           "name": "state",
           "type": "S"

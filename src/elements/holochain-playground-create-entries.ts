@@ -27,41 +27,41 @@ export class CreateEntries extends blackboardConnect<Playground>(
   LitElement
 ) {
   @property({ attribute: false })
-  selectedEntryType: number = 0;
+  private selectedEntryType: number = 0;
 
   @query('#create-entry-textarea')
-  createTextarea: TextArea;
+  private createTextarea: TextArea;
   @query('#create-entry-type')
-  createType: TextFieldBase;
+  private createType: TextFieldBase;
 
   @query('#update-entry-textarea')
-  updateTextarea: TextArea;
+  private updateTextarea: TextArea;
   @query('#update-entry-address')
-  updateAddress: TextFieldBase;
+  private updateAddress: TextFieldBase;
 
   @query('#remove-entry-address')
-  removeAddress: TextFieldBase;
+  private removeAddress: TextFieldBase;
 
   @query('#add-from-address')
-  addFromAddress: TextFieldBase;
+  private addFromAddress: TextFieldBase;
   @query('#add-to-address')
-  addToAddress: TextFieldBase;
+  private addToAddress: TextFieldBase;
   @query('#add-type')
-  addType: TextFieldBase;
+  private addType: TextFieldBase;
   @query('#add-tag')
-  addTag: TextFieldBase;
+  private addTag: TextFieldBase;
 
   @query('#remove-from-address')
-  removeFromAddress: TextFieldBase;
+  private removeFromAddress: TextFieldBase;
   @query('#remove-to-address')
-  removeToAddress: TextFieldBase;
+  private removeToAddress: TextFieldBase;
   @query('#remove-type')
-  removeType: TextFieldBase;
+  private removeType: TextFieldBase;
   @query('#remove-timestamp')
-  removeTimestamp: TextFieldBase;
+  private removeTimestamp: TextFieldBase;
 
   @property({ attribute: false })
-  entryToCreate: { entry: Entry; replaces?: string } | undefined = undefined;
+  private entryToCreate: { entry: Entry; replaces?: string } | undefined = undefined;
 
   setEntryValidity(element) {
     element.validityTransform = (newValue, nativeValidity) => {

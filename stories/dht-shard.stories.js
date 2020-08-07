@@ -22,7 +22,7 @@ export default {
 export const Simple = () => {
   return html`
     <holochain-playground-container>
-      <!-- <holochain-playground-dht-shard></holochain-playground-dht-shard> -->
+      <holochain-playground-dht-shard></holochain-playground-dht-shard>
     </holochain-playground-container>
   `;
 };

@@ -3,6 +3,7 @@
     "build": "rimraf dist && rollup -c rollup.config.ts",
     "dev": "rimraf dist && rollup -c rollup.config.ts -w",
     "test": "karma start --coverage",
+    "analize": "wca analyze --features cssproperty member slot event --outFile custom-elements.json",
     "test:watch": "concurrently --kill-others --names tsc,karma \"npm run tsc:watch\" \"karma start --auto-watch=true --single-run=false\"",
     "storybook": "start-storybook -p 8001",
     "storybook:build": "build-storybook",
