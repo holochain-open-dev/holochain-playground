@@ -53,9 +53,9 @@ export type DHTOp =
       >
     >;
 
-export function entryToDHTOps(entry: Entry, header: Header): DHTOp[] {
+export async function entryToDHTOps(entry: Entry, header: Header): Promise<DHTOp[]> {
   let additionalDHTOps: DHTOp[] = [];
-  const headerId = hash(header);
+  const headerId = await hash(header);
 
   switch (entry.type) {
     case EntryType.CreateEntry:
@@ -102,7 +102,7 @@ export function entryToDHTOps(entry: Entry, header: Header): DHTOp[] {
   ];
 }
 
-export function neighborhood(dhtOp: DHTOp): string {
+export async function neighborhood(dhtOp: DHTOp): Promise<string> {
   switch (dhtOp.type) {
     case DHTOpType.StoreHeader:
       return hash(dhtOp.header);
@@ -121,7 +121,7 @@ export function neighborhood(dhtOp: DHTOp): string {
   }
 }
 
-export function hashDHTOp(dhtOp: DHTOp): string {
+export async function hashDHTOp(dhtOp: DHTOp): Promise<string> {
   switch (dhtOp.type) {
     case DHTOpType.RegisterUpdatedTo:
       return hash({

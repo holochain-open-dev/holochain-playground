@@ -1,46 +1,16 @@
-const commonjs = require('@rollup/plugin-commonjs');
-const cjsTransformer = require('es-dev-commonjs-transformer');
-const { wrapRollupPlugin } = require('es-dev-server-rollup');
-const replace = require('@rollup/plugin-replace');
+const path = require('path');
 
 module.exports = {
-  // Globs of all the stories in your project
-  stories: ['../stories/*.stories.{js,md}'],
-
-  // Addons to be loaded, note that you need to import
-  // them from storybook-prebuilt
+  logLevel: 'debug',
   addons: [
-    'storybook-prebuilt/addon-actions/register.js',
-    'storybook-prebuilt/addon-knobs/register.js',
-    'storybook-prebuilt/addon-a11y/register.js',
-    'storybook-prebuilt/addon-docs/register.js',
+    '@storybook/addon-docs',
+    '@storybook/addon-controls',
+    '@storybook/addon-a11y',
+    '@storybook/addon-actions',
+    '@storybook/addon-backgrounds',
+    '@storybook/addon-knobs',
+    '@storybook/addon-links',
+    '@storybook/addon-storysource',
+    '@storybook/addon-viewport',
   ],
-
-  // Configuration for es-dev-server (start-storybook only)
-  esDevServer: {
-    nodeResolve: {
-      browser: true,
-      preferBuiltins: false,
-    },
-    open: true,
-    responseTransformers: [
-      cjsTransformer(
-        /* Exclude Paths Array */ ['**/node_modules/@open-wc/**/*']
-      ),
-    ],
-    plugins: [
-      wrapRollupPlugin(
-        replace({
-          isNode: false,
-        })
-      ),
-    ],
-  },
-
-  // Rollup build output directory (build-storybook only)
-  outputDir: '../dist',
-  // Configuration for rollup (build-storybook only)
-  rollup: (config) => {
-    return config;
-  },
 };

@@ -4,7 +4,6 @@ import { Playground } from '../state/playground';
 import { Conductor } from '../types/conductor';
 import { hookUpConductors } from './message';
 import { Header } from '../types/header';
-import { hash } from './hash';
 import { Entry, EntryType } from '../types/entry';
 import { CellContents, Cell } from '../types/cell';
 import { entryToDHTOps, hashDHTOp } from '../types/dht-op';
@@ -207,7 +206,8 @@ export async function processStateDump(
   const DHTOpTransforms = {};
 
   for (const dhtOp of [].concat(...dhtOps)) {
-    DHTOpTransforms[hashDHTOp(dhtOp)] = dhtOp;
+    const dhtOpId = await hashDHTOp(dhtOp);
+    DHTOpTransforms[dhtOpId] = dhtOp;
   }
 
   const sourceChain = stateDump.source_chain.map(

@@ -1,5 +1,4 @@
 import { LitElement, property, PropertyValues, html } from 'lit-element';
-import { Cell, AGENT_HEADERS, HEADERS } from '../types/cell';
 import { sharedStyles } from './sharedStyles';
 import { Playground } from '../state/playground';
 import { blackboardConnect } from '../blackboard/blackboard-connect';
@@ -14,6 +13,7 @@ export class DHTShard extends blackboardConnect<Playground>(
   }
 
   buildDHTShardJson() {
+    console.log('histate', this.state);
     const cell = selectActiveCell(this.state);
 
     return cell.getDHTShard();

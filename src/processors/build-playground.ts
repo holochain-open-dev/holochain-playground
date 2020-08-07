@@ -1,13 +1,13 @@
 import { Playground } from '../state/playground';
 import { createConductors } from './create-conductors';
 
-export function buildPlayground(
+export async function buildPlayground(
   dna: string,
   numConductors: number
-): Playground {
+): Promise<Playground> {
   const redundancyFactor = 3;
 
-  const conductors = createConductors(numConductors, [], redundancyFactor, dna);
+  const conductors = await createConductors(numConductors, [], redundancyFactor, dna);
 
   return {
     activeDNA: dna,

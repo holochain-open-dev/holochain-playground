@@ -431,13 +431,11 @@ export class CreateEntries extends blackboardConnect<Playground>(
     return cell;
   }
 
-  buildDHTOpsTransforms() {
-    const newHeader = this.cell().newHeader(
-      hashEntry(this.entryToCreate.entry),
-      this.entryToCreate.replaces
-    );
+  async buildDHTOpsTransforms() {
+    const hash = await hashEntry(this.entryToCreate.entry);
+    const newHeader = this.cell().newHeader(hash, this.entryToCreate.replaces);
 
-    const dhtOps = entryToDHTOps(this.entryToCreate.entry, newHeader);
+    const dhtOps = await entryToDHTOps(this.entryToCreate.entry, newHeader);
 
     return dhtOps.map((dhtOp) => ({
       operation: dhtOp,

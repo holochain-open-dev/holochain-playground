@@ -72,7 +72,7 @@ export class DHTStats extends blackboardConnect<Playground>(
 
     if (newNodes > currentNodes) {
       const newNodesToCreate = newNodes - currentNodes;
-      conductors = createConductors(newNodesToCreate, conductors, rFactor, dna);
+      conductors = await createConductors(newNodesToCreate, conductors, rFactor, dna);
     } else if (newNodes < currentNodes) {
       const conductorsToRemove = currentNodes - newNodes;
       conductors = conductors.sort(

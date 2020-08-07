@@ -3,6 +3,8 @@ import { Conductor } from '../types/conductor';
 import { hookUpConductors } from './message';
 
 export function serializePlayground(state: Playground): string {
+  if (!state) return '';
+
   const conductorContents = state.conductors.map((c) => c.toContents());
 
   const preState = {
@@ -13,6 +15,8 @@ export function serializePlayground(state: Playground): string {
 }
 
 export function deserializePlayground(stateString: string): Playground {
+  if (stateString === '') return null;
+
   const preState = JSON.parse(stateString);
 
   const conductors = preState.conductors.map((c) => Conductor.from(c));

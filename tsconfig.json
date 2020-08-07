@@ -6,7 +6,6 @@
     "lib": ["es2017", "dom"],
     "allowJs": true,
     "rootDir": "./src",
-    "checkJs": true,
     "outDir": "dist",
     "strict": false,
     "declaration": true,
@@ -16,6 +15,7 @@
     "noImplicitThis": false,
     "alwaysStrict": true,
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
   "include": ["src"],

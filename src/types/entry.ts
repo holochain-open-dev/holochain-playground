@@ -22,17 +22,17 @@ export type Entry =
   | EntryContent<EntryType.CapTokenClaim, any>;
 
 export enum EntryType {
-  DNA = "DNA",
-  AgentId = "AgentId",
-  CreateEntry = "CreateEntry",
-  RemoveEntry = "RemoveEntry",
-  LinkAdd = "LinkAdd",
-  LinkRemove = "LinkRemove",
-  CapTokenGrant = "CapTokenGrant",
-  CapTokenClaim = "CapTokenClaim",
+  DNA = 'DNA',
+  AgentId = 'AgentId',
+  CreateEntry = 'CreateEntry',
+  RemoveEntry = 'RemoveEntry',
+  LinkAdd = 'LinkAdd',
+  LinkRemove = 'LinkRemove',
+  CapTokenGrant = 'CapTokenGrant',
+  CapTokenClaim = 'CapTokenClaim',
 }
 
-export function hashEntry(entry: Entry): string {
+export async function hashEntry(entry: Entry): Promise<string> {
   if (entry.type === EntryType.AgentId) return entry.payload;
   return hash(entry);
 }

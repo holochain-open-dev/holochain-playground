@@ -104,25 +104,28 @@ export class Cell {
     };
   }
 
-  init() {
-    this.createEntry({ type: EntryType.DNA, payload: this.dna }, undefined);
-    this.createEntry(
+  async init() {
+    await this.createEntry(
+      { type: EntryType.DNA, payload: this.dna },
+      undefined
+    );
+    await this.createEntry(
       { type: EntryType.AgentId, payload: this.agentId },
       undefined
     );
   }
 
-  createEntry(entry: Entry, replaces: string | undefined) {
-    const entryId = hashEntry(entry);
+  async createEntry(entry: Entry, replaces: string | undefined) {
+    const entryId = await hashEntry(entry);
 
     this.CAS[entryId] = entry;
 
-    const header = this.createHeader(entryId, replaces);
+    const header = await this.createHeader(entryId, replaces);
     this.publishEntry(entry, header);
   }
 
-  publishEntry(entry: Entry, header: Header) {
-    const dhtOps = entryToDHTOps(entry, header);
+  async publishEntry(entry: Entry, header: Header) {
+    const dhtOps = await entryToDHTOps(entry, header);
 
     this.fastPush(dhtOps);
   }
@@ -135,14 +138,15 @@ export class Cell {
     }
   }
 
-  fastPush(dhtOps: DHTOp[]): void {
+  async fastPush(dhtOps: DHTOp[]): Promise<void> {
     for (const dhtOp of dhtOps) {
-      const hood = neighborhood(dhtOp);
+      const hood = await neighborhood(dhtOp);
+      const dhtOpId = await hashDHTOp(dhtOp);
       const message: NetworkMessage = {
         type: NetworkMessageType.Publish,
         payload: {
-          dhtOpId: hashDHTOp(dhtOp),
           dhtOp,
+          dhtOpId,
         },
       };
 
@@ -254,12 +258,12 @@ export class Cell {
     };
   }
 
-  createHeader(
+  async createHeader(
     entryId: string,
     replacedEntryAddress: string | undefined
-  ): Header {
+  ): Promise<Header> {
     const header = this.newHeader(entryId, replacedEntryAddress);
-    const headerId = hash(header);
+    const headerId = await hash(header);
 
     this.CAS[headerId] = header;
     this.sourceChain.push(headerId);

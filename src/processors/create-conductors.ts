@@ -1,15 +1,16 @@
 import { Conductor } from "../types/conductor";
 import { hookUpConductors } from "./message";
 
-export function createConductors(
+export async function createConductors(
   conductorsToCreate: number,
   currentConductors: Conductor[],
   redundancyFactor: number,
   dna: string
-): Conductor[] {
+): Promise<Conductor[]> {
   const newConductors: Conductor[] = [];
   for (let i = 0; i < conductorsToCreate; i++) {
     const conductor = new Conductor(redundancyFactor);
+    await conductor.ready()
     newConductors.push(conductor);
   }
 

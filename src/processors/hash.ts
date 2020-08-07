@@ -1,17 +1,17 @@
-import multihashing from 'multihashing';
-import multihashes from 'multihashes';
+import multihashing from 'multihashing-async';
+
 import { Buffer } from 'buffer';
 import CID from 'cids';
 import bitwise from 'bitwise';
 import { Dictionary } from '../types/common';
 import { Encoding } from '@holochain/hcid-js';
 
-export function hash(content: any): string {
+export async function hash(content: any): Promise<string> {
   const contentString =
     typeof content === 'string' ? content : JSON.stringify(content);
   const buffer = Buffer.from(contentString, 'utf-8');
 
-  const encoded = multihashing(buffer, 'sha2-256');
+  const encoded = await multihashing(buffer, 'sha2-256');
   const cid = new CID(0, 'dag-pb', encoded);
 
   return cid.toString();
@@ -22,7 +22,7 @@ export const hashLocation: Dictionary<number> = {};
 
 function hashBytes(hash: string): Uint8Array {
   try {
-    return multihashes.fromB58String(hash).slice(2);
+    return multihashing.multihash.fromB58String(hash).slice(2);
   } catch (e) {
     return window['enc'].decode(hash);
   }

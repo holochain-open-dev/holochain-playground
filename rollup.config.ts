@@ -3,6 +3,7 @@ import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import multiInput from 'rollup-plugin-multi-input';
+import commonjs from '@rollup/plugin-commonjs';
 
 const pkg = require('./package.json');
 
@@ -14,7 +15,12 @@ export default {
     multiInput(),
     json(),
     typescript(),
-    resolve(),
+    resolve({
+      preferBuiltins: true,
+      browser: true,
+      mainFields: ['browser', 'module', 'main'],
+    }),
+    commonjs({}),
     sourceMaps(),
   ],
 };

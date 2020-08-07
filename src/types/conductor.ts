@@ -20,6 +20,8 @@ export class Conductor {
   readonly cells: Dictionary<Cell> = {};
   sendMessage: SendMessage;
 
+  readyPromise: Promise<string[]>;
+
   constructor(
     protected redundancyFactor: number,
     protected options?: ConductorOptions
@@ -33,7 +35,9 @@ export class Conductor {
       } else {
         seed = Math.random().toString().substring(2);
       }
-      this.agentIds = [hash(`${seed}${0}`)];
+      this.readyPromise = hash(`${seed}${0}`).then(
+        (h) => (this.agentIds = [h])
+      );
     }
   }
 
@@ -46,6 +50,11 @@ export class Conductor {
     }
 
     return conductor;
+  }
+
+  ready(): Promise<void> {
+    if (this.agentIds) return new Promise((r) => r());
+    else return new Promise((r) => this.readyPromise.then(() => r()));
   }
 
   toContents(): ConductorContents {

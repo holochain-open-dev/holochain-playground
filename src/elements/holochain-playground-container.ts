@@ -1,4 +1,5 @@
 import { Snackbar } from '@material/mwc-snackbar';
+import '@material/mwc-circular-progress';
 
 import { blackboardContainer } from '../blackboard/blackboard-container';
 import { LitElement, html, css, query, property } from 'lit-element';
@@ -10,7 +11,6 @@ import {
 } from '../processors/serialize';
 import { Blackboard } from '../blackboard/blackboard';
 import { buildPlayground } from '../processors/build-playground';
-import { hash } from '../processors/hash';
 
 export class PlaygroundContainer extends blackboardContainer<Playground>(
   'holochain-playground',
@@ -34,16 +34,11 @@ export class PlaygroundContainer extends blackboardContainer<Playground>(
   }
 
   buildInitialSimulatedPlayground() {
-    return buildPlayground(hash('dna1'), 10);
+    return buildPlayground('dna1', 10);
   }
 
   buildBlackboard() {
-    let playground = this.initialPlayground;
-    if (!this.initialPlayground || !this.initialPlayground.conductorsUrls) {
-      playground = this.buildInitialSimulatedPlayground();
-    }
-
-    return new Blackboard(playground, {
+    return new Blackboard(null, {
       persistId: 'holochain-playground',
       serializer: serializePlayground,
       deserializer: deserializePlayground,
@@ -51,6 +46,12 @@ export class PlaygroundContainer extends blackboardContainer<Playground>(
   }
 
   firstUpdated() {
+    if (!this.initialPlayground || !this.initialPlayground.conductorsUrls) {
+      this.buildInitialSimulatedPlayground().then((playground) =>
+        this.blackboard.updateState(playground)
+      );
+    }
+
     this.blackboard.select('conductorsUrls').subscribe(async (urls) => {
       if (urls !== undefined) {
         try {
@@ -77,8 +78,13 @@ export class PlaygroundContainer extends blackboardContainer<Playground>(
   }
 
   render() {
-    return html` ${this.renderSnackbar()}
-      <slot></slot>`;
+    console.log('state', this.blackboard.state);
+    return html`
+      ${this.renderSnackbar()}
+      ${this.blackboard.state
+        ? html` <slot></slot> `
+        : html` <mwc-circular-progress></mwc-circular-progress>`}
+    `;
   }
 }
 
