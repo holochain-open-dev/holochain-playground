@@ -1,40 +1,62 @@
-import { LitElement, property, PropertyValues, html } from 'lit-element';
+import { LitElement, property, PropertyValues, html, query } from 'lit-element';
 import { sharedStyles } from './sharedStyles';
 import { Playground } from '../state/playground';
 import { blackboardConnect } from '../blackboard/blackboard-connect';
-import { selectActiveCells, selectActiveCell } from '../state/selectors';
+import { selectActiveCell, selectCell } from '../state/selectors';
+import { Cell } from '../types/cell';
 
 export class DHTShard extends blackboardConnect<Playground>(
   'holochain-playground',
   LitElement
 ) {
+  @query('#dht-shard')
+  private shardViewer: any;
+
+  @property({ type: Object })
+  cell: { dna: string; agentId: string } = undefined;
+
+  private selectedCell: Cell = undefined;
+
   static style() {
     return sharedStyles;
   }
 
-  buildDHTShardJson() {
-    console.log('histate', this.state);
-    const cell = selectActiveCell(this.state);
-
-    return cell.getDHTShard();
+  getCell() {
+    if (this.cell) {
+      return selectCell(this.blackboard.state)(
+        this.cell.dna,
+        this.cell.agentId
+      );
+    } else return selectActiveCell(this.blackboard.state);
   }
 
   updated(changedValues: PropertyValues) {
     super.updated(changedValues);
 
-    const dhtShard: any = this.shadowRoot.getElementById('dht-shard');
-    if (dhtShard) dhtShard.data = this.buildDHTShardJson();
+    this.selectedCell = this.getCell();
+    if (this.selectedCell) {
+      this.shardViewer.data = this.selectedCell.getDHTShard();
+    }
   }
 
   render() {
     return html`
       <div class="column">
-        <span
-          ><strong
-            >Entries with associated metadata, and agent ids with all their
-            headers</strong
-          ></span
-        >
+        <span>
+          ${this.selectedCell
+            ? html`
+                <strong>
+                  Entries with associated metadata, and agent ids with all their
+                  headers
+                </strong>
+              `
+            : html`
+                <span class="placeholder">
+                  Select a cell to see its DHT Shard
+                </span>
+              `}
+        </span>
+
         <json-viewer id="dht-shard" style="margin-top: 16px;"></json-viewer>
       </div>
     `;

@@ -13,7 +13,6 @@ import { EntryType, Entry, hashEntry } from '../types/entry';
 
 import '@alenaksu/json-viewer';
 import { entryToDHTOps, neighborhood } from '../types/dht-op';
-import { hash } from '../processors/hash';
 import { Playground } from '../state/playground';
 import { blackboardConnect } from '../blackboard/blackboard-connect';
 import {
@@ -67,7 +66,7 @@ export class CreateEntries extends blackboardConnect<Playground>(
     element.validityTransform = (newValue, nativeValidity) => {
       this.requestUpdate();
       if (newValue.length === 46) {
-        const entry = selectEntry(this.state)(newValue);
+        const entry = selectEntry(this.blackboard.state)(newValue);
         if (entry) return { valid: true };
       }
       element.setCustomValidity('Entry does not exist');
@@ -110,7 +109,7 @@ export class CreateEntries extends blackboardConnect<Playground>(
   }
 
   firstUpdated() {
-    if (this.state.conductorsUrls !== undefined) return;
+    if (this.blackboard.state.conductorsUrls !== undefined) return;
 
     this.setJsonValidity(this.createTextarea);
     this.setJsonValidity(this.updateTextarea);
@@ -246,7 +245,7 @@ export class CreateEntries extends blackboardConnect<Playground>(
                   type: EntryType.CreateEntry,
                   payload: {
                     content: JSON.parse(this.updateTextarea.value),
-                    type: selectEntry(this.state)(this.updateAddress.value)
+                    type: selectEntry(this.blackboard.state)(this.updateAddress.value)
                       .payload.type,
                   },
                 },
@@ -424,9 +423,9 @@ export class CreateEntries extends blackboardConnect<Playground>(
   }
 
   cell() {
-    let cell = selectActiveCell(this.state);
+    let cell = selectActiveCell(this.blackboard.state);
     if (!cell) {
-      cell = selectActiveCells(this.state)[0];
+      cell = selectActiveCells(this.blackboard.state)[0];
     }
     return cell;
   }
@@ -543,7 +542,7 @@ export class CreateEntries extends blackboardConnect<Playground>(
   render() {
     return html`
       <div class="column fill">
-        ${this.state.conductorsUrls !== undefined
+        ${this.blackboard.state.conductorsUrls !== undefined
           ? this.renderConnectedPlaceholder()
           : html`
               <div class="row fill">

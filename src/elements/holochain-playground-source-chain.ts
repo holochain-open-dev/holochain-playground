@@ -26,9 +26,9 @@ export class SourceChain extends blackboardConnect<Playground>(
     ];
   }
 
-  cy: cytoscape.Core;
+  private cy: cytoscape.Core;
 
-  nodes: any[] = [];
+  private nodes: any[] = [];
 
   firstUpdated() {
     this.cy = cytoscape({
@@ -99,7 +99,7 @@ export class SourceChain extends blackboardConnect<Playground>(
   updated(changedValues: PropertyValues) {
     super.updated(changedValues);
 
-    const nodes = sourceChainNodes(selectActiveCell(this.state));
+    const nodes = sourceChainNodes(selectActiveCell(this.blackboard.state));
     if (!isEqual(nodes, this.nodes)) {
       this.nodes = nodes;
 
@@ -110,7 +110,7 @@ export class SourceChain extends blackboardConnect<Playground>(
 
     this.cy.filter('node').removeClass('selected');
 
-    this.cy.getElementById(this.state.activeEntryId).addClass('selected');
+    this.cy.getElementById(this.blackboard.state.activeEntryId).addClass('selected');
   }
 
   render() {

@@ -39,20 +39,20 @@ export class EntryDetail extends blackboardConnect<Playground>(
     return html`
       <div class="column fill">
         <h3 class="title">Entry Detail</h3>
-        ${selectActiveEntry(this.state)
+        ${selectActiveEntry(this.blackboard.state)
           ? html`
               <div class="column">
                 <strong style="margin-bottom: 8px;">
-                  ${selectActiveEntry(this.state).entry_address
+                  ${selectActiveEntry(this.blackboard.state).entry_address
                     ? 'Header'
                     : 'Entry'}
                   Id
                 </strong>
                 <span style="margin-bottom: 16px;">
-                  ${this.shorten(this.state.activeEntryId, 50)}
+                  ${this.shorten(this.blackboard.state.activeEntryId, 50)}
                 </span>
                 <json-viewer
-                  .data=${this.shorten(selectActiveEntry(this.state), 40)}
+                  .data=${this.shorten(selectActiveEntry(this.blackboard.state), 40)}
                 ></json-viewer>
                 ${this.withMetadata
                   ? html` <span style="margin: 16px 0; font-weight: bold;">
@@ -60,8 +60,8 @@ export class EntryDetail extends blackboardConnect<Playground>(
                       </span>
                       <json-viewer
                         .data=${this.shorten(
-                          selectEntryMetadata(this.state)(
-                            this.state.activeEntryId
+                          selectEntryMetadata(this.blackboard.state)(
+                            this.blackboard.state.activeEntryId
                           ),
                           40
                         )}

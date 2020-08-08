@@ -11,10 +11,6 @@
           "default": "0"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -38,10 +34,6 @@
           "name": "urlsState",
           "type": "object",
           "default": "{}"
-        },
-        {
-          "name": "state",
-          "type": "S"
         },
         {
           "name": "blackboard",
@@ -81,10 +73,6 @@
           "default": "\"undefined\""
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -105,10 +93,6 @@
           "default": "[]"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -118,10 +102,6 @@
       "name": "holochain-playground-dht-shard",
       "path": "./dist/elements/holochain-playground-dht-shard.js",
       "properties": [
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -138,10 +118,6 @@
           "default": "false"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -155,10 +131,6 @@
           "name": "withMetadata",
           "type": "boolean",
           "default": "false"
-        },
-        {
-          "name": "state",
-          "type": "S"
         },
         {
           "name": "blackboard",
@@ -186,10 +158,6 @@
           "default": "false"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -200,10 +168,6 @@
       "path": "./dist/elements/holochain-playground-import-export.js",
       "properties": [
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -213,10 +177,6 @@
       "name": "holochain-playground-select-dna",
       "path": "./dist/elements/holochain-playground-select-dna.js",
       "properties": [
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -231,10 +191,6 @@
           "name": "nodes",
           "type": "never[]",
           "default": "[]"
-        },
-        {
-          "name": "state",
-          "type": "S"
         },
         {
           "name": "blackboard",
@@ -602,10 +558,6 @@
       "path": "./pages/src/designer-mode.js",
       "properties": [
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -627,10 +579,6 @@
           "type": "boolean"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -640,10 +588,6 @@
       "name": "technical-mode",
       "path": "./pages/src/technical-mode.js",
       "properties": [
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -668,14 +612,6 @@
           "default": "0"
         },
         {
-          "name": "conductorHelp",
-          "type": "Dialog"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -689,40 +625,7 @@
     {
       "name": "holochain-playground-connect-to-nodes",
       "path": "./src/elements/holochain-playground-connect-to-nodes.ts",
-      "attributes": [
-        {
-          "name": "conductorUrls",
-          "type": "string[] | undefined",
-          "default": "[\"ws://localhost:8888\"]"
-        },
-        {
-          "name": "open",
-          "type": "Boolean",
-          "default": "false"
-        }
-      ],
       "properties": [
-        {
-          "name": "conductorUrls",
-          "attribute": "conductorUrls",
-          "type": "string[] | undefined",
-          "default": "[\"ws://localhost:8888\"]"
-        },
-        {
-          "name": "open",
-          "attribute": "open",
-          "type": "Boolean",
-          "default": "false"
-        },
-        {
-          "name": "urlsState",
-          "type": "object",
-          "default": "{}"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -785,72 +688,6 @@
       "path": "./src/elements/holochain-playground-create-entries.ts",
       "properties": [
         {
-          "name": "selectedEntryType",
-          "type": "number",
-          "default": "0"
-        },
-        {
-          "name": "createTextarea",
-          "type": "TextArea"
-        },
-        {
-          "name": "createType",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "updateTextarea",
-          "type": "TextArea"
-        },
-        {
-          "name": "updateAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "removeAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "addFromAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "addToAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "addType",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "addTag",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "removeFromAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "removeToAddress",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "removeType",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "removeTimestamp",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "entryToCreate",
-          "type": "{ entry: Entry; replaces?: string | undefined; } | undefined",
-          "default": "\"undefined\""
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -869,10 +706,6 @@
       "path": "./src/elements/holochain-playground-dht-graph.ts",
       "properties": [
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -888,10 +721,6 @@
       "path": "./src/elements/holochain-playground-dht-shard.ts",
       "properties": [
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -905,39 +734,7 @@
     {
       "name": "holochain-playground-dht-stats",
       "path": "./src/elements/holochain-playground-dht-stats.ts",
-      "attributes": [
-        {
-          "name": "processing",
-          "type": "boolean",
-          "default": "false"
-        }
-      ],
       "properties": [
-        {
-          "name": "statsHelp",
-          "type": "Dialog"
-        },
-        {
-          "name": "nNodes",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "rFactor",
-          "type": "TextFieldBase"
-        },
-        {
-          "name": "timeout"
-        },
-        {
-          "name": "processing",
-          "attribute": "processing",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -967,10 +764,6 @@
           "default": "false"
         },
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -991,34 +784,6 @@
           "default": "true"
         },
         {
-          "name": "entryGraphHelp",
-          "type": "Dialog"
-        },
-        {
-          "name": "entryGraph",
-          "type": "HTMLElement"
-        },
-        {
-          "name": "lastEntriesIds",
-          "type": "string[]",
-          "default": "[]"
-        },
-        {
-          "name": "cy"
-        },
-        {
-          "name": "layout"
-        },
-        {
-          "name": "ready",
-          "type": "boolean",
-          "default": "false"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -1033,14 +798,6 @@
       "name": "holochain-playground-import-export",
       "path": "./src/elements/holochain-playground-import-export.ts",
       "properties": [
-        {
-          "name": "fileUpload",
-          "type": "HTMLInputElement"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"
@@ -1057,10 +814,6 @@
       "path": "./src/elements/holochain-playground-select-dna.ts",
       "properties": [
         {
-          "name": "state",
-          "type": "S"
-        },
-        {
           "name": "blackboard",
           "type": "Blackboard<S>"
         }
@@ -1075,18 +828,6 @@
       "name": "holochain-playground-source-chain",
       "path": "./src/elements/holochain-playground-source-chain.ts",
       "properties": [
-        {
-          "name": "cy"
-        },
-        {
-          "name": "nodes",
-          "type": "array",
-          "default": "[]"
-        },
-        {
-          "name": "state",
-          "type": "S"
-        },
         {
           "name": "blackboard",
           "type": "Blackboard<S>"

@@ -109,3 +109,12 @@ export const selectAllDNAs = (state: Playground) => {
   }
   return Object.keys(dnas);
 };
+
+export const selectCell = (state: Playground) => (
+  dna: string,
+  agentId: string
+) => {
+  const conductor = state.conductors.find((c) => c.agentIds.includes(agentId));
+
+  return conductor ? conductor.cells[dna] : null;
+};

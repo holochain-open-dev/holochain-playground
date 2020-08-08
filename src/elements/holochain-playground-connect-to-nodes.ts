@@ -9,12 +9,12 @@ export class ConnectToNodes extends blackboardConnect<Playground>(
   LitElement
 ) {
   @property({ type: Array })
-  conductorUrls: string[] | undefined = ['ws://localhost:8888'];
+  private conductorUrls: string[] | undefined = ['ws://localhost:8888'];
 
   @property({ type: Boolean })
-  open: Boolean = false;
+  private open: Boolean = false;
 
-  urlsState = {};
+  private urlsState = {};
 
   static get styles() {
     return css`
@@ -25,8 +25,8 @@ export class ConnectToNodes extends blackboardConnect<Playground>(
   }
 
   firstUpdated() {
-    if (this.state.conductorsUrls !== undefined) {
-      this.conductorUrls = this.state.conductorsUrls;
+    if (this.blackboard.state.conductorsUrls !== undefined) {
+      this.conductorUrls = this.blackboard.state.conductorsUrls;
     }
     this.blackboard.select('conductorsUrls').subscribe((urls) => {
       this.conductorUrls = urls;

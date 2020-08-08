@@ -25,7 +25,7 @@ export class ConductorDetail extends blackboardConnect<Playground>(
   selectedTabIndex: number = 0;
 
   @query('#conductor-help')
-  conductorHelp: Dialog;
+  private conductorHelp: Dialog;
 
   firstUpdated() {
     this.addEventListener('entry-committed', (e: CustomEvent) => {
@@ -57,7 +57,7 @@ export class ConductorDetail extends blackboardConnect<Playground>(
       >
         <span>
           You've selected the node or conductor with Agent ID
-          ${this.state.activeAgentId}. Here you can see its internal state:
+          ${this.blackboard.state.activeAgentId}. Here you can see its internal state:
           <ul>
             <li>
               <strong>Source Chain</strong>: entries that this node has
@@ -102,7 +102,7 @@ export class ConductorDetail extends blackboardConnect<Playground>(
           <div class="row" style="padding: 16px">
             <div class="column" style="flex: 1;">
               <h3 class="title">Conductor Detail</h3>
-              <span>Agent Id: ${this.state.activeAgentId}</span>
+              <span>Agent Id: ${this.blackboard.state.activeAgentId}</span>
             </div>
             <mwc-icon-button
               icon="help_outline"

@@ -5,7 +5,7 @@ import {
   addParameters,
   setCustomElements,
 } from '@storybook/web-components';
-import {withWebComponentsKnobs} from 'storybook-addon-web-components-knobs'
+import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 
 import customElements from '../custom-elements.json';
 
@@ -18,9 +18,6 @@ addParameters({
       checks: { 'color-contrast': { options: { noScroll: true } } },
       restoreScroll: true,
     },
-  },
-  docs: {
-    iframeHeight: '200px',
   },
 });
 

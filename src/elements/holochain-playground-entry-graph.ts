@@ -35,15 +35,15 @@ export class EntryGraph extends blackboardConnect<Playground>(
   showAgentsIds: boolean = true;
 
   @query('#entry-graph-help')
-  entryGraphHelp: Dialog;
+  private entryGraphHelp: Dialog;
 
   @query('#entry-graph')
-  entryGraph: HTMLElement;
+  private entryGraph: HTMLElement;
 
-  lastEntriesIds: string[] = [];
-  cy;
-  layout;
-  ready = false;
+  private lastEntriesIds: string[] = [];
+  private cy;
+  private layout;
+  private ready = false;
 
   firstUpdated() {
     this.cy = cytoscape({
@@ -175,7 +175,7 @@ export class EntryGraph extends blackboardConnect<Playground>(
       return null;
 
     const entries = allEntries(
-      selectActiveCells(this.state),
+      selectActiveCells(this.blackboard.state),
       this.showAgentsIds
     );
 
@@ -196,7 +196,7 @@ export class EntryGraph extends blackboardConnect<Playground>(
     this.lastEntriesIds = entries.map((e) => e.data.id);
 
     this.cy.filter('node').removeClass('selected');
-    this.cy.getElementById(this.state.activeEntryId).addClass('selected');
+    this.cy.getElementById(this.blackboard.state.activeEntryId).addClass('selected');
   }
 
   static get styles() {

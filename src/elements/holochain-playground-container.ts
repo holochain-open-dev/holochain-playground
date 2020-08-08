@@ -78,7 +78,6 @@ export class PlaygroundContainer extends blackboardContainer<Playground>(
   }
 
   render() {
-    console.log('state', this.blackboard.state);
     return html`
       ${this.renderSnackbar()}
       ${this.blackboard.state

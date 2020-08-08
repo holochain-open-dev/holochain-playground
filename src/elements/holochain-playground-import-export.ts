@@ -10,7 +10,7 @@ export class ImportExport extends blackboardConnect<Playground>(
   LitElement
 ) {
   @query('#file-upload')
-  fileUpload: HTMLInputElement;
+  private fileUpload: HTMLInputElement;
 
   import() {
     const file = this.fileUpload.files[0];

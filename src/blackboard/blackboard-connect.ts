@@ -2,7 +2,6 @@ import { Constructor, LitElement } from 'lit-element';
 import { Blackboard } from './blackboard';
 
 export interface PinnedElement<S> {
-  state: S;
   blackboard: Blackboard<S>;
 
   stateUpdated(state: S): void;
@@ -20,9 +19,7 @@ export const blackboardConnect = <
 } =>
   (class extends baseElement implements PinnedElement<S> {
     blackboard: Blackboard<S>;
-    get state() {
-      return this.blackboard.state;
-    }
+
     connectedCallback() {
       super.connectedCallback();
       const e = new CustomEvent('connect-to-blackboard', {
@@ -48,6 +45,7 @@ export const blackboardConnect = <
         this.stateUpdated(state);
       });
     }
+    
     stateUpdated(state: S) {}
   } as unknown) as {
     new (...args: any[]): PinnedElement<S> & LitElement & T;

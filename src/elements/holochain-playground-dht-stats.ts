@@ -18,15 +18,15 @@ export class DHTStats extends blackboardConnect<Playground>(
   LitElement
 ) {
   @query('#stats-help')
-  statsHelp: Dialog;
+  private statsHelp: Dialog;
   @query('#number-of-nodes')
-  nNodes: TextFieldBase;
+  private nNodes: TextFieldBase;
   @query('#r-factor')
-  rFactor: TextFieldBase;
+  private rFactor: TextFieldBase;
 
-  timeout;
+  private timeout;
   @property({ type: Boolean })
-  processing: boolean = false;
+  private processing: boolean = false;
 
   static get styles() {
     return sharedStyles;
@@ -39,10 +39,12 @@ export class DHTStats extends blackboardConnect<Playground>(
           This panel contains statistics for the current state of the DHT.
           <br />
           <br />
-          Having a redundancy factor of ${this.state.redundancyFactor}, it will
+          Having a redundancy factor of
+          ${this.blackboard.state.redundancyFactor}, it will
           <strong>
-            replicate every DHT Op in the ${this.state.redundancyFactor} nodes
-            that are closest to its neighborhood </strong
+            replicate every DHT Op in the
+            ${this.blackboard.state.redundancyFactor} nodes that are closest to
+            its neighborhood </strong
           >.
           <br />
           <br />
@@ -63,16 +65,21 @@ export class DHTStats extends blackboardConnect<Playground>(
 
   async republish() {
     const newNodes = parseInt(this.nNodes.value);
-    const currentNodes = selectCellCount(this.state);
+    const currentNodes = selectCellCount(this.blackboard.state);
     const changedNodes = currentNodes !== newNodes;
 
     const rFactor = parseInt(this.rFactor.value);
-    const dna = this.state.activeDNA;
-    let conductors = this.state.conductors;
+    const dna = this.blackboard.state.activeDNA;
+    let conductors = this.blackboard.state.conductors;
 
     if (newNodes > currentNodes) {
       const newNodesToCreate = newNodes - currentNodes;
-      conductors = await createConductors(newNodesToCreate, conductors, rFactor, dna);
+      conductors = await createConductors(
+        newNodesToCreate,
+        conductors,
+        rFactor,
+        dna
+      );
     } else if (newNodes < currentNodes) {
       const conductorsToRemove = currentNodes - newNodes;
       conductors = conductors.sort(
@@ -94,7 +101,7 @@ export class DHTStats extends blackboardConnect<Playground>(
     }
     this.blackboard.update('conductors', conductors);
 
-    if (changedNodes || this.state.redundancyFactor !== rFactor) {
+    if (changedNodes || this.blackboard.state.redundancyFactor !== rFactor) {
       const cells = conductors.map((c) => c.cells[dna]);
       for (const cell of cells) {
         cell.DHTOpTransforms = {};
@@ -140,9 +147,9 @@ export class DHTStats extends blackboardConnect<Playground>(
                 outlined
                 type="number"
                 style="width: 5em;"
-                .disabled=${this.state.conductorsUrls !== undefined}
+                .disabled=${this.blackboard.state.conductorsUrls !== undefined}
                 @change=${() => this.updateDHTStats()}
-                .value=${selectCellCount(this.state).toString()}
+                .value=${selectCellCount(this.blackboard.state).toString()}
               ></mwc-textfield>
             </div>
             <div class="row center-content" style="padding-right: 24px;">
@@ -153,24 +160,30 @@ export class DHTStats extends blackboardConnect<Playground>(
                 max="50"
                 outlined
                 type="number"
-                .disabled=${this.state.conductorsUrls !== undefined}
+                .disabled=${this.blackboard.state.conductorsUrls !== undefined}
                 style="width: 5em;"
                 @change=${() => this.updateDHTStats()}
-                .value=${this.state.redundancyFactor.toString()}
+                .value=${this.blackboard.state.redundancyFactor.toString()}
               ></mwc-textfield>
             </div>
             <div class="column fill">
               <span style="margin-bottom: 2px;"
                 >Unique DHT Ops:
-                <strong>${selectUniqueDHTOps(this.state)}</strong></span
+                <strong
+                  >${selectUniqueDHTOps(this.blackboard.state)}</strong
+                ></span
               >
               <span style="margin-bottom: 2px;"
                 >Median DHT Ops per node:
-                <strong>${selectMedianHoldingDHTOps(this.state)}</strong></span
+                <strong
+                  >${selectMedianHoldingDHTOps(this.blackboard.state)}</strong
+                ></span
               >
               <span
                 >Global DHT Ops:
-                <strong>${selectGlobalDHTOps(this.state)}</strong></span
+                <strong
+                  >${selectGlobalDHTOps(this.blackboard.state)}</strong
+                ></span
               >
             </div>
           </div>
