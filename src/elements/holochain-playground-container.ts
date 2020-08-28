@@ -51,6 +51,9 @@ export class PlaygroundContainer extends blackboardContainer<Playground>(
         this.blackboard.updateState(playground)
       );
     }
+    if (this.initialPlayground.conductorsUrls) {
+      connectToConductors(this.blackboard, this.initialPlayground.conductorsUrls);
+    }
 
     this.blackboard.select('conductorsUrls').subscribe(async (urls) => {
       if (urls !== undefined) {

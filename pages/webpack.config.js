@@ -32,6 +32,7 @@ module.exports = {
         'mwc-list',
         'mwc-tab',
         'mwc-tab-bar',
+        'mwc-circular-progress',
         'mwc-checkbox',
         'mwc-formfield',
         'mwc-textfield',

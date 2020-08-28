@@ -30,7 +30,7 @@ export class TechnicalMode extends blackboardConnect(
             <holochain-playground-dht-stats></holochain-playground-dht-stats>
           </mwc-card>
 
-          ${selectActiveConductor(this.state)
+          ${selectActiveConductor(this.blackboard.state)
             ? html`
                 <holochain-playground-conductor-detail
                   class="fill"

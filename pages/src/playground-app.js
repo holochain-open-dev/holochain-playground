@@ -8,7 +8,7 @@ import '@material/mwc-formfield';
 import '@material/mwc-top-app-bar-fixed';
 import '@material/mwc-menu';
 import '@material/mwc-list/mwc-list-item';
-import '@authentic/mwc-circular-progress';
+import '@material/mwc-circular-progress';
 
 import { blackboardConnect } from '../../dist/blackboard/blackboard-connect';
 import { connectToConductors } from '../../dist/processors/connect-to-conductors';
@@ -67,10 +67,10 @@ export class PlaygroundApp extends blackboardConnect(
   toggleMode() {
     this.technicalMode = !this.technicalMode;
     if (this.technicalMode) {
-      if (this.state.activeEntryId) {
-        const entryId = this.state.activeEntryId;
-        const activeDNA = this.state.activeDNA;
-        const conductor = this.state.conductors.find((c) => {
+      if (this.blackboard.state.activeEntryId) {
+        const entryId = this.blackboard.state.activeEntryId;
+        const activeDNA = this.blackboard.state.activeDNA;
+        const conductor = this.blackboard.state.conductors.find((c) => {
           const cell = c.cells[activeDNA];
 
           const entryHeaders =
@@ -91,7 +91,7 @@ export class PlaygroundApp extends blackboardConnect(
 
         this.blackboard.update(
           'activeAgentId',
-          conductor.cells[this.state.activeDNA].agentId
+          conductor.cells[this.blackboard.state.activeDNA].agentId
         );
       }
     }
@@ -108,7 +108,7 @@ export class PlaygroundApp extends blackboardConnect(
 
   render() {
     return html`
-      ${!this.blackboard || !this.state
+      ${!this.blackboard
         ? html`<div class="row fill center-content">
             <mwc-circular-progress></mwc-circular-progress>
           </div>`

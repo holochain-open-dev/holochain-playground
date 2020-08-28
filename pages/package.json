@@ -19,8 +19,19 @@
   "license": "MIT",
   "dependencies": {
     "@material/dom": "^7.0.0",
+    "@material/mwc-button": "^0.18.0",
+    "@material/mwc-circular-progress": "^0.18.0",
+    "@material/mwc-formfield": "^0.18.0",
+    "@material/mwc-select": "^0.18.0",
+    "@material/mwc-switch": "^0.18.0",
+    "@material/mwc-tab": "^0.18.0",
+    "@material/mwc-tab-bar": "^0.18.0",
+    "@material/mwc-textarea": "^0.18.0",
+    "@material/mwc-textfield": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "holochain-playground": "file:..",
     "lit-element": "^2.0.1",
-    "lit-html": "^1.0.0"
+    "lit-html": "^1.0.0",
+    "wicg-inert": "^3.0.3"
   }
 }

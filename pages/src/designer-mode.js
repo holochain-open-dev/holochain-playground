@@ -41,7 +41,7 @@ export class DesignerMode extends blackboardConnect(
             <holochain-playground-dht-stats></holochain-playground-dht-stats>
           </mwc-card>
 
-          ${this.state.conductorsUrls === undefined
+          ${this.blackboard.state.conductorsUrls === undefined
             ? html`
                 <mwc-card
                   style="width: auto; padding-top: 0;"
