@@ -87,13 +87,14 @@ export async function connectToConductors(
       });
       const cellContent = await processStateDump(call, instance_id, stateDump);
 
-      const conductorIndex = initialPlayground.conductors.findIndex((c) =>
+      const conductor = initialPlayground.conductors.find((c) =>
         c.agentIds.includes(cellContent.agentId)
       );
-      const conductor = initialPlayground.conductors[conductorIndex];
-      const cell = Cell.from(conductor, cellContent);
-      conductor.cells[cell.dna] = cell;
-      cell.updateDHTShard();
+      if (conductor) {
+        const cell = Cell.from(conductor, cellContent);
+        conductor.cells[cell.dna] = cell;
+        cell.updateDHTShard();
+      }
 
       blackboard.update('conductors', initialPlayground.conductors);
     });
