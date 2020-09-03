@@ -1,54 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta name="Description" content="Put your description here." />
-    <base href="/" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        background-color: #ededed;
-      }
-    </style>
-    <title>pag-es</title>
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="Description" content="Put your description here." />
+  <base href="/" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-  <body>
-    <holochain-playground-container class="fill column" id="playground">
-      <playground-app> </playground-app>
-    </holochain-playground-container>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      background-color: #ededed;
+    }
+  </style>
+  <title>pag-es</title>
+</head>
 
-    <script type="module" src="./src/playground-app.js"></script>
-    <script>
-      const playground = document.getElementById("playground");
-      playground.initialPlayground = {
-        conductorsUrls: [
-          "ws://195.201.19.75:8887",
-          "ws://135.181.92.68:8888",
-          "ws://135.181.89.158:8889",
-          "ws://195.201.19.77:8890",
-          "ws://135.181.89.145:8891",
-          "ws://135.181.89.146:8892",
-          "ws://78.47.204.148:8893",
-          "ws://135.181.89.160:8894",
-        ],
-      };
-    </script>
+<body>
+  <holochain-playground-container class="fill column" id="playground">
+    <playground-app> </playground-app>
+  </holochain-playground-container>
 
-  </body>
+  <script type="module" src="./src/playground-app.js"></script>
+  <script>
+    const playground = document.getElementById("playground");
+    playground.initialPlayground = {
+      conductorsUrls: [
+        "ws://195.201.19.75:8887"],
+    };
+  </script>
+
+</body>
+
 </html>

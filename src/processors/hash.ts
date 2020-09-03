@@ -24,7 +24,8 @@ function hashBytes(hash: string): Uint8Array {
   try {
     return multihashing.multihash.fromB58String(hash).slice(2);
   } catch (e) {
-    return window['enc'].decode(hash);
+    if (window['enc']) return window['enc'].decode(hash);
+    else return multihashing.multihash.fromB58String('QmTYdthpuRrUJknHEs6DRCjxfioQmm4Pp9UsKsyAQL83QH').slice(2);
   }
 }
 
