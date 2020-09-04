@@ -55,7 +55,7 @@
     "typescript": "^3.8.3"
   },
   "name": "holochain-playground",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Holochain playground that simulates real life holochain behaviour",
   "author": "holochain-playground",
   "license": "MIT",

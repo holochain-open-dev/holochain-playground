@@ -90,16 +90,15 @@ export async function connectToConductors(
       });
       const cellContent = await processStateDump(call, instance_id, stateDump);
 
-      const conductor = initialPlayground.conductors.find((c) =>
-        c.agentIds.includes(cellContent.agentId)
-      );
-      if (conductor) {
-        const cell = Cell.from(conductor, cellContent);
-        conductor.cells[cell.dna] = cell;
-        cell.updateDHTShard();
+      const conductors = blackboard.state.conductors;
+      for (const conductor of conductors) {
+        if (conductor.agentIds.includes(cellContent.agentId)) {
+          const cell = Cell.from(conductor, cellContent);
+          conductor.cells[cell.dna] = cell;
+          cell.updateDHTShard();
+        }
       }
-
-      blackboard.update('conductors', initialPlayground.conductors);
+      blackboard.update('conductors', conductors);
     });
 
     return conductor;
@@ -109,10 +108,10 @@ export async function connectToConductors(
 
   const allDnas: Dictionary<number> = {};
   for (const conductor of initialPlayground.conductors) {
-      for (const dna of Object.keys(conductor.cells)) {
-          if (!allDnas[dna]) allDnas[dna] = 0;
-          allDnas[dna]++;
-      }
+    for (const dna of Object.keys(conductor.cells)) {
+      if (!allDnas[dna]) allDnas[dna] = 0;
+      allDnas[dna]++;
+    }
   }
 
   const activeDna = Object.entries(allDnas).sort((dnaA, dnaB) => dnaB[1] - dnaA[1])[0][0];
