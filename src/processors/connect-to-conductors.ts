@@ -7,6 +7,7 @@ import { Header } from '../types/header';
 import { Entry, EntryType } from '../types/entry';
 import { CellContents, Cell } from '../types/cell';
 import { entryToDHTOps, hashDHTOp } from '../types/dht-op';
+import { Dictionary } from '../types/common';
 
 export function checkConnection(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -61,6 +62,8 @@ export async function connectToConductors(
     let numHeldAspects = 0;
     let lastRefresh = 0;
     onSignal(async (params) => {
+      if (blackboard.state === undefined) return;
+
       const instance_id = Object.keys(params.instance_stats)[0];
       const newHeldEntries =
         params.instance_stats[instance_id].number_held_entries;
@@ -104,9 +107,16 @@ export async function connectToConductors(
 
   initialPlayground.conductors = await Promise.all(promises);
 
-  initialPlayground.activeDNA = Object.keys(
-    initialPlayground.conductors[0].cells
-  )[0];
+  const allDnas: Dictionary<number> = {};
+  for (const conductor of initialPlayground.conductors) {
+      for (const dna of Object.keys(conductor.cells)) {
+          if (!allDnas[dna]) allDnas[dna] = 0;
+          allDnas[dna]++;
+      }
+  }
+
+  const activeDna = Object.entries(allDnas).sort((dnaA, dnaB) => dnaB[1] - dnaA[1])[0][0];
+  initialPlayground.activeDNA = activeDna;
 
   hookUpConductors(initialPlayground.conductors);
 
