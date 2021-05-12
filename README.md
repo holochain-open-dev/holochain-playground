@@ -1,6 +1,8 @@
-[DEPRECATED]
+# [DEPRECATED]
 
 Find the new code for the playground [here](https://github.com/holochain-playground).
+
+---
 
 # Holochain Playground
 
