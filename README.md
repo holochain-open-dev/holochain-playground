@@ -1,3 +1,7 @@
+[DEPRECATED]
+
+Find the new code for the playground [here](https://github.com/holochain-playground).
+
 # Holochain Playground
 
 Visit the [playground](https://holochain-open-dev.github.io/holochain-playground/).
